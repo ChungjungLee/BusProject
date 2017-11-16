@@ -10,7 +10,7 @@ import bus.vo.Station;
 public class ProjectBusUI {
 
 	private Scanner sc = new Scanner(System.in);		// Scanner 선언
-	
+	ProjectBusManager manager = new ProjectBusManager();
 	/**
 	 * 		Bus UI
 	 */
@@ -48,6 +48,8 @@ public class ProjectBusUI {
 					break;
 					
 				default:
+					
+					System.out.println("[Error] 잘못 입력하셨습니다.\n");
 					break;
 			}
 		}
@@ -77,6 +79,12 @@ public class ProjectBusUI {
 		
 		sc.nextLine();
 		
+		int busNum = 0;						// 입력받은 버스 번호를 담을 그릇 
+		String stnName = null;				// 입력받은 정류장 이름을 담을 그릇
+		List<Bus> busRoute = null;			// 노선도 저장용
+		boolean loop = true;				// while 반복문용.
+		boolean flag = true;				// 내부 메소드 while 반복문용.
+		
 		System.out.println("\n--- < 검  색  > ---");
 		System.out.println("1. 버스 번호로 검색");
 		System.out.println("2. 정류장으로 검색");
@@ -84,45 +92,53 @@ public class ProjectBusUI {
 					
 		int option = getIntFromUser();		// 유저로부터 숫자만 입력받게 하는 메소드
 		
-		int busNum = 0;						// 입력받은 버스 번호를 담을 그릇 
-		
-		String stnName = null;				// 입력받은 정류장 이름을 담을 그릇
-		
-		List<Bus> busRoute = null;			// 노선도 저장용
-		
-		boolean loop = true;				// while 반복문용.
-		
 		while(loop) {
 			
 			switch (option) {
 			
-				case 1:		// 버스 번호로 검색
+				case 1:		// 버스 번호로 검색 -> 노선도 확인 -> 즐겨찾기 여부 확인
 					
 					System.out.println("--- < Bus Info > ---");
 					System.out.println("검색하고 싶은 버스 번호를 입력하세요.");
 					
-					busNum = getIntFromUser();
+					// 두 글자 이상, 네 글자 이하만 받도록 검사
+					while (flag) {
+						
+						busNum = getIntFromUser();
+						
+						if (busNum < 10) {
+							System.out.println("[Error] 최소 두 글자 이상 입력하셔야 합니다.");
+						} else if (busNum > 9999) {
+							System.out.println("[Error] 네 글자 이하로 입력하셔야 합니다.");
+						} else { 
+							flag = false;		// while문 종료
+						}
+					}
 					
-					List<Bus> busList = ProjectBusManager.getBuses(busNum);
+					// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
+					List<Bus> busList = manager.getBuses(busNum);
 										
-					// 배열에 Numbering 해서 출력
+					// 불러온 버스 목록의 배열에 Numbering 해서 출력
 					System.out.println();
 					System.out.println("> 입력하신 숫자에 해당되는 버스 목록입니다. <");
 					for (int i = 0; i < busList.size(); i++) {
-						System.out.println(i + 1 + ". " + busList.get(i) + "\n");
+						System.out.println((i + 1) + ". " + busList.get(i) + "\n");
 					}
 					System.out.println();
 					
 					// 선택지 이상의 숫자를 입력하면 false 반환
 					System.out.println("> 확인하고 싶은 버스를 선택해주세요. <");
-					System.out.println("입력 >> ");
-					
-					for (int i = 0; i < busList.size(); i++) {
-						do {
-							
-						} while (loop);
+					while(flag) {
+						sc.nextLine();
+						option = getIntFromUser();
+						
+						if (option > busList.size() || option <= 0) {
+							System.out.println("[Error] 목록 내의 숫자를 입력하세요.");
+						} else {
+							flag = false;
+						}
 					}
-										
+					
 					// TODO: 노선도 출력
 					busRoute = ProjectBusManager.getRouteMap(busNum);
 					
@@ -138,12 +154,13 @@ public class ProjectBusUI {
 						System.out.println("[Error] 이미 저장된 정보입니다.");
 					} else {
 						// TODO: 즐겨찾기 저장
-						System.out.println("[System] 정상적으로 저장되었습니다.");
+						System.out.println("[System] 정상적으로 저장되었습니다.\n");
+						loop = false; 	// 메인메뉴로 돌아감
 					}
 					
 					break;
 		
-				case 2:		// 정류장으로 검색
+				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
 					
 					System.out.println("--- < Station Info > ---");
 					System.out.println("검색하고 싶은 정류장을 입력하세요.");
@@ -155,15 +172,33 @@ public class ProjectBusUI {
 					// 배열에 Numbering 해서 출력
 					System.out.println();
 					System.out.println("> 입력하신 숫자에 해당되는 정류장 목록입니다. <");
+					
 					for (int i = 0; i < stnList.size(); i++) {
 						System.out.println(i + 1 + ". " + stnList.get(i) + "\n");
 					}
+					
 					System.out.println();
+					
+					// 선택지 이상의 숫자를 입력하면 false 반환
 					System.out.println("> 확인하고 싶은 정류장을 선택해주세요. <");
 					
-					stnName = getTextFromUser();
+					while(flag) {
+						sc.nextLine();
+						option = getIntFromUser();
 						
+						if (option > stnList.size() || option <= 0) {
+							System.out.println("[Error] 목록 내의 숫자를 입력하세요.");
+							
+						} else {
+							flag = false;
+						}
+					}
+					
+					stnList = ProjectBusManager.getBuses(stnList.get(option - 1).getStnId());
+					
+					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
 						
+					
 					// TODO: 즐겨찾기 여부 확인 후 저장
 										
 					break;
@@ -184,7 +219,6 @@ public class ProjectBusUI {
 	
 	/**
 	 * 		유저로부터 숫자만 받아오게 한다.
-	 * 		@return Integer
 	 */
 	private int getIntFromUser() {
 		
@@ -206,7 +240,7 @@ public class ProjectBusUI {
 			}
 		}
 		
-		while (option <= 0);
+		while (option < 0);
 		
 		return option;
 	}
@@ -239,11 +273,12 @@ public class ProjectBusUI {
 	 * 		즐겨찾기
 	 */
 	private void favorite() {
+		System.out.println("--- < 즐  겨  찾  기 > ---");
 		// TODO: 1. 유저로부터 입력받은 버스번호 또는 정류장 검색에서 즐겨찾기 저장 여부 확인
 		
-		System.out.println("--- < 즐  겨  찾  기 > ---");
 		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
+		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소
 	}
 	
 	/**
