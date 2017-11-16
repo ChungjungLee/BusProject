@@ -3,15 +3,14 @@ package bus.ui;
 import java.util.List;
 import java.util.Scanner;
 
-import bus.manager.ProjectBusManager;
 import bus.vo.Bus;
+import bus.manager.ProjectBusManager;
 import bus.vo.Station;
 
 public class ProjectBusUI {
 
 	private Scanner sc = new Scanner(System.in);		// Scanner 선언
-	Bus bus = new Bus();								// projectbus.dao.bus
-		
+	
 	/**
 	 * 		Bus UI
 	 */
@@ -21,11 +20,9 @@ public class ProjectBusUI {
 		
 		while(loop){
 			
-			int option = 0;
-			
 			printMainMenu();
 			
-			option = getIntFromUser();
+			int option = getIntFromUser();
 						
 			switch (option) {
 			
@@ -80,22 +77,20 @@ public class ProjectBusUI {
 		
 		sc.nextLine();
 		
-		System.out.println("--- < 검  색  > ---");
+		System.out.println("\n--- < 검  색  > ---");
 		System.out.println("1. 버스 번호로 검색");
 		System.out.println("2. 정류장으로 검색");
-		System.out.println("0. 메인메뉴");
-		System.out.println();
-		System.out.print(">> ");
+		System.out.println("0. 메인메뉴\n");
+					
+		int option = getIntFromUser();		// 유저로부터 숫자만 입력받게 하는 메소드
 		
-		int option = 0;					// 유저로부터 입력받을 숫자 1, 2, 0
+		int busNum = 0;						// 입력받은 버스 번호를 담을 그릇 
 		
-		option = getIntFromUser();		// 유저로부터 숫자만 입력받게 하는 메소드
+		String stnName = null;				// 입력받은 정류장 이름을 담을 그릇
 		
-		int busNum = 0;					// 입력받은 버스 번호를 담을 그릇 
+		List<Bus> busRoute = null;			// 노선도 저장용
 		
-		String stnName = null;			// 입력받은 정류장 이름을 담을 그릇
-		
-		boolean loop = true;			// while 반복문용.
+		boolean loop = true;				// while 반복문용.
 		
 		while(loop) {
 			
@@ -105,15 +100,47 @@ public class ProjectBusUI {
 					
 					System.out.println("--- < Bus Info > ---");
 					System.out.println("검색하고 싶은 버스 번호를 입력하세요.");
-													
+					
 					busNum = getIntFromUser();
 					
 					List<Bus> busList = ProjectBusManager.getBuses(busNum);
-					
-					for (Bus bus : busList) {
-						System.out.println(bus); 	// TODO: [ VO 보고, 수정필요! ]
+										
+					// 배열에 Numbering 해서 출력
+					System.out.println();
+					System.out.println("> 입력하신 숫자에 해당되는 버스 목록입니다. <");
+					for (int i = 0; i < busList.size(); i++) {
+						System.out.println(i + 1 + ". " + busList.get(i) + "\n");
 					}
-						// TODO: 즐겨찾기 여부 확인 후 저장
+					System.out.println();
+					
+					// 선택지 이상의 숫자를 입력하면 false 반환
+					System.out.println("> 확인하고 싶은 버스를 선택해주세요. <");
+					System.out.println("입력 >> ");
+					
+					for (int i = 0; i < busList.size(); i++) {
+						do {
+							
+						} while (loop);
+					}
+										
+					// TODO: 노선도 출력
+					busRoute = ProjectBusManager.getRouteMap(busNum);
+					
+					for (Bus route : busRoute) {
+						System.out.println(route);		// TODO: 필요한 정보만 출력하도록 수정필요
+					}
+					
+					// TODO: 즐겨찾기 여부 확인 후 저장
+					
+					boolean canSaveFavorite = ProjectBusManager.getFavorite(busNum);
+					
+					if (canSaveFavorite) {
+						System.out.println("[Error] 이미 저장된 정보입니다.");
+					} else {
+						// TODO: 즐겨찾기 저장
+						System.out.println("[System] 정상적으로 저장되었습니다.");
+					}
+					
 					break;
 		
 				case 2:		// 정류장으로 검색
@@ -124,9 +151,20 @@ public class ProjectBusUI {
 					stnName = getTextFromUser();
 					
 					List<Station> stnList = ProjectBusManager.getStations(stnName);
+					
+					// 배열에 Numbering 해서 출력
+					System.out.println();
+					System.out.println("> 입력하신 숫자에 해당되는 정류장 목록입니다. <");
+					for (int i = 0; i < stnList.size(); i++) {
+						System.out.println(i + 1 + ". " + stnList.get(i) + "\n");
+					}
+					System.out.println();
+					System.out.println("> 확인하고 싶은 정류장을 선택해주세요. <");
+					
+					stnName = getTextFromUser();
 						
-						// TODO: manager에서 Station ID로 변환, 해당되는 정류소를 다시 넘겨받아야 함.
-						// TODO: 즐겨찾기 여부 확인 후 저장
+						
+					// TODO: 즐겨찾기 여부 확인 후 저장
 										
 					break;
 									
@@ -204,7 +242,7 @@ public class ProjectBusUI {
 		// TODO: 1. 유저로부터 입력받은 버스번호 또는 정류장 검색에서 즐겨찾기 저장 여부 확인
 		
 		System.out.println("--- < 즐  겨  찾  기 > ---");
-		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력만 하도록.
+		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
 	}
 	
@@ -213,7 +251,7 @@ public class ProjectBusUI {
 	 */
 	private void recentSearch() {
 		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
-		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력만 함 
+		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
 	}
 }

@@ -16,5 +16,15 @@ public class ProjectBusManager {
 		
 		return null;
 	}
+
+	public static List<Bus> getRouteMap(int busNum) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static boolean getFavorite(int busNum) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
