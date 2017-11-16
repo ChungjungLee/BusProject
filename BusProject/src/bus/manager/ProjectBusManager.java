@@ -7,22 +7,22 @@ import bus.vo.Station;
 
 public class ProjectBusManager {
 	
-	public static List<Bus> getBuses(int busNum) {
+	public List<Bus> getBuses(String busNum) {
 	
 		return null;
 	}
 
-	public static List<Station> getStations(String stnName) {
+	public List<Station> getStations(String stnName) {
 		
 		return null;
 	}
 
-	public static List<Bus> getRouteMap(int busNum) {
+	public List<Bus> getRouteMap(String busNum) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public static boolean getFavorite(int busNum) {
+	public boolean getFavorite(String busNum) {
 		// TODO Auto-generated method stub
 		return false;
 	}
