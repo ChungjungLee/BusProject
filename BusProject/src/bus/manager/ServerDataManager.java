@@ -386,14 +386,11 @@ public class ServerDataManager {
 	 * @return 추출된 JSON 데이터
 	 */
 	public String getJSON(String input) {
-		System.out.println("enter getJSON()");
 		String result = "";
 		String[] data = input.split("\n\n")[1].split("\n");
 		
 		for (int i = 1; i < data.length; i += 2) {
 			result += data[i];
-			System.out.println(i + ": ");
-			System.out.println(data[i]);
 		}
 		
 		return result;
