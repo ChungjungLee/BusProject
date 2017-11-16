@@ -79,7 +79,7 @@ public class ProjectBusUI {
 		
 		sc.nextLine();
 		
-		int busNum = 0;						// 입력받은 버스 번호를 담을 그릇 
+		String busNum = null;				// 입력받은 버스 번호를 담을 그릇 
 		String stnName = null;				// 입력받은 정류장 이름을 담을 그릇
 		List<Bus> busRoute = null;			// 노선도 저장용
 		boolean loop = true;				// while 반복문용.
@@ -102,19 +102,8 @@ public class ProjectBusUI {
 					System.out.println("검색하고 싶은 버스 번호를 입력하세요.");
 					
 					// 두 글자 이상, 네 글자 이하만 받도록 검사
-					while (flag) {
+					busNum = getTextFromUser();
 						
-						busNum = getIntFromUser();
-						
-						if (busNum < 10) {
-							System.out.println("[Error] 최소 두 글자 이상 입력하셔야 합니다.");
-						} else if (busNum > 9999) {
-							System.out.println("[Error] 네 글자 이하로 입력하셔야 합니다.");
-						} else { 
-							flag = false;		// while문 종료
-						}
-					}
-					
 					// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
 					List<Bus> busList = manager.getBuses(busNum);
 										
@@ -126,7 +115,7 @@ public class ProjectBusUI {
 					}
 					System.out.println();
 					
-					// 선택지 이상의 숫자를 입력하면 false 반환
+					// 선택지 이상의 숫자를 입력하면 error 출력
 					System.out.println("> 확인하고 싶은 버스를 선택해주세요. <");
 					while(flag) {
 						sc.nextLine();
@@ -140,7 +129,7 @@ public class ProjectBusUI {
 					}
 					
 					// TODO: 노선도 출력
-					busRoute = ProjectBusManager.getRouteMap(busNum);
+					busRoute = manager.getRouteMap(busNum);
 					
 					for (Bus route : busRoute) {
 						System.out.println(route);		// TODO: 필요한 정보만 출력하도록 수정필요
@@ -148,7 +137,7 @@ public class ProjectBusUI {
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
 					
-					boolean canSaveFavorite = ProjectBusManager.getFavorite(busNum);
+					boolean canSaveFavorite = manager.getFavorite(busNum);
 					
 					if (canSaveFavorite) {
 						System.out.println("[Error] 이미 저장된 정보입니다.");
@@ -167,7 +156,7 @@ public class ProjectBusUI {
 					
 					stnName = getTextFromUser();
 					
-					List<Station> stnList = ProjectBusManager.getStations(stnName);
+					List<Station> stnList = manager.getStations(stnName);
 					
 					// 배열에 Numbering 해서 출력
 					System.out.println();
@@ -194,7 +183,7 @@ public class ProjectBusUI {
 						}
 					}
 					
-					stnList = ProjectBusManager.getBuses(stnList.get(option - 1).getStnId());
+					stnList = manager.getBuses(stnList.get(option - 1).getStnId());
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
 						
@@ -224,7 +213,7 @@ public class ProjectBusUI {
 		
 		int option = 0;
 		
-		do {
+		do 	{
 			
 			System.out.print(">> ");
 			
@@ -251,19 +240,20 @@ public class ProjectBusUI {
 	private String getTextFromUser() {
 		
 		String inputText = null;	// 입력받은 정류장 이름을 담을 그릇
-		boolean loop = true;		// while 반복문용.
-		
-		while (loop) {
+				
+		do 	{
+				System.out.print(">>  ");
 			
-			System.out.print(">>  ");
-			inputText = sc.next();
-			
-			if (inputText == null || inputText.length() < 2) {
+			try {
+				inputText = sc.next();
+				
+			} catch (Exception e) {
 				System.out.println("[Error] 최소 두 글자 이상 입력하셔야 합니다.");
-			} else { 
-				loop = false;		// while문 종료
+				sc.nextLine();
 			}
-		}
+		} 
+		
+		while(inputText == null || inputText.length() < 2);
 		
 		return inputText;
 			
