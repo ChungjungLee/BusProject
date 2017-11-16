@@ -105,19 +105,21 @@ public class ProjectBusUI {
 					busNum = getTextFromUser();
 						
 					// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
+					System.out.println("> 입력하신 숫자에 해당되는 버스 목록입니다. <");
 					List<Bus> busList = manager.getBuses(busNum);
 										
 					// 불러온 버스 목록의 배열에 Numbering 해서 출력
 					System.out.println();
-					System.out.println("> 입력하신 숫자에 해당되는 버스 목록입니다. <");
 					for (int i = 0; i < busList.size(); i++) {
 						System.out.println((i + 1) + ". " + busList.get(i) + "\n");
 					}
 					System.out.println();
 					
 					// 선택지 이상의 숫자를 입력하면 error 출력
+					
 					System.out.println("> 확인하고 싶은 버스를 선택해주세요. <");
 					while(flag) {
+						System.out.println("^^");
 						sc.nextLine();
 						option = getIntFromUser();
 						
@@ -156,11 +158,11 @@ public class ProjectBusUI {
 					
 					stnName = getTextFromUser();
 					
+					System.out.println("> 입력하신 숫자에 해당되는 정류장 목록입니다. <");
 					List<Station> stnList = manager.getStations(stnName);
 					
 					// 배열에 Numbering 해서 출력
 					System.out.println();
-					System.out.println("> 입력하신 숫자에 해당되는 정류장 목록입니다. <");
 					
 					for (int i = 0; i < stnList.size(); i++) {
 						System.out.println(i + 1 + ". " + stnList.get(i) + "\n");
@@ -183,7 +185,7 @@ public class ProjectBusUI {
 						}
 					}
 					
-					stnList = manager.getBuses(stnList.get(option - 1).getStnId());
+					//stnList = manager.getBuses(stnList.get(option - 1).getStnId());
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
 						
