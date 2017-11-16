@@ -1,25 +1,25 @@
 package bus.vo;
 
 public class Bus {
-	private int routId;
-	private String routName;
-	private String routType;
-	private String stnFirst;
-	private String stnLast;
-	private String busIntervals;
-	private String timeFirst;
-	private String timeLast;
-	private String satTimeFirst;
-	private String satTimeLast;
-	private String holTimeFirst;
-	private String holTimeLast;
-	private String norTerms;
-	private String satTerms;
-	private String holTerms;
-	private String companyNm;
-	private String telNo;
-	private String faxNo;
-	private String email;
+	private int routId;			// 버스 ID
+	private String routName;	// 버스 번호
+	private String routType;	// 버스 타입(간선, 지선, ...)
+	private String stnFirst;	// 기점
+	private String stnLast;		// 종점
+	private String busIntervals;// 버스 간격(미사용)
+	private String timeFirst;	// 첫차 시각
+	private String timeLast;	// 막차 시각
+	private String satTimeFirst;// 토요일 첫차 시각
+	private String satTimeLast;	// 토요일 막차 시각
+	private String holTimeFirst;// 공휴일 첫차 시각
+	private String holTimeLast;	// 공휴일 막차 시각
+	private String norTerms;	// 평일 배차 간격
+	private String satTerms;	// 토요일 배차 간격
+	private String holTerms;	// 공휴일 배차 간격
+	private String companyNm;	// 운수회사
+	private String telNo;		// 회사 전화번호
+	private String faxNo;		// 회사 팩스번호
+	private String email;		// 회사 이메일주소
 	
 	/*
 	 * Constructor

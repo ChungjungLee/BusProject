@@ -80,7 +80,7 @@ public class BusList {
 	 */
 	public void sendRequestBusesByNum() {
 		try {
-			String param = "totalSearch=" + busNumber +
+			String param = "totalSearch=" + 34 +
 							"&jsFunction=fn_searchBus";
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(

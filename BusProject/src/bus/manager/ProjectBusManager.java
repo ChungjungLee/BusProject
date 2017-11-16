@@ -7,12 +7,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import bus.dao.BusDAO;
 import bus.vo.Bus;
 import bus.vo.Station;
 
 public class ProjectBusManager {
 
 	ServerDataManager serverManager = new ServerDataManager();
+	BusDAO busDao = new BusDAO();
 	
 	/**
 	 * 사용자가 입력한 숫자를 포함하는 버스의 목록을 받아 넘겨준다.
@@ -30,7 +32,7 @@ public class ProjectBusManager {
 		List<Bus> busesList = parseJSONBusesByNum(busesJSON);
 		
 		// TODO: 생성된 객체를 Dao 측에 넘기기
-		
+		busDao.insertBuses(busesList);
 		
 		// TODO: 그 결과를 받아 리턴하기
 		
@@ -70,6 +72,7 @@ public class ProjectBusManager {
 				JSONObject busJSONObject = (JSONObject) busArrayList.get(i);
 				
 				Bus bus = new Bus();
+				bus.setRoutId(Integer.parseInt((String)busJSONObject.get("routId")));
 				bus.setRoutName((String) busJSONObject.get("routName"));
 				bus.setRoutType((String) busJSONObject.get("routType"));
 				bus.setStnFirst((String) busJSONObject.get("stnFirst"));

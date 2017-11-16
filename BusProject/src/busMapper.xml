@@ -6,7 +6,48 @@
 <!-- 버스정보 처리 SQL -->
 <mapper namespace="bus.dao.BusMapper">
 	
-	
+	<insert id="insertBus" parameterType="bus">
+		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ INTO Bus
+			(routId
+			,routName
+			,routType
+			,stnFirst
+			,stnLast
+			,busIntervals
+			,timeFirst
+			,timeLast
+			,satTimeFirst
+			,satTimeLast
+			,holTimeFirst
+			,holTimeLast
+			,norTerms
+			,satTerms
+			,holTerms
+			,companyNm
+			,telNo
+			,faxNo
+			,email)
+		VALUES
+			(#{routId}
+			,#{routName}
+			,#{routType}
+			,#{stnFirst}
+			,#{stnLast}
+			,#{busIntervals}
+			,#{timeFirst,jdbcType=VARCHAR}
+			,#{timeLast,jdbcType=VARCHAR}
+			,#{satTimeFirst}
+			,#{satTimeLast}
+			,#{holTimeFirst}
+			,#{holTimeLast}
+			,#{norTerms}
+			,#{satTerms}
+			,#{holTerms}
+			,#{companyNm}
+			,#{telNo,jdbcType=VARCHAR}
+			,#{faxNo,jdbcType=VARCHAR}
+			,#{email,jdbcType=VARCHAR})
+	</insert>
 	
 </mapper>
 
