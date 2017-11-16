@@ -74,7 +74,7 @@ public class ProjectBusManager {
 				bus.setRoutType((String) busJSONObject.get("routType"));
 				bus.setStnFirst((String) busJSONObject.get("stnFirst"));
 				bus.setStnLast((String) busJSONObject.get("stnLast"));
-				bus.setBusIntervals((String) busJSONObject.get("busIntervals"));
+				bus.setBusIntervals((Long) busJSONObject.get("busIntervals") + "");
 				bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
 				bus.setTimeLast((String) busJSONObject.get("timeLast"));
 				bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
@@ -91,6 +91,7 @@ public class ProjectBusManager {
 				
 				busesList.add(bus);
 			}
+			//Long x = 1;
 			
 		} catch (Exception e) {
 			e.printStackTrace();

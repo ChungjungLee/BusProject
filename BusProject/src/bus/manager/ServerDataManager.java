@@ -365,7 +365,7 @@ public class ServerDataManager {
 			
 			while(true) {
 				line = br.readLine();
-				System.out.println(line);
+				//System.out.println(line);
 				if (line.equals("0")) {
 					break;
 				}
