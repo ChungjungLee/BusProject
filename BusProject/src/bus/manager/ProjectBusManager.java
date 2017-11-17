@@ -28,11 +28,9 @@ public class ProjectBusManager {
 		
 		List<Bus> busesList = parseJSONBusesByNum(busesJSON);
 		
-		// TODO: 생성된 객체를 Dao 측에 넘기기
 		busDao.insertBuses(busesList);
 		
 		// TODO: 그 결과를 받아 리턴하기
-		
 		
 		return busesList;
 	}
@@ -43,13 +41,10 @@ public class ProjectBusManager {
 	 * @return 문자열을 포함하는 정류장의 목록
 	 */
 	public List<Station> searchStations(String keyword) {
-		// TODO: 서버로부터 버스의 목록을 받아오기
 		serverManager.sendRequestStationsByWord(keyword);
 		
-		// TODO: 받은 정보를 JSON parser로 가공하기
 		String stationsJSON = serverManager.getJSON(serverManager.getResponse());
 		
-		// TODO: 가공된 JSON 문자열을 통해 Bus 객체 생성하기
 		List<Station> stationsList = parseJSONStationsByWord(stationsJSON);
 		
 		// TODO: 생성된 객체를 Dao 측에 넘기기
@@ -66,13 +61,10 @@ public class ProjectBusManager {
 	 * @return 노선도
 	 */
 	public List<Station> getRouteMap(int busId) {
-		// TODO: 서버로부터 해당 버스의 노선도를 받아오기
 		serverManager.sendRequestStationsByBus(busId);
 		
-		// TODO: 받은 정보를 JSON parser로 가공하기
 		String routeMapJSON = serverManager.getJSON(serverManager.getResponse());
 		
-		// TODO: 가공된 JSON 문자열을 통해 Bus 객체 생성하기
 		List<Station> routeMapList = parseJSONStationsByBus(routeMapJSON);
 		
 		// TODO: 생성된 객체를 Dao 측에 넘기기
@@ -87,9 +79,14 @@ public class ProjectBusManager {
 	 * @return 정류장을 지나는 버스들
 	 */
 	public List<Bus> getBuses(String arsId) {
-		List<Bus> busesList = new ArrayList<Bus>();
+		serverManager.sendRequestBusesByStation();
 		
-		return busesList;
+		String busesJSON = serverManager.getJSON(serverManager.getResponse());
+		
+		//List<Bus> busesList = parseJSONBusesByBus(busesJSON);
+		
+		//return busesList;
+		return null;
 	}
 
 	/**
@@ -189,43 +186,28 @@ public class ProjectBusManager {
 	 * @return 가공된 JSON 문자열
 	 */
 	public List<Station> parseJSONStationsByWord(String jsonData) {
-		List<Station> stations = new ArrayList<Station>();
-		
-		String result = "";
+		List<Station> stationsList = new ArrayList<Station>();
 		
 		try {
 			JSONParser jsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
-			JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
+			JSONArray stationsArrayList = (JSONArray) jsonObject.get("rows");
 			
-			for (int i = 0; i < busArrayList.size(); i++) {
-				result += "=== 정류장 " + (i + 1) + "===\n";
-				JSONObject bus = (JSONObject) busArrayList.get(i);
-				result += "stnId: " + bus.get("stnId") + "\n";
-				result += "layerGubn: " +bus.get("layerGubn") + "\n";
-				result += "stnName: " +bus.get("stnName") + "\n";
-				result += "stationCd: " +bus.get("stationCd") + "\n";
-				result += "stationCdNm: " +bus.get("stationCdNm") + "\n";
-				result += "posX: " +bus.get("posX") + "\n";
-				result += "posY: " +bus.get("posY") + "\n";
-				result += "startNodeId: " +bus.get("startNodeId") + "\n";
-				result += "endNodeId: " +bus.get("endNodeId") + "\n";
-				result += "utmXpos: " +bus.get("utmXpos") + "\n";
-				result += "utmYpos: " +bus.get("utmYpos") + "\n";
-				result += "arsId: " +bus.get("arsId") + "\n";
-				result += "code: " +bus.get("code") + "\n";
-				result += "isBitStation: " +bus.get("isBitStation") + "\n";
-				result += "rnum: " +bus.get("rnum") + "\n";
+			for (int i = 0; i < stationsArrayList.size(); i++) {
+				JSONObject stationJSONObject = (JSONObject) stationsArrayList.get(i);
 				
+				Station station = new Station();
+				station.setStationId(Integer.parseInt((String) stationJSONObject.get("stnId")));
+				station.setArsId((String) stationJSONObject.get("arsId"));
+				station.setStnName((String) stationJSONObject.get("stnName"));
 				
+				stationsList.add(station);
 			}
-			
-			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return stations;
+		return stationsList;
 	}
 }
