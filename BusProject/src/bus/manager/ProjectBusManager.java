@@ -142,8 +142,9 @@ public class ProjectBusManager {
 				station.setArsId((String) routeMapJSONObject.get("arsId"));
 				station.setStationName((String) routeMapJSONObject.get("stationName"));
 				
-				
+				routeMapList.add(station);
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
