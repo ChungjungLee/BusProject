@@ -128,33 +128,41 @@ public class ProjectBusUI {
 					// 불러온 버스 목록의 배열에 Numbering 해서 출력
 					System.out.println();
 					for (int i = 0; i < busList.size(); i++) {
-						System.out.println((i + 1) + ". " + busList.get(i) + "\n");
+						System.out.println(" | " + (i + 1) + " | " + busList.get(i).getRoutName() 
+								+ "  " + busList.get(i).getRoutType());
 					}						
 					
 					// 선택지 이상의 숫자를 입력하면 error 출력
 					System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
-					while(flag) {
+					
+					boolean loop2 = true;
+					int input = 0;
+					
+					while(loop2) {
 						sc.nextLine();
-						option = getIntFromUser();
+						input = getIntFromUser();
 						
-						if (option > busList.size() || option <= 0) {
+						if (input > busList.size() || input <= 0) {
 							System.out.println("\n[Error] 목록 내의 숫자를 입력하세요.");
+							sc.nextLine();
 						} else {
-							flag = false;
+							loop2 = false;
 						}
 					}
 					
-					busNum = busList.get(option - 1).getRoutName();
+					int busId = 0;
+					busId = busList.get(input - 1).getRoutId();
 					
 					// TODO: 노선도 출력
-					busRoute = manager.getRouteMap(busNum);
+					busRoute = manager.getRouteMap(busId);
 					
 					for (Station route : busRoute) {
-						System.out.println(route);		// TODO: 필요한 정보만 출력하도록 수정필요
+						System.out.println("| 정류장 이름 : " + route.getStnName() + 
+								"   ( 정류장 ID : " + route.getArsId() + ") ");		
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
-					
+					/*
 					boolean canSaveFavorite = manager.getFavorite(busNum);
 					
 					if (canSaveFavorite) {
@@ -164,7 +172,7 @@ public class ProjectBusUI {
 						System.out.println("[System] 정상적으로 저장되었습니다.\n");
 						loop = false; 	// 메인메뉴로 돌아감
 					}
-					
+					*/
 					break;
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
@@ -333,7 +341,7 @@ public class ProjectBusUI {
 				sc.nextLine();
 				
 			} else {
-				System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
+				System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <");
 				flag = false;
 			}
 		}
@@ -369,7 +377,7 @@ public class ProjectBusUI {
 				sc.nextLine();
 				
 			} else {
-				System.out.println("\n> 입력하신 정류장을 지나가는 버스 목록입니다. <\n");
+				System.out.println("\n> 입력하신 정류장을 지나가는 버스 목록입니다. <");
 				flag = false;
 			}
 		}
