@@ -216,9 +216,9 @@ public class ServerDataManager {
 	/**
 	 * 버스 번호를 통해 해당 버스의 전체 노선도를 요청한다.
 	 */
-	public void sendRequestStationsByBus(String busNum) {
+	public void sendRequestStationsByBus(int busId) {
 		try {
-			String param = "routId=" + busNum;
+			String param = "routId=" + busId;
 			
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(

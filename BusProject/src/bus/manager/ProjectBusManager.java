@@ -45,9 +45,9 @@ public class ProjectBusManager {
 		return null;
 	}
 
-	public List<Station> getRouteMap(String busNum) {
+	public List<Station> getRouteMap(int busId) {
 		// TODO: 서버로부터 해당 버스의 노선도를 받아오기
-		serverManager.sendRequestStationsByBus(busNum);
+		serverManager.sendRequestStationsByBus(busId);
 		
 		// TODO: 받은 정보를 JSON parser로 가공하기
 		String routeMapJSON = serverManager.getJSON(serverManager.getResponse());
