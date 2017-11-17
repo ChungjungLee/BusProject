@@ -124,51 +124,58 @@ public class ProjectBusUI {
 				case 1:		// 버스 번호로 검색 -> 노선도 확인 -> 즐겨찾기 여부 확인
 					
 					List<Bus> busNumList = searchBusList();
-					
-					// 불러온 버스 목록의 배열에 Numbering 해서 출력
-					System.out.println();
-					for (int i = 0; i < busNumList.size(); i++) {
-						System.out.println(" | " + (i + 1) + " | " + busNumList.get(i).getRoutName() 
-								+ "  " + busNumList.get(i).getRoutType());
-					}						
-					
-					// 선택지 이상의 숫자를 입력하면 error 출력
-					System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
-					
-					int input = 0;
-					int busListSize = busNumList.size();
-					
-					input = selectNum(busListSize);
-					
-					// 노선도 출력
-					int busId = 0;
-					busId = busNumList.get(input - 1).getRoutId();
-					
-					busRoute = manager.getRouteMap(busId);
-					
-					for (Station route : busRoute) {
-						System.out.println("| 정류장 이름 : " + route.getStnName() + 
-								"   ( 정류장 ID : " + route.getArsId() + ") ");		
+					if (busNumList.isEmpty() || busNumList == null) {
+						loop = false;						
 					}
-					
-					// TODO: 즐겨찾기 여부 확인 후 저장
-					
-					boolean canSaveFavorite = manager.getFavorite(busNum);
-					
-					if (canSaveFavorite) {
-						System.out.println("\n[Error] 이미 저장된 정보입니다.");
-					} else {
-						// TODO: 즐겨찾기 저장
-						System.out.println("[System] 정상적으로 저장되었습니다.\n");
-						loop = false; 	// 메인메뉴로 돌아감
-					}
-					
+					else {
+						
+						// 불러온 버스 목록의 배열에 Numbering 해서 출력
+						System.out.println();
+						for (int i = 0; i < busNumList.size(); i++) {
+							System.out.println(" | " + (i + 1) + " | " + busNumList.get(i).getRoutName() 
+									+ "  " + busNumList.get(i).getRoutType());
+						}						
+						
+						// 선택지 이상의 숫자를 입력하면 error 출력
+						System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
+						
+						int input = 0;
+						int busListSize = busNumList.size();
+						
+						input = selectNum(busListSize);
+						
+						// 노선도 출력
+						int busId = 0;
+						busId = busNumList.get(input - 1).getRoutId();
+						
+						busRoute = manager.getRouteMap(busId);
+						
+						for (Station route : busRoute) {
+							System.out.println("| 정류장 이름 : " + route.getStnName() + 
+									"   ( 정류장 ID : " + route.getArsId() + ") ");		
+						}
+						
+						// TODO: 즐겨찾기 여부 확인 후 저장
+						
+						boolean canSaveFavorite = manager.getFavorite(busNum);
+						
+						if (canSaveFavorite) {
+							System.out.println("\n[Error] 이미 저장된 정보입니다.");
+						} else {
+							// TODO: 즐겨찾기 저장
+							System.out.println("[System] 정상적으로 저장되었습니다.\n");
+							loop = false; 	// 메인메뉴로 돌아감
+						}
+					}	
 					break;
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
 					
 					List<Station> foundBusList = searchStnList();
-										
+					if (foundBusList.isEmpty() || foundBusList == null) {
+						loop = false;
+					}					
+					
 					// 배열에 Numbering 해서 출력
 					for (int i = 0; i < foundBusList.size(); i++) {
 						System.out.println(i + 1 + ". " + foundBusList.get(i) + "\n");
@@ -183,10 +190,10 @@ public class ProjectBusUI {
 					input1 = selectNum(stationListSize);
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
-					foundBusList = manager.getBuses(foundBusList.get(input1 - 1).getArsId());
+					List<Bus> getBusListFromStations = manager.getBuses(foundBusList.get(input1 - 1).getArsId());
 					
-					for (Station stationsBuses : foundBusList) {
-						System.out.println(stationBuses);
+					for (Bus stationsBuses : getBusListFromStations) {
+						System.out.println(stationsBuses);
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
@@ -204,6 +211,7 @@ public class ProjectBusUI {
 					System.out.println("\n[Error] 잘못 입력하셨습니다.");
 					break;
 			}
+			
 		}
 	} // search();
 	
@@ -375,6 +383,7 @@ public class ProjectBusUI {
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		목록 내의 숫자만 입력받게 한다.
+	 * 		@param int
 	 * 		@return int
 	 */
 	private int selectNum(int size){
