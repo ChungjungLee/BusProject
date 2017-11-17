@@ -6,7 +6,6 @@ public class Bus {
 	private String routType;	// 버스 타입(간선, 지선, ...)
 	private String stnFirst;	// 기점
 	private String stnLast;		// 종점
-	private String busIntervals;// 버스 간격(미사용)
 	private String timeFirst;	// 첫차 시각
 	private String timeLast;	// 막차 시각
 	private String satTimeFirst;// 토요일 첫차 시각
@@ -26,7 +25,7 @@ public class Bus {
 	 */
 	public Bus() {}
 	
-	public Bus(int routId, String routName, String routType, String stnFirst, String stnLast, String busIntervals,
+	public Bus(int routId, String routName, String routType, String stnFirst, String stnLast,
 			String timeFirst, String timeLast, String satTimeFirst, String satTimeLast, String holTimeFirst,
 			String holTimeLast, String norTerms, String satTerms, String holTerms, String companyNm, String telNo,
 			String faxNo, String email) {
@@ -35,7 +34,6 @@ public class Bus {
 		this.routType = routType;
 		this.stnFirst = stnFirst;
 		this.stnLast = stnLast;
-		this.busIntervals = busIntervals;
 		this.timeFirst = timeFirst;
 		this.timeLast = timeLast;
 		this.satTimeFirst = satTimeFirst;
@@ -83,12 +81,6 @@ public class Bus {
 	}
 	public void setStnLast(String stnLast) {
 		this.stnLast = stnLast;
-	}
-	public String getBusIntervals() {
-		return busIntervals;
-	}
-	public void setBusIntervals(String busIntervals) {
-		this.busIntervals = busIntervals;
 	}
 	public String getTimeFirst() {
 		return timeFirst;

@@ -45,20 +45,36 @@ public class ProjectBusManager {
 		return null;
 	}
 
-	public List<Bus> getRouteMap(String busNum) {
-
-		return null;
+	public List<Station> getRouteMap(String busNum) {
+		// TODO: 서버로부터 해당 버스의 노선도를 받아오기
+		serverManager.sendRequestStationsByBus(busNum);
+		
+		// TODO: 받은 정보를 JSON parser로 가공하기
+		String routeMapJSON = serverManager.getJSON(serverManager.getResponse());
+		
+		// TODO: 가공된 JSON 문자열을 통해 Bus 객체 생성하기
+		List<Station> routeMapList = parseJSONStationsByBus(routeMapJSON);
+		
+		// TODO: 생성된 객체를 Dao 측에 넘기기
+		//busDao.insertRouteMap(routeMapList);
+		
+		return routeMapList;
 	}
 
+	/**
+	 * 즐겨찾기에 등록되어 있는 것들을 출력한다.
+	 * @param busNum
+	 * @return
+	 */
 	public boolean getFavorite(String busNum) {
 
 		return false;
 	}
 	
 	/**
-	 * 숫자를 포함한 버스 목록의 JSON 데이터를 받아 Bus 객체를 생성한다.
-	 * @param jsonData 응답받은 특정 버스의 노선도
-	 * @return 가공된 JSON 문자열
+	 * 입력받은 문자를 포함하는 버스 목록의 JSON 데이터를 받아 Bus 객체를 생성한다.
+	 * @param jsonData 서버로부터 받은 버스 목록
+	 * @return 입력받은 문자를 포함하는 버스의 리스트
 	 */
 	public List<Bus> parseJSONBusesByNum(String jsonData) {
 		List<Bus> busesList = new ArrayList<>();
@@ -77,7 +93,6 @@ public class ProjectBusManager {
 				bus.setRoutType((String) busJSONObject.get("routType"));
 				bus.setStnFirst((String) busJSONObject.get("stnFirst"));
 				bus.setStnLast((String) busJSONObject.get("stnLast"));
-				bus.setBusIntervals((Long) busJSONObject.get("busIntervals") + "");
 				bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
 				bus.setTimeLast((String) busJSONObject.get("timeLast"));
 				bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
@@ -94,7 +109,6 @@ public class ProjectBusManager {
 				
 				busesList.add(bus);
 			}
-			//Long x = 1;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,4 +117,34 @@ public class ProjectBusManager {
 		return busesList;
 	}
 	
+	/**
+	 * 버스 노선도 JSON 데이터를 받아 Station 객체를 생성한다.
+	 * @param jsonData 응답받은 특정 버스의 노선도
+	 * @return 가공된 JSON 문자열
+	 */
+	public List<Station> parseJSONStationsByBus(String jsonData) {
+		List<Station> routeMapList = new ArrayList<>();
+		
+		
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
+			JSONArray routeMapArrayList = (JSONArray) jsonObject.get("resultList");
+			
+			for (int i = 0; i < routeMapArrayList.size(); i++) {
+				JSONObject routeMapJSONObject = (JSONObject) routeMapArrayList.get(i);
+				
+				Station station = new Station();
+				station.setStationId(Integer.parseInt((String)routeMapJSONObject.get("stationId")));
+				station.setArsId((String) routeMapJSONObject.get("arsId"));
+				station.setStationName((String) routeMapJSONObject.get("stationName"));
+				
+				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return routeMapList;
+	}
 }
