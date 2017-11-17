@@ -87,6 +87,7 @@ public class ProjectBusManager {
 	 * @return 정류장을 지나는 버스들
 	 */
 	public List<HashMap<String, Object>> getBuses(String arsId) {
+
 		serverManager.sendRequestBusesByStation(arsId);
 		
 		String busesJSON = serverManager.getJSON(serverManager.getResponse());

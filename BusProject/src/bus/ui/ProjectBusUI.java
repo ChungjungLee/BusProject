@@ -1,10 +1,11 @@
 package bus.ui;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-import bus.vo.Bus;
 import bus.manager.ProjectBusManager;
+import bus.vo.Bus;
 import bus.vo.Station;
 
 public class ProjectBusUI {
@@ -187,11 +188,17 @@ public class ProjectBusUI {
 					input1 = selectNum(stationListSize);
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
-					List<Bus> getBusListFromStations 
+					List<HashMap<String, Object>> busInfoLists 
 						= manager.getBuses(foundBusList.get(input1 - 1).getArsId());
 					
-					for (Bus stationsBuses : getBusListFromStations) {
-						System.out.println(stationsBuses);
+					for (HashMap<String, Object> busInfo : busInfoLists) {
+						System.out.println("<" + busInfo.get("busNumber") + ">");
+						
+						System.out.print("다음 차:");
+						System.out.println(busInfo.get("firstBusTime"));
+						
+						System.out.print("다다음 차:");
+						System.out.println(busInfo.get("secondBusTime"));
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장

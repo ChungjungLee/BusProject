@@ -2,27 +2,28 @@ package bus.test;
 
 import java.util.Scanner;
 
+import bus.manager.ServerDataManager;
+
 public class Main {
 
 	public static void main(String[] args) {
 		
 		BusList busList = new BusList("341");
 		
+		busList.sendRequestBusesByStation("23419");
+		String busListResult = 
+				//busList.getJSON(busList.getResponse());
+				busList.parseJSONBusesByStation(busList.getJSON(busList.getResponse()));
+		new FileSave().saveFile("BusesList23419.txt", busListResult);
+		
+		
+		/*
 		busList.sendRequestStationsByWord();
 		String busListResult = 
 				//busList.getJSON(busList.getResponse());
 				busList.parseJSONStationsByWord(busList.getJSON(busList.getResponse()));
 		new FileSave().saveFile("StationsList_.txt", busListResult);
-		
-		// 특정 번호를 포함하는 버스의 목록을 5개만 받아옴
-		/*
-		busList.sendRequest();
-		
-		String busListResult = 
-				busList.getJSON(busList.getResponse());
-		new FileSave().saveFile("getText.txt", busListResult);
 		*/
-		
 		
 		// 특정 번호를 포함하는 버스의 목록을 전부 받아옴
 		/*

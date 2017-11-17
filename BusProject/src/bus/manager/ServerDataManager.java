@@ -120,7 +120,7 @@ public class ServerDataManager {
 	public void sendRequestBusesByStation(String arsId) {
 		try {
 			String param = "url=http%3A%2F%2F210.96.13.82%3A8099%2Fapi%2Frest%2Fstationinfo%2F" +
-							"getStationByUid&arsId=" + arsId;
+					"getStationByUid&arsId=" + arsId;
 			
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(
@@ -363,7 +363,7 @@ public class ServerDataManager {
 			
 			while(true) {
 				line = br.readLine();
-				//System.out.println(line);
+				System.out.println(line);
 				if (line.equals("0")) {
 					break;
 				}

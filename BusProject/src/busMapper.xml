@@ -56,7 +56,10 @@
 			(#{stnId}, #{arsId}, #{stnName})
 	</insert>
 	
-	
+	<!-- 즐겨찾기 정보 가져오기 -->
+	<select id="selectFavorite" parameterType="int">
+		
+	</select>
 </mapper>
 
 
