@@ -117,17 +117,15 @@ public class ServerDataManager {
 	/**
 	 * 정류장 번호를 통해 해당 정류장을 이용하는 버스 목록을 요청한다.
 	 */
-	public void sendRequestBusesByStation() {
+	public void sendRequestBusesByStation(String arsId) {
 		try {
 			String param = "url=http%3A%2F%2F210.96.13.82%3A8099%2Fapi%2Frest%2Fstationinfo%2F" +
-							"getStationByUid&arsId=" + 24143;
+							"getStationByUid&arsId=" + arsId;
 			
 			BufferedWriter bw = new BufferedWriter(
 					new OutputStreamWriter(
 							socket.getOutputStream(), "UTF-8"));
 			
-			//아래처럼 하면 디비 내 모든 버스의 정보를 받아온다
-			//bw.write("POST /map/busMap/selectBusList.do HTTP/1.1\r\n" + 
 			bw.write("POST /map/getBusStn.do HTTP/1.1\r\n" +
 					"Host: " + socket.getInetAddress() + "\r\n" +
 					"Content-Length: " + param.length() + "\r\n" +

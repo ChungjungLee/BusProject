@@ -1,6 +1,7 @@
 package bus.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -42,9 +43,25 @@ public class ProjectBusManager {
 		
 		busDao.insertBuses(busesList);
 		
-		// TODO: 그 결과를 받아 리턴하기
-		
 		return busesList;
+	}
+	
+	/**
+	 * 특정 버스의 노선도를 받아 넘겨준다.
+	 * @param busId 노선도를 확인하려는 버스의 id
+	 * @return 노선도
+	 */
+	public List<Station> getRouteMap(int busId) {
+		serverManager.sendRequestStationsByBus(busId);
+		
+		String routeMapJSON = serverManager.getJSON(serverManager.getResponse());
+		
+		List<Station> routeMapList = parseJSONStationsByBus(routeMapJSON);
+		
+		// TODO: 생성된 객체를 Dao 측에 넘기기 && 실시간 정보를 받아오는 것으로 변경할 것
+		//busDao.insertRouteMap(routeMapList);
+		
+		return routeMapList;
 	}
 
 	/**
@@ -59,30 +76,9 @@ public class ProjectBusManager {
 		
 		List<Station> stationsList = parseJSONStationsByWord(stationsJSON);
 		
-		// TODO: 생성된 객체를 Dao 측에 넘기기
 		busDao.insertStations(stationsList);
 		
-		// TODO: 그 결과를 받아 리턴하기
-		
 		return stationsList;
-	}
-
-	/**
-	 * 특정 버스의 노선도를 받아 넘겨준다.
-	 * @param busId 노선도를 확인하려는 버스의 id
-	 * @return 노선도
-	 */
-	public List<Station> getRouteMap(int busId) {
-		serverManager.sendRequestStationsByBus(busId);
-		
-		String routeMapJSON = serverManager.getJSON(serverManager.getResponse());
-		
-		List<Station> routeMapList = parseJSONStationsByBus(routeMapJSON);
-		
-		// TODO: 생성된 객체를 Dao 측에 넘기기
-		//busDao.insertRouteMap(routeMapList);
-		
-		return routeMapList;
 	}
 	
 	/**
@@ -90,15 +86,18 @@ public class ProjectBusManager {
 	 * @param arsId 정류장의 번호
 	 * @return 정류장을 지나는 버스들
 	 */
-	public List<Bus> getBuses(String arsId) {
-		serverManager.sendRequestBusesByStation();
+	public List<HashMap<String, Object>> getBuses(String arsId) {
+		serverManager.sendRequestBusesByStation(arsId);
 		
 		String busesJSON = serverManager.getJSON(serverManager.getResponse());
 		
-		//List<Bus> busesList = parseJSONBusesByBus(busesJSON);
+		List<HashMap<String, Object>> busesList = 
+				parseJSONBusesByStation(busesJSON);
 		
-		//return busesList;
-		return null;
+		// 실시간 데이터이므로 굳이 DB에 저장할 필요가 없다.
+		// 그래서 그냥 응답 받은 데이터를 넘겨주기만 한다.
+		
+		return busesList;
 	}
 
 	/**
@@ -221,5 +220,52 @@ public class ProjectBusManager {
 		}
 		
 		return stationsList;
+	}
+	
+	/**
+	 * 정류장을 지나는 버스 목록을 받아 JSON 데이터를 추출한다.
+	 * @param jsonData 응답받은 정류장을 지나는 버스 목록
+	 * @return 가공된 JSON 문자열
+	 */
+	public List<HashMap<String, Object>> parseJSONBusesByStation(String jsonData) {
+		List<HashMap<String, Object>> busesInfoList = 
+				new ArrayList<HashMap<String, Object>>();
+		
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
+			JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
+			
+			for (int i = 0; i < busArrayList.size(); i++) {
+				JSONObject bus = (JSONObject) busArrayList.get(i);
+				
+				HashMap<String, Object> busInfo = new HashMap<String, Object>();
+				
+				busInfo.put("direction", bus.get("direction"));
+				busInfo.put("arsId", bus.get("arsId"));
+				busInfo.put("stationId", bus.get("stId"));
+				busInfo.put("stationName", bus.get("stNm"));
+				busInfo.put("nextStn", bus.get("nxtStn"));
+				
+				busInfo.put("busNumber", bus.get("rtNm"));
+				
+				busInfo.put("firstBusTime", bus.get("arrmsg1"));
+				busInfo.put("firstBusStn", bus.get("stationNm1"));
+				busInfo.put("firstBusNum", bus.get("plainNo1"));
+				busInfo.put("firstBusPeople", bus.get("rerideNum1"));
+				
+				busInfo.put("secondBusTime", bus.get("arrmsg2"));
+				busInfo.put("firstBusStn", bus.get("stationNm1"));
+				busInfo.put("secondBusNum", bus.get("plainNo2"));
+				busInfo.put("secondBusPeople", bus.get("rerideNum2"));
+				
+				busesInfoList.add(busInfo);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return busesInfoList;
 	}
 }
