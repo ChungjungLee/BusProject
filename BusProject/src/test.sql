@@ -31,9 +31,9 @@ insert /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ into bus values (
 DROP TABLE station;
 
 CREATE TABLE station (
-	stationId		NUMBER	CONSTRAINT STATION_STNID_PK PRIMARY KEY,
-	arsId			CHAR(5) CONSTRAINT STATION_ARSID_UNI UNIQUE,
-	stationName		VARCHAR2(50) CONSTRAINT STATION_STNNAME_NN NOT NULL
+	stationId	NUMBER	CONSTRAINT STATION_STNID_PK PRIMARY KEY,
+	arsId		CHAR(5) CONSTRAINT STATION_ARSID_UNI UNIQUE,
+	stnName		VARCHAR2(50) CONSTRAINT STATION_STNNAME_NN NOT NULL
 );
 
 insert /*+ IGNORE_ROW_ON_DUPKEY_INDEX (stations(stationId)) */ into station values (
@@ -42,5 +42,20 @@ insert /*+ IGNORE_ROW_ON_DUPKEY_INDEX (stations(stationId)) */ into station valu
 );
 
 -- 즐겨찾기 정보를 가지는 테이블
-CREA
+DROP TABLE favorite;
+
+CREATE TABLE favorite (
+	favorId	NUMBER,
+	routId		NUMBER,
+	stationId	NUMBER
+);
+
 -- 최근 검색 기록을 가지는 테이블
+DROP TABLE history;
+
+CREATE TABLE history(
+	
+	keyword	VARCHAR2(50),
+	indate	DATE
+);
+
