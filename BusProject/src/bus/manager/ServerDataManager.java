@@ -284,9 +284,9 @@ public class ServerDataManager {
 	/**
 	 * 특정 문자열을 가지고 있는 정류장을 요청한다.
 	 */
-	public void sendRequestStationsByWord() {
+	public void sendRequestStationsByWord(String keyword) {
 		try {
-			String param = "totalSearch=" + " " +
+			String param = "totalSearch=" + keyword +
 					"&jsFunction=fn_searchBusStn";
 			
 			BufferedWriter bw = new BufferedWriter(

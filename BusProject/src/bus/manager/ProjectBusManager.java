@@ -17,18 +17,15 @@ public class ProjectBusManager {
 	BusDAO busDao = new BusDAO();
 	
 	/**
-	 * 사용자가 입력한 숫자를 포함하는 버스의 목록을 받아 넘겨준다.
+	 * 사용자가 입력한 숫자를 포함하는 버스의 목록을 검색한다.
 	 * @param busNum 찾고자 하는 숫자
 	 * @return 숫자를 포함하는 버스의 목록
 	 */
-	public List<Bus> getBuses(String busNum) {
-		// TODO: 서버로부터 버스의 목록을 받아오기
+	public List<Bus> searchBuses(String busNum) {
 		serverManager.sendRequestBusesByNum(busNum);
 		
-		// TODO: 받은 정보를 JSON parser로 가공하기
 		String busesJSON = serverManager.getJSON(serverManager.getResponse());
 		
-		// TODO: 가공된 JSON 문자열을 통해 Bus 객체 생성하기
 		List<Bus> busesList = parseJSONBusesByNum(busesJSON);
 		
 		// TODO: 생성된 객체를 Dao 측에 넘기기
@@ -40,11 +37,34 @@ public class ProjectBusManager {
 		return busesList;
 	}
 
-	public List<Station> getStations(String stnName) {
+	/**
+	 * 사용자가 입력한 문자를 포함하는 정류장의 목록을 검색한다.
+	 * @param stnName 검색하고자 하는 문자열
+	 * @return 문자열을 포함하는 정류장의 목록
+	 */
+	public List<Station> searchStations(String keyword) {
+		// TODO: 서버로부터 버스의 목록을 받아오기
+		serverManager.sendRequestStationsByWord(keyword);
 		
-		return null;
+		// TODO: 받은 정보를 JSON parser로 가공하기
+		String stationsJSON = serverManager.getJSON(serverManager.getResponse());
+		
+		// TODO: 가공된 JSON 문자열을 통해 Bus 객체 생성하기
+		List<Station> stationsList = parseJSONStationsByWord(stationsJSON);
+		
+		// TODO: 생성된 객체를 Dao 측에 넘기기
+		//busDao.insertBuses(stationsList);
+		
+		// TODO: 그 결과를 받아 리턴하기
+		
+		return stationsList;
 	}
 
+	/**
+	 * 특정 버스의 노선도를 받아 넘겨준다.
+	 * @param busId 노선도를 확인하려는 버스의 id
+	 * @return 노선도
+	 */
 	public List<Station> getRouteMap(int busId) {
 		// TODO: 서버로부터 해당 버스의 노선도를 받아오기
 		serverManager.sendRequestStationsByBus(busId);
@@ -58,10 +78,18 @@ public class ProjectBusManager {
 		// TODO: 생성된 객체를 Dao 측에 넘기기
 		//busDao.insertRouteMap(routeMapList);
 		
-		System.out.println("넘겨줄 노선도 :" + routeMapList);
-		System.out.println("넘겨줄 노선도 크기: " + routeMapList.size());
-		
 		return routeMapList;
+	}
+	
+	/**
+	 * 특정 정류장을 지나는 버스의 목록을 넘겨준다.
+	 * @param arsId 정류장의 번호
+	 * @return 정류장을 지나는 버스들
+	 */
+	public List<Bus> getBuses(String arsId) {
+		List<Bus> busesList = new ArrayList<Bus>();
+		
+		return busesList;
 	}
 
 	/**
@@ -70,9 +98,13 @@ public class ProjectBusManager {
 	 * @return
 	 */
 	public boolean getFavorite(String busNum) {
-
+		
 		return false;
 	}
+	
+	/*
+	 * ================================= JSON Parser ===================================
+	 */
 	
 	/**
 	 * 입력받은 문자를 포함하는 버스 목록의 JSON 데이터를 받아 Bus 객체를 생성한다.
@@ -128,7 +160,6 @@ public class ProjectBusManager {
 	public List<Station> parseJSONStationsByBus(String jsonData) {
 		List<Station> routeMapList = new ArrayList<>();
 		
-		
 		try {
 			JSONParser jsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
@@ -150,5 +181,51 @@ public class ProjectBusManager {
 		}
 		
 		return routeMapList;
+	}
+	
+	/**
+	 * 특정 문자열을 포함하는 정류장 목록을 받아 JSON 데이터를 추출한다.
+	 * @param jsonData 응답받은 정류장들의 목록
+	 * @return 가공된 JSON 문자열
+	 */
+	public List<Station> parseJSONStationsByWord(String jsonData) {
+		List<Station> stations = new ArrayList<Station>();
+		
+		String result = "";
+		
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
+			JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
+			
+			for (int i = 0; i < busArrayList.size(); i++) {
+				result += "=== 정류장 " + (i + 1) + "===\n";
+				JSONObject bus = (JSONObject) busArrayList.get(i);
+				result += "stnId: " + bus.get("stnId") + "\n";
+				result += "layerGubn: " +bus.get("layerGubn") + "\n";
+				result += "stnName: " +bus.get("stnName") + "\n";
+				result += "stationCd: " +bus.get("stationCd") + "\n";
+				result += "stationCdNm: " +bus.get("stationCdNm") + "\n";
+				result += "posX: " +bus.get("posX") + "\n";
+				result += "posY: " +bus.get("posY") + "\n";
+				result += "startNodeId: " +bus.get("startNodeId") + "\n";
+				result += "endNodeId: " +bus.get("endNodeId") + "\n";
+				result += "utmXpos: " +bus.get("utmXpos") + "\n";
+				result += "utmYpos: " +bus.get("utmYpos") + "\n";
+				result += "arsId: " +bus.get("arsId") + "\n";
+				result += "code: " +bus.get("code") + "\n";
+				result += "isBitStation: " +bus.get("isBitStation") + "\n";
+				result += "rnum: " +bus.get("rnum") + "\n";
+				
+				
+			}
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return stations;
 	}
 }
