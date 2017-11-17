@@ -42,5 +42,5 @@ insert /*+ IGNORE_ROW_ON_DUPKEY_INDEX (stations(stationId)) */ into station valu
 );
 
 -- 즐겨찾기 정보를 가지는 테이블
-
+CREA
 -- 최근 검색 기록을 가지는 테이블

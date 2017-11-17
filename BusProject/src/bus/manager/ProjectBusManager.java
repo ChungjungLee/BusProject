@@ -58,6 +58,9 @@ public class ProjectBusManager {
 		// TODO: 생성된 객체를 Dao 측에 넘기기
 		//busDao.insertRouteMap(routeMapList);
 		
+		System.out.println("넘겨줄 노선도 :" + routeMapList);
+		System.out.println("넘겨줄 노선도 크기: " + routeMapList.size());
+		
 		return routeMapList;
 	}
 
