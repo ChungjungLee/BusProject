@@ -40,7 +40,7 @@ public class ProjectBusManager {
 		return busesList;
 	}
 
-	public List<Station> getStations(String stnName) {
+	public List<Station> searchStations(String stnName) {
 		
 		return null;
 	}

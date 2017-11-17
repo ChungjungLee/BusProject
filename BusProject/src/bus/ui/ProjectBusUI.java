@@ -123,37 +123,27 @@ public class ProjectBusUI {
 			
 				case 1:		// 버스 번호로 검색 -> 노선도 확인 -> 즐겨찾기 여부 확인
 					
-					List<Bus> busList = searchBusList();
+					List<Bus> busNumList = searchBusList();
 					
 					// 불러온 버스 목록의 배열에 Numbering 해서 출력
 					System.out.println();
-					for (int i = 0; i < busList.size(); i++) {
-						System.out.println(" | " + (i + 1) + " | " + busList.get(i).getRoutName() 
-								+ "  " + busList.get(i).getRoutType());
+					for (int i = 0; i < busNumList.size(); i++) {
+						System.out.println(" | " + (i + 1) + " | " + busNumList.get(i).getRoutName() 
+								+ "  " + busNumList.get(i).getRoutType());
 					}						
 					
 					// 선택지 이상의 숫자를 입력하면 error 출력
 					System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
 					
-					boolean loop2 = true;
 					int input = 0;
+					int busListSize = busNumList.size();
 					
-					while(loop2) {
-						sc.nextLine();
-						input = getIntFromUser();
-						
-						if (input > busList.size() || input <= 0) {
-							System.out.println("\n[Error] 목록 내의 숫자를 입력하세요.");
-							sc.nextLine();
-						} else {
-							loop2 = false;
-						}
-					}
+					input = selectNum(busListSize);
 					
+					// 노선도 출력
 					int busId = 0;
-					busId = busList.get(input - 1).getRoutId();
+					busId = busNumList.get(input - 1).getRoutId();
 					
-					// TODO: 노선도 출력
 					busRoute = manager.getRouteMap(busId);
 					
 					for (Station route : busRoute) {
@@ -162,7 +152,7 @@ public class ProjectBusUI {
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
-					/*
+					
 					boolean canSaveFavorite = manager.getFavorite(busNum);
 					
 					if (canSaveFavorite) {
@@ -172,35 +162,32 @@ public class ProjectBusUI {
 						System.out.println("[System] 정상적으로 저장되었습니다.\n");
 						loop = false; 	// 메인메뉴로 돌아감
 					}
-					*/
+					
 					break;
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
 					
-					List<Station> stnList = searchStnList();
+					List<Station> foundBusList = searchStnList();
 										
 					// 배열에 Numbering 해서 출력
-					for (int i = 0; i < stnList.size(); i++) {
-						System.out.println(i + 1 + ". " + stnList.get(i) + "\n");
+					for (int i = 0; i < foundBusList.size(); i++) {
+						System.out.println(i + 1 + ". " + foundBusList.get(i) + "\n");
 					}
 										
 					// 선택지 이상의 숫자를 입력하면 false 반환
 					System.out.println("\n> 확인하고 싶은 정류장을 선택해주세요. <");
 					
-					while(flag) {
-						sc.nextLine();
-						option = getIntFromUser();
-						
-						if (option > stnList.size() || option <= 0) {
-							System.out.println("\n[Error] 목록 내의 숫자를 입력하세요.");
-							
-						} else {
-							flag = false;
-						}
-					}
+					int input1 = 0;
+					int stationListSize = foundBusList.size();
+					
+					input1 = selectNum(stationListSize);
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
-					// stnList = manager.getBuses(stnList.get(option - 1).getStnId());
+					foundBusList = manager.getBuses(foundBusList.get(input1 - 1).getArsId());
+					
+					for (Station stationsBuses : foundBusList) {
+						System.out.println(stationBuses);
+					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
 										
@@ -370,7 +357,7 @@ public class ProjectBusUI {
 				
 			// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
 			
-			stnList = manager.getStations(stnName);
+			stnList = manager.searchStations(stnName);
 			
 			if (stnList.isEmpty() || stnList == null) {
 				System.out.println("\n[Error] 검색 결과가 없습니다.\n");
@@ -383,6 +370,31 @@ public class ProjectBusUI {
 		}
 		
 		return stnList;
+	}
+	
+	/**__________________________________________________________________________________________________
+	 * 
+	 * 		목록 내의 숫자만 입력받게 한다.
+	 * 		@return int
+	 */
+	private int selectNum(int size){
+		
+		boolean loop = true;
+		int input = 0;
+		
+		while(loop) {
+			sc.nextLine();
+			input = getIntFromUser();
+			
+			if (input > size || input <= 0) {
+				System.out.println("\n[Error] 목록 내의 숫자를 입력하세요.");
+				
+			} else {
+				loop = false;
+			}
+		}
+		
+		return input;
 	}
 		
 }
