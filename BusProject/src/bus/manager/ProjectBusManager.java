@@ -17,6 +17,18 @@ public class ProjectBusManager {
 	BusDAO busDao = new BusDAO();
 	
 	/**
+	 * 서버로부터 모든 버스 및 정류장 정보를 받아와 데이터베이스를 작성한다.
+	 * @return 데이터베이스 작성 여부
+	 */
+	public boolean makeDB() {
+		boolean canMaked = false;
+		
+		searchStations(" ");
+		
+		return canMaked;
+	}
+	
+	/**
 	 * 사용자가 입력한 숫자를 포함하는 버스의 목록을 검색한다.
 	 * @param busNum 찾고자 하는 숫자
 	 * @return 숫자를 포함하는 버스의 목록
@@ -48,7 +60,7 @@ public class ProjectBusManager {
 		List<Station> stationsList = parseJSONStationsByWord(stationsJSON);
 		
 		// TODO: 생성된 객체를 Dao 측에 넘기기
-		//busDao.insertBuses(stationsList);
+		busDao.insertStations(stationsList);
 		
 		// TODO: 그 결과를 받아 리턴하기
 		
@@ -166,7 +178,7 @@ public class ProjectBusManager {
 				JSONObject routeMapJSONObject = (JSONObject) routeMapArrayList.get(i);
 				
 				Station station = new Station();
-				station.setStationId(Integer.parseInt((String)routeMapJSONObject.get("stationId")));
+				station.setStnId(Integer.parseInt((String)routeMapJSONObject.get("stationId")));
 				station.setArsId((String) routeMapJSONObject.get("arsId"));
 				station.setStnName((String) routeMapJSONObject.get("stnName"));
 				
@@ -197,7 +209,7 @@ public class ProjectBusManager {
 				JSONObject stationJSONObject = (JSONObject) stationsArrayList.get(i);
 				
 				Station station = new Station();
-				station.setStationId(Integer.parseInt((String) stationJSONObject.get("stnId")));
+				station.setStnId(Integer.parseInt((String) stationJSONObject.get("stnId")));
 				station.setArsId((String) stationJSONObject.get("arsId"));
 				station.setStnName((String) stationJSONObject.get("stnName"));
 				

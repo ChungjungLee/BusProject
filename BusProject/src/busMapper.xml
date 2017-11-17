@@ -6,8 +6,9 @@
 <!-- 버스정보 처리 SQL -->
 <mapper namespace="bus.dao.BusMapper">
 	
+	<!-- 버스 정보 저장 -->
 	<insert id="insertBus" parameterType="bus">
-		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ INTO Bus
+		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ INTO bus
 			(routId
 			,routName
 			,routType
@@ -46,6 +47,15 @@
 			,#{faxNo,jdbcType=VARCHAR}
 			,#{email,jdbcType=VARCHAR})
 	</insert>
+	
+	<!-- 정류장 정보 저장 -->
+	<insert id="insertStation" parameterType="station">
+		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (station(stnId)) */ INTO station
+			(stnId, arsId, stnName)
+		VALUES
+			(#{stnId}, #{arsId}, #{stnName})
+	</insert>
+	
 	
 </mapper>
 

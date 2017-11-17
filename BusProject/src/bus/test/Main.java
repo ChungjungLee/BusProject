@@ -1,9 +1,18 @@
 package bus.test;
 
+import java.util.Scanner;
+
 public class Main {
 
 	public static void main(String[] args) {
+		
 		BusList busList = new BusList("341");
+		
+		busList.sendRequestStationsByWord();
+		String busListResult = 
+				//busList.getJSON(busList.getResponse());
+				busList.parseJSONStationsByWord(busList.getJSON(busList.getResponse()));
+		new FileSave().saveFile("StationsList_.txt", busListResult);
 		
 		// 특정 번호를 포함하는 버스의 목록을 5개만 받아옴
 		/*
@@ -16,13 +25,13 @@ public class Main {
 		
 		
 		// 특정 번호를 포함하는 버스의 목록을 전부 받아옴
-		
+		/*
 		busList.sendRequestBusesByNum();
 		String busListResult = 
 				//busList.getJSON(busList.getResponse());
 				busList.parseJSONBusesByNum(busList.getJSON(busList.getResponse()));
 		new FileSave().saveFile("BusesList34_.txt", busListResult);
-		
+		*/
 		
 		// 버스 번호를 통해 해당 버스의 전체 노선도를 받아옴
 		/*

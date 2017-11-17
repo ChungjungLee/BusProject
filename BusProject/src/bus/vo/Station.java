@@ -1,9 +1,9 @@
 package bus.vo;
 
 public class Station {
-	private int stationId;
-	private String arsId;
-	private String stnName;
+	private int stnId;		// 정류장 id
+	private String arsId;	// 정류장 고유 번호
+	private String stnName; // 정류장 이름
 	
 	/*
 	 * Constructor
@@ -11,7 +11,7 @@ public class Station {
 	public Station() {}
 	
 	public Station(int stationId, String arsId, String stnName) {
-		this.stationId = stationId;
+		this.stnId = stationId;
 		this.arsId = arsId;
 		this.stnName = stnName;
 	}
@@ -19,12 +19,12 @@ public class Station {
 	/*
 	 * Getters and setters
 	 */
-	public int getStationId() {
-		return stationId;
+	public int getStnId() {
+		return stnId;
 	}
 
-	public void setStationId(int stationId) {
-		this.stationId = stationId;
+	public void setStnId(int stationId) {
+		this.stnId = stationId;
 	}
 
 	public String getArsId() {
