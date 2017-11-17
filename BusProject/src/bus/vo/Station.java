@@ -3,17 +3,17 @@ package bus.vo;
 public class Station {
 	private int stationId;
 	private String arsId;
-	private String stationName;
+	private String stnName;
 	
 	/*
 	 * Constructor
 	 */
 	public Station() {}
 	
-	public Station(int stationId, String arsId, String stationName) {
+	public Station(int stationId, String arsId, String stnName) {
 		this.stationId = stationId;
 		this.arsId = arsId;
-		this.stationName = stationName;
+		this.stnName = stnName;
 	}
 	
 	/*
@@ -35,11 +35,11 @@ public class Station {
 		this.arsId = arsId;
 	}
 
-	public String getStationName() {
-		return stationName;
+	public String getStnName() {
+		return stnName;
 	}
 
-	public void setStationName(String stationName) {
-		this.stationName = stationName;
+	public void setStnName(String stnName) {
+		this.stnName = stnName;
 	}
 }

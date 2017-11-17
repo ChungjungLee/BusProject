@@ -140,7 +140,7 @@ public class ProjectBusManager {
 				Station station = new Station();
 				station.setStationId(Integer.parseInt((String)routeMapJSONObject.get("stationId")));
 				station.setArsId((String) routeMapJSONObject.get("arsId"));
-				station.setStationName((String) routeMapJSONObject.get("stationName"));
+				station.setStnName((String) routeMapJSONObject.get("stnName"));
 				
 				routeMapList.add(station);
 			}
