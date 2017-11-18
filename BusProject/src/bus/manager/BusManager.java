@@ -46,15 +46,43 @@ public class BusManager {
 	}
 	
 	
-	// TODO: method의 parameter type을 string해서 통일시켜 줄 것.
 	/**
 	 * 확인하려는 버스의 전체 노선도와 실시간 위치를 받아온다.
-	 * @param busId 확인하려는 버스 번호
+	 * @param busId 확인하려는 버스의 ID
 	 * @return 노선도와 실시간 위치
 	 */
-	public List<Station> getRouteMap(int busId) {
+	public List<Station> getRouteMap(int busRouteId) {
+		String urlString = "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRouteAll?serviceKey=" + serviceKey + 
+				"&busRouteId=" + busRouteId;
 		
-		return null;
+		Document doc = getDocumentByUrl(urlString);
+		
+		if (doc == null) {
+			return null;
+		}
+		
+		List<Station> routeMap = new ArrayList<>();
+		
+		NodeList itemList = doc.getElementsByTagName("itemList");
+		
+		for (int i = 0; i < itemList.getLength(); i++) {
+			
+			Station station = new Station();
+			for (Node node = itemList.item(i).getFirstChild(); node != null; node = node.getNextSibling()) {
+				
+				if (node.getNodeName().equals("stNm")) {
+					station.setStnName(node.getTextContent());
+				} else if (node.getNodeName().equals("arsId")) {
+					station.setArsId(node.getTextContent());
+				} else if (node.getNodeName().equals("stId")) {
+					station.setStnId(Integer.parseInt(node.getTextContent()));
+				}
+			}
+			
+			routeMap.add(station);
+		}
+		
+		return routeMap;
 	}
 	
 	
@@ -85,7 +113,6 @@ public class BusManager {
 		
 		NodeList itemList = doc.getElementsByTagName("itemList");
 		
-		System.out.println("itemList size: " + itemList.getLength());
 		for (int i = 0; i < itemList.getLength(); i++) {
 			
 			Station station = new Station();
@@ -165,8 +192,7 @@ public class BusManager {
 			}
 			
 			busArriveList.add(busArrive);
-		}
-		
+		} // for loop
 		
 		return busArriveList;
 	}

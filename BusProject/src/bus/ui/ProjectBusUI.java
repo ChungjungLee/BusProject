@@ -122,12 +122,15 @@ public class ProjectBusUI {
 				case 1:		// 버스 번호로 검색 -> 노선도 확인 -> 즐겨찾기 여부 확인
 					
 					List<Bus> busNumList = searchBusList();
+					
 					if (busNumList.isEmpty() || busNumList == null) {
+						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break;
-					}
+					} 
 					
 					// 불러온 버스 목록의 배열에 Numbering 해서 출력
-					System.out.println();
+					System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
+					
 					for (int i = 0; i < busNumList.size(); i++) {
 						System.out.println(" | " + (i + 1) + " | " 
 								+ busNumList.get(i).getRoutName() + "  " 
@@ -137,20 +140,18 @@ public class ProjectBusUI {
 					// 선택지 이상의 숫자를 입력하면 error 출력
 					System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
 					
-					int input = 0;
 					int busListSize = busNumList.size();
 					
-					input = selectNum(busListSize);
+					int input = selectNum(busListSize);
 					
 					// 노선도 출력
-					int busId = 0;
-					busId = busNumList.get(input - 1).getRoutId();
+					int busId = busNumList.get(input - 1).getRoutId();
 					
-					busRoute = manager.getRouteMap(busId);
+					busRoute = busManager.getRouteMap(busId);
 					
 					for (Station route : busRoute) {
 						System.out.println("| 정류장 이름 : " + route.getStnName() + 
-								"    ( 정류장 ID : " + route.getArsId() + " )" + "\n");		
+								"    ( 정류장 ID : " + route.getArsId() + " )" + "\n");
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
@@ -286,14 +287,13 @@ public class ProjectBusUI {
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		유저로부터 입력받은 텍스트 메소드
-	 * 		@return String
+	 * 		@return String 공백을 제외한 최소 두 글자 이상의 입력받은 문자열
 	 */
 	private String getTextFromUser() {
 		
 		String inputText = null;	// 입력받은 정류장 이름을 담을 그릇
-		boolean loop = true;
 		
-		while(loop) {
+		while(true) {
 			
 			System.out.print(">> ");
 			
@@ -301,16 +301,17 @@ public class ProjectBusUI {
 				inputText = sc.nextLine();
 				
 			} catch (Exception e) {
-				sc.nextLine();
+				//sc.nextLine();
+				e.printStackTrace();
 				continue;
 			}
 			
-			if (inputText.length() < 2) {
-				System.out.println("[Error] 최소 두 글자 이상 입력하셔야 합니다.");
-				continue;
-			} else {
-				loop = false;
+			if (2 <= inputText.trim().length()) {
+				break;
 			}
+			
+			System.out.println("[Error] 최소 두 글자 이상 입력하셔야 합니다.");
+			System.out.println();
 		}
 		
 		return inputText;
@@ -323,30 +324,23 @@ public class ProjectBusUI {
 	 */
 	private List<Bus> searchBusList(){
 		
-		boolean flag = true;
 		String busNum = null;
 		List<Bus> busList = null;
 		
-		while(flag) {
+		System.out.println("--- < Bus Info > ---");
+		System.out.println("검색하고 싶은 버스 번호를 입력하세요.");
+		
+		// 두 글자 이상만 받도록 검사
+		busNum = getTextFromUser();
+		
+		// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
+		busList = manager.searchBuses(busNum);
+		
+		if (busList.isEmpty() || busList == null) {
+			System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 			
-			System.out.println("--- < Bus Info > ---");
-			System.out.println("검색하고 싶은 버스 번호를 입력하세요.");
-			
-			// 두 글자 이상, 네 글자 이하만 받도록 검사
-			busNum = getTextFromUser();
-				
-			// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
-			
-			busList = manager.searchBuses(busNum);
-			
-			if (busList.isEmpty() || busList == null) {
-				System.out.println("\n[Error] 검색 결과가 없습니다.\n");
-				flag = false;
-				
-			} else {
-				System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
-				flag = false;
-			}
+		} else {
+			System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
 		}
 		
 		return busList;
@@ -368,7 +362,7 @@ public class ProjectBusUI {
 			System.out.println("--- < Station Info > ---");
 			System.out.println("검색하고 싶은 정류장 이름를 입력하세요.");
 			
-			// 두 글자 이상, 네 글자 이하만 받도록 검사
+			// 두 글자 이상만 받도록 검사
 			stnName = getTextFromUser();
 				
 			// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
