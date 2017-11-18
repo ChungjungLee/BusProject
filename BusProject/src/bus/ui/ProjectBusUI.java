@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import bus.manager.BusManager;
 import bus.manager.ProjectBusManager;
 import bus.vo.Bus;
 import bus.vo.Station;
@@ -12,7 +13,7 @@ public class ProjectBusUI {
 
 	private Scanner sc = new Scanner(System.in);			// Scanner 선언
 	ProjectBusManager manager = new ProjectBusManager();	// Manager class 연결
-	
+	BusManager busManager = new BusManager();
 
 	/**__________________________________________________________________________________________________
 	 * 
@@ -188,17 +189,18 @@ public class ProjectBusUI {
 					input1 = selectNum(stationListSize);
 					
 					// TODO: 해당 정류장을 지나가는 버스 목록 불러오기
-					List<HashMap<String, Object>> busInfoLists 
-						= manager.getBuses(foundBusList.get(input1 - 1).getArsId());
+					List<HashMap<String, Object>> busArriveList =
+							busManager.getBuses(foundBusList.get(input1 - 1).getArsId());
 					
-					for (HashMap<String, Object> busInfo : busInfoLists) {
+					for (HashMap<String, Object> busInfo : busArriveList) {
+						System.out.println();
 						System.out.println("<" + busInfo.get("busNumber") + ">");
 						
 						System.out.print("다음 차:");
-						System.out.println(busInfo.get("firstBusTime"));
+						System.out.println(busInfo.get("firstBusMsg"));
 						
 						System.out.print("다다음 차:");
-						System.out.println(busInfo.get("secondBusTime"));
+						System.out.println(busInfo.get("secondBusMsg"));
 					}
 					
 					// TODO: 즐겨찾기 여부 확인 후 저장
@@ -370,8 +372,7 @@ public class ProjectBusUI {
 			stnName = getTextFromUser();
 				
 			// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
-			
-			stnList = manager.searchStations(stnName);
+			stnList = busManager.searchStations(stnName);
 			
 			if (stnList.isEmpty() || stnList == null) {
 				System.out.println("\n[Error] 검색 결과가 없습니다.\n");
