@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 public class ApiTest {
 	
 	// 공공데이터 API 활용을 위한 서비스 인증키
-	private final String authorKeys =
+	private final String serviceKey =
 			"9qJ%2FGyciiKC2bdjQYHAWCxxYmnJ0KmYn1ZySk6y8SJdOgcffBFBpTOxUgobyps504QppRIpzOrPbIkZoJWJhtg%3D%3D";
 	
 	
@@ -46,11 +46,11 @@ public class ApiTest {
 	}
 	
 	
-	
-	
 	public void start() {
 		// URL로부터 XML정보를 입력 받는 부분
-		String urlString = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByName?serviceKey=9qJ%2FGyciiKC2bdjQYHAWCxxYmnJ0KmYn1ZySk6y8SJdOgcffBFBpTOxUgobyps504QppRIpzOrPbIkZoJWJhtg%3D%3D&stSrch=" + "종합운동장";
+		//String urlString = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByName?serviceKey=" + serviceKey + "&stSrch=" + "종합운동장";
+		String urlString = "http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?serviceKey=" + serviceKey + "&stSrch=" + "341";
+		
 		URL url = null;
 		try {
 			url = new URL(urlString);
