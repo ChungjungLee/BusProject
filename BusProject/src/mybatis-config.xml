@@ -7,8 +7,11 @@
 
 	<!-- Java Class에 대한 alias 지정 -->
 	<typeAliases>
+		<typeAlias type="bus.vo.Account" alias="account" />
 		<typeAlias type="bus.vo.Bus" alias="bus" />
 		<typeAlias type="bus.vo.Station" alias="station" />
+		<typeAlias type="bus.vo.History" alias="history" />
+		<typeAlias type="bus.vo.Favorite" alias="favorite" />
 	</typeAliases>
 	
 	<!-- DB접속 정보 셋팅 -->

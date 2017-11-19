@@ -6,6 +6,25 @@
 <!-- 버스정보 처리 SQL -->
 <mapper namespace="bus.dao.BusMapper">
 	
+	<!-- 계정 정보 저장 -->
+	<insert id="insertAccount" parameterType="account">
+		INSERT INTO account
+			(id, pw)
+		VALUES
+			(#{id}, #{pw})
+	</insert>
+	
+	
+	<!-- 계정 정보 가져오기 -->
+	<select id="selectAccount" parameterType="string" resultType="account">
+		SELECT
+			*
+		FROM
+			account
+		WHERE
+			id = #{id}
+	</select>
+	
 	<!-- 버스 정보 저장 -->
 	<insert id="insertBus" parameterType="bus">
 		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ INTO bus
@@ -48,6 +67,29 @@
 			,#{email,jdbcType=VARCHAR})
 	</insert>
 	
+	
+	<!-- 해당 버스 정보 가져오기 -->
+	<select id="selectBus" parameterType="int" resultType="bus">
+		SELECT
+			*
+		FROM
+			bus
+		WHERE
+			routId = #{routId}
+	</select>
+	
+	
+	<!-- 특정 번호를 포함하는 버스 정보 가져오기 -->
+	<select id="selectBusContainsNum" parameterType="string" resultType="bus">
+		SELECT
+			*
+		FROM
+			bus
+		WHERE
+			routName LIKE '%' || #{busNum} || '%'
+	</select>
+	
+	
 	<!-- 정류장 정보 저장 -->
 	<insert id="insertStation" parameterType="station">
 		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (station(stnId)) */ INTO station
@@ -56,20 +98,57 @@
 			(#{stnId}, #{arsId}, #{stnName})
 	</insert>
 	
-	<!-- 즐겨찾기 정보 가져오기 -->
-	<select id="selectFavorite" parameterType="int">
-		
+	
+	<!-- 정류장 정보 가져오기 -->
+	<select id="selectStation" parameterType="int" resultType="station">
+		SELECT
+			*
+		FROM
+			station
+		WHERE
+			stnId = #{stnId}
 	</select>
 	
-	<!-- 검색 기록 저장 -->
-	<insert id="insertSearch" parameterType="int">
-		INSERT INTO search
-			()
+	
+	<!-- 즐겨찾기 저장 -->
+	<insert id="insertFavorite" parameterType="favorite">
+		INSERT INTO favorite
+			(userId, busOrStnId, busOrStnType)
 		VALUES
-			()
+			(#{userId}, #{busOrStnId}, #{busOrStnType})
 	</insert>
 	
+	
+	<!-- 즐겨찾기 정보 가져오기 -->
+	<select id="selectFavorite" parameterType="string" resultType="favorite">
+		SELECT
+			*
+		FROM
+			favorite
+		WHERE
+			userId = #{userId}
+	</select>
+	
+	
+	<!-- 검색 기록 저장 -->
+	<insert id="insertHistory" parameterType="history">
+		INSERT INTO history
+			(userId, busOrStnId, busOrStnType)
+		VALUES
+			(#{userId}, #{busOrStnId}, #{busOrStnType})
+	</insert>
+	
+	
 	<!-- 검색 기록 가져오기 -->
+	<select id="selectHistory" parameterType="string" resultType="history">
+		SELECT
+			*
+		FROM
+			history
+		WHERE
+			userId = #{userId}
+	</select>
+	
 </mapper>
 
 

@@ -53,7 +53,7 @@ insert /*+ IGNORE_ROW_ON_DUPKEY_INDEX (stations(stationId)) */ into station valu
 DROP TABLE favorite;
 
 CREATE TABLE favorite (
-	userId			VARCHAR2(30),
+	userId			VARCHAR2(30) CONSTRAINT FAV_UID_FK REFERENCES account(id) ON DELETE CASCADE,
 	busOrStnId		NUMBER,
 	busOrStnType	CHAR(1),
 	CONSTRAINT FAV_UID_BSID_PK PRIMARY KEY(userId, busOrStnId)
@@ -63,7 +63,7 @@ CREATE TABLE favorite (
 DROP TABLE history;
 
 CREATE TABLE history(
-	userId			VARCHAR2(30),
+	userId			VARCHAR2(30) CONSTRAINT HIS_UID_FK REFERENCES account(id) ON DELETE CASCADE,
 	busOrStnId		NUMBER,
 	busOrStnType	CHAR(1),
 	indate			DATE	DEFAULT SYSDATE,

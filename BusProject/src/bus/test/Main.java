@@ -1,17 +1,32 @@
 package bus.test;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import bus.vo.Station;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		BusList busList = new BusList("341");
+		ArrayList<Station> busList = new ArrayList<>();
+		
+		busList.add(new Station(1234, "aaa", "aaa"));
+		busList.add(new Station(1235, "aaa", "aaa"));
+		busList.add(new Station(1236, "aaa", "aaa"));
+		
+		String str = "station";
+		Object obj = busList;
+		HashMap<String, Object> map = new HashMap<>();
+		map.put(str, obj);
+		
+		ArrayList<Station> stList = (ArrayList<Station>) map.get(str);
+		
+		for (Station st  : stList ) {
+			System.out.println(st);
+		}
+		
+		//BusList busList = new BusList("341");
 		/*
 		busList.sendRequestBusesByStation("23419");
 		String busListResult = 
@@ -20,6 +35,7 @@ public class Main {
 		new FileSave().saveFile("BusesList23419.txt", busListResult);
 		*/
 		
+		/*
 		File file = new File("AllBusesList.txt");
 		FileInputStream fis = null;
 		InputStreamReader isr = null;
@@ -44,7 +60,7 @@ public class Main {
 		}
 		
 		System.out.println(busList.parseJSONBusesByNum(str));
-		
+		*/
 		
 		/*
 		busList.sendRequestStationsByWord();
@@ -92,3 +108,4 @@ public class Main {
 	}
 
 }
+
