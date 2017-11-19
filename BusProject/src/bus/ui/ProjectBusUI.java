@@ -23,7 +23,7 @@ public class ProjectBusUI {
 	
 	public ProjectBusUI() {
 	
-		logIn();
+		logIn();	// 유저로부터 사용자 정보를 입력받아 로그인 시킨다. 로그인 완료시 다음 메소드로 넘어간다.
 		
 		boolean loop = true;
 		
@@ -84,10 +84,10 @@ public class ProjectBusUI {
 		
 		while(canLogIn) {
 			
-			System.out.println("ID : ");
+			System.out.print("ID를 입력해주세요.\n");
 			userId = getTextFromUser(2);
 			
-			System.out.println("PW : ");
+			System.out.print("비밀번호를 입력해주세요.\n");
 			String userPw = getTextFromUser(4);
 			
 			usersInfo = busManager.userLogIn(userId, userPw); // 0, 1, 2 로 넘겨받는다.
@@ -114,16 +114,21 @@ public class ProjectBusUI {
 					
 					int isChoiceSignIn = getIntFromUser();
 					
-					if (isChoiceSignIn == 1) {
-						System.out.println("[System] 해당 아이디로 로그인 완료되었습니다.");
+					if (isChoiceSignIn == 1) { 			 // 예
+						
+						busManager.signIn(userId, userPw);
+						System.out.println("[System] 해당 아이디로 회원가입 및 로그인이 완료되었습니다.");
+						canLogIn = false;
 					
-					} else if (isChoiceSignIn == 2){
+					} else if (isChoiceSignIn == 2){	 // 아니오
+						
 						System.out.println("[System] 다시 로그인 해주세요.");
 					}
 					
 					break;
 				
 			}
+			
 		}
 		
 	} // logIn(); method end
@@ -199,6 +204,8 @@ public class ProjectBusUI {
 					
 					int throwBusId = busNumList.get(inputToGetRouteMap - 1).getRoutId();
 					
+					Bus throwBus = busNumList.get(inputToGetRouteMap - 1);
+					
 					System.out.println();
 					
 					List<Station> busRoute = 
@@ -212,7 +219,7 @@ public class ProjectBusUI {
 					}
 					
 					// 최근검색기록에 해당 버스를 저장한다.
-					busManager.recentSearch(userId, 0, throwBusId);
+					busManager.recentSearch(userId, throwBus);
 					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveBusFav = true;
@@ -225,7 +232,7 @@ public class ProjectBusUI {
 						int usersSelect1 = getIntFromUser();	// 예, 아니오 판별용
 						
 						if (usersSelect1 == 1) {
-							busManager.setFavoriteBus(userId, throwBusId); 	// manager에 버스 id를 넘겨주고, 즐겨찾기에 저장시킨다.
+							busManager.setFavorite(userId, throwBus); 	// manager에 버스 id를 넘겨주고, 즐겨찾기에 저장시킨다.
 							
 							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
 							canSaveBusFav = false;
@@ -262,8 +269,8 @@ public class ProjectBusUI {
 					
 					int inputToGetBuses = selectNum(foundBusList.size());
 					
-					int throwStnId = foundBusList.get(inputToGetBuses - 1).getStnId();
-					
+					Station throwStn = foundBusList.get(inputToGetBuses - 1);
+										
 					List<HashMap<String, Object>> busArriveList =
 							busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
 					
@@ -279,7 +286,7 @@ public class ProjectBusUI {
 					}
 					
 					// 최근검색기록에 해당 정류장을 저장한다.
-					busManager.recentSearch(userId, 1, throwStnId);
+					busManager.recentSearch(userId, throwStn);
 					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveStnFav = true;
@@ -292,7 +299,7 @@ public class ProjectBusUI {
 						int usersSelect2 = getIntFromUser();	// 예, 아니오 판별용
 						
 						if (usersSelect2 == 1) {
-							busManager.setFavoriteStn(userId, throwStnId);	// manager에 정류장 id를 넘겨주고 즐겨찾기에 저장시킨다.
+							busManager.setFavorite(userId, throwStn);	// manager에 정류장 id를 넘겨주고 즐겨찾기에 저장시킨다.
 							
 							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
 							canSaveStnFav = false;

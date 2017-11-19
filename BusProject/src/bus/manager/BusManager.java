@@ -217,22 +217,13 @@ public class BusManager {
 		return true;
 	}
 	
-	/**
-	 * 즐겨찾기에 버스 ID를 추가한다.
-	 * @param busId
-	 * @return
-	 */
-	public boolean setFavoriteBus(String userId, int busId) {
-		return true;
-	}
 	
 	/**
-	 * 즐겨찾기에 정류장 ID를 추가한다.
-	 * @param userId 
-	 * @param stnId
+	 * 즐겨찾기에 버스, 정류장 ID를 추가한다.
+	 * @param userId, favObj
 	 * @return
 	 */
-	public boolean setFavoriteStn(String userId, Object favObj) {
+	public boolean setFavorite(String userId, Object favObj) {
 		
 		if (favObj.getClass() == Bus.class) {
 			
@@ -268,9 +259,9 @@ public class BusManager {
 	}
 
 
-	public List<String> signIn(List<String> usersInfo) {
+	public void signIn(String userId, String userPw) {
 		// 회원가입
-		return null;
+		
 	}
 	
 	
