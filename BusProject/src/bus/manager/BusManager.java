@@ -222,16 +222,17 @@ public class BusManager {
 	 * @param busId
 	 * @return
 	 */
-	public boolean setFavoriteBus(int busId) {
+	public boolean setFavoriteBus(String userId, int busId) {
 		return true;
 	}
 	
 	/**
 	 * 즐겨찾기에 정류장 ID를 추가한다.
+	 * @param userId 
 	 * @param stnId
 	 * @return
 	 */
-	public boolean setFavoriteStn(int stnId) {
+	public boolean setFavoriteStn(String userId, int stnId) {
 		return true;
 	}
 	
@@ -399,6 +400,28 @@ public class BusManager {
 		}
 		
 		return busesList;
+	}
+	
+	public List<Integer> recentSearch(String userId, int type, int throwId) {
+		// 유저 아이디와, 버스 Type이면 0, 정류장 Type이면 1을 넘겨받고, 버스id 또는 정류장id를 넘겨받는다.
+		return null;
+	}
+	
+	public boolean databaseUpdate() {
+		return true;
+	}
+
+
+	public int userLogIn(String userId, String userPw) {
+		// 로그인
+		return 0;
+		
+	}
+
+
+	public List<String> signIn(List<String> usersInfo) {
+		// 회원가입
+		return null;
 	}
 }
 
