@@ -447,6 +447,47 @@ public class ProjectBusUI {
 					
 					System.out.println("확인하고 싶은 정류장을 선택해주세요.");
 					
+					int selectStnList = selectNum(favoriteStnList.size());
+					
+					Station throwStn = favoriteStnList.get(selectStnList - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
+					
+					// open-api 정보에서 현 정류장에 도착할 버스들의 도착 시간을 불러와 출력
+					List<HashMap<String, Object>> busArriveList =
+							busManager.getBuses(favoriteStnList.get(selectStnList - 1).getArsId());
+					
+					for (HashMap<String, Object> busInfo : busArriveList) {
+						System.out.println();
+						System.out.println("<" + busInfo.get("busNumber") + ">");
+						
+						System.out.print("다음 차:");
+						System.out.println(busInfo.get("firstBusMsg"));
+						
+						System.out.print("다다음 차:");
+						System.out.println(busInfo.get("secondBusMsg"));
+					}
+					
+					boolean loopInsideMenu2 = true;
+					
+					while(loopInsideMenu2) {
+						
+						System.out.println("돌아갈 메뉴를 선택해주세요.");
+						System.out.println("1. 즐겨찾기 메뉴");
+						System.out.println("2. 메인 메뉴");
+						
+						int backToTheMenu = getIntFromUser();
+					
+						if (backToTheMenu != 1 && backToTheMenu != 2) {
+							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+							
+						} else if (backToTheMenu == 1) {
+							break;
+							
+						} else if (backToTheMenu == 2) {
+							loopInsideMenu2 = false;
+							loop = false;
+						}
+					}
+					
 					break;
 					
 				case 3: 	// 저장된 즐겨찾기 취소
