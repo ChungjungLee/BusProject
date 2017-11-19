@@ -232,20 +232,47 @@ public class BusManager {
 	 * @param stnId
 	 * @return
 	 */
-	public boolean setFavoriteStn(String userId, int stnId) {
+	public boolean setFavoriteStn(String userId, Object favObj) {
+		
+		if (favObj.getClass() == Bus.class) {
+			
+		} else if (favObj.getClass() == Station.class) {
+			
+		}
+		
 		return true;
 	}
 	
 	/**
-	 * 최근 검색 목록 중 하나를 넘겨 받아 해당하는 검색 기록의 정보를 출력한다.
+	 * 유저의 최근 검색 목록 전부를 반환한다.
 	 * @param type
 	 * @param throwId
 	 * @return
 	 */
-	public List<Integer> recentSearch(int type, int throwId) {
-		// 버스 Type이면 0, 정류장 Type이면 1을 넘겨받는다.
+	public List<Integer> recentSearch(String userId, Object srchedObj) {
+		
+		if (srchedObj.getClass() == Bus.class) {
+			
+		} else if (srchedObj.getClass() == Station.class) {
+			
+		}
+		
 		return null;
 	}
+	
+	
+	public int userLogIn(String userId, String userPw) {
+		// 로그인
+		return 0;
+		
+	}
+
+
+	public List<String> signIn(List<String> usersInfo) {
+		// 회원가입
+		return null;
+	}
+	
 	
 	/**
 	 * 모든 버스의 정보를 파일로부터 읽어 DB에 저장한다.
@@ -402,23 +429,6 @@ public class BusManager {
 		return busesList;
 	}
 	
-	public List<Integer> recentSearch(String userId, int type, int throwId) {
-		// 유저 아이디와, 버스 Type이면 0, 정류장 Type이면 1을 넘겨받고, 버스id 또는 정류장id를 넘겨받는다.
-		return null;
-	}
-	
-	
-	public int userLogIn(String userId, String userPw) {
-		// 로그인
-		return 0;
-		
-	}
-
-
-	public List<String> signIn(List<String> usersInfo) {
-		// 회원가입
-		return null;
-	}
 }
 
 
