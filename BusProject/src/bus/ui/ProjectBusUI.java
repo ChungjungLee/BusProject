@@ -14,23 +14,8 @@ public class ProjectBusUI {
 	private Scanner sc = new Scanner(System.in);			// Scanner 선언
 	ProjectBusManager manager = new ProjectBusManager();	// Manager class 연결(진행 되면서 지워야 함)
 	BusManager busManager = new BusManager();				// Manager class 연결
-
-	/**__________________________________________________________________________________________________
-	 * 
-	 * 		Main Menu
-	 */
-	private void printMainMenu() {
+	private String userId = null;							// User 각각의 다른 정보 저장을 위해 입력받는 id
 		
-		System.out.println("=== [ Bus Program ] ===");
-		System.out.println("1. 검색");
-		System.out.println("2. 즐겨찾기");
-		System.out.println("3. 최근 검색");
-		System.out.println("4. 데이터베이스 업데이트");
-		System.out.println("9. 프로그램 종료\n");
-		System.out.println("실행하실 메뉴를 선택하세요.");
-		
-	}
-	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Bus UI
@@ -38,6 +23,8 @@ public class ProjectBusUI {
 	
 	public ProjectBusUI() {
 	
+		logIn();
+		
 		boolean loop = true;
 		
 		while(loop){
@@ -82,9 +69,81 @@ public class ProjectBusUI {
 			}
 		}
 		
-	}	// ProjectBusUI();
+	}	// ProjectBusUI(); method end
 	
-
+	/**__________________________________________________________________________________________________
+	 * 
+	 *		Log-in
+	 *		@param 	유저로부터 아이디와 비밀번호를 입력받는다. 
+	 * 		
+	 */
+	private void logIn() {
+		
+		int usersInfo = 0;
+		boolean canLogIn = true;
+		
+		while(canLogIn) {
+			
+			System.out.println("ID : ");
+			userId = getTextFromUser(2);
+			
+			System.out.println("PW : ");
+			String userPw = getTextFromUser(4);
+			
+			usersInfo = busManager.userLogIn(userId, userPw); // 0, 1, 2 로 넘겨받는다.
+			
+			switch (usersInfo) {
+			
+				case 0:		// ID, PW 둘 다 저장된 정보와 일치 -> login 완료
+					
+					System.out.println("[System] 로그인 완료\n");
+					canLogIn = false;
+					break;
+		
+				case 1:		// ID는 일치하지만 PW가 불일치 -> 다시 입력받는다
+					
+					System.out.println("[Error] 해당 ID의 저장된 비밀번호와 일치하지 않습니다.");
+					System.out.println("[System] 다시 로그인 해주세요.");
+					break;
+					
+				case 2:		// ID가 존재하지 않음 -> 회원가입 받기
+					
+					System.out.println("[Error] ID가 존재하지 않습니다.");
+					System.out.println("\n입력하신 ID로 회원가입 하시겠습니까?");
+					System.out.println("1. 예\n2. 아니오");
+					
+					int isChoiceSignIn = getIntFromUser();
+					
+					if (isChoiceSignIn == 1) {
+						System.out.println("[System] 해당 아이디로 로그인 완료되었습니다.");
+					
+					} else if (isChoiceSignIn == 2){
+						System.out.println("[System] 다시 로그인 해주세요.");
+					}
+					
+					break;
+				
+			}
+		}
+		
+	} // logIn(); method end
+	
+	/**__________________________________________________________________________________________________
+	 * 
+	 * 		Main Menu
+	 */
+	private void printMainMenu() {
+		
+		System.out.println("=== [ Bus Program ] ===");
+		System.out.println("1. 검색");
+		System.out.println("2. 즐겨찾기");
+		System.out.println("3. 최근 검색");
+		System.out.println("4. 데이터베이스 업데이트");
+		System.out.println("9. 프로그램 종료\n");
+		System.out.println("실행하실 메뉴를 선택하세요.");
+		
+	} // printMainManu(); method end
+	
 	/**__________________________________________________________________________________________________
 	 * 	
 	 * 		Search - 버스 / 정류장 검색
@@ -153,7 +212,7 @@ public class ProjectBusUI {
 					}
 					
 					// 최근검색기록에 해당 버스를 저장한다.
-					busManager.recentSearch(0, throwBusId);
+					busManager.recentSearch(userId, 0, throwBusId);
 					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveBusFav = true;
@@ -166,7 +225,8 @@ public class ProjectBusUI {
 						int usersSelect1 = getIntFromUser();	// 예, 아니오 판별용
 						
 						if (usersSelect1 == 1) {
-							busManager.setFavoriteBus(throwBusId);
+							busManager.setFavoriteBus(userId, throwBusId); 	// manager에 버스 id를 넘겨주고, 즐겨찾기에 저장시킨다.
+							
 							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
 							canSaveBusFav = false;
 							loop = false;	// 메인메뉴로 돌아감
@@ -174,7 +234,7 @@ public class ProjectBusUI {
 						} else if (usersSelect1 == 2) {
 							System.out.println("[System] 저장하지 않고 메인 메뉴로 돌아갑니다.\n");
 							canSaveBusFav = false;
-							loop = false;
+							loop = false;	// 메인메뉴로 돌아감
 							
 						} else {
 							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
@@ -218,10 +278,10 @@ public class ProjectBusUI {
 						System.out.println(busInfo.get("secondBusMsg"));
 					}
 					
-					// TODO: 최근검색기록에 해당 정류장을 저장한다.
-					busManager.recentSearch(1, throwStnId);
+					// 최근검색기록에 해당 정류장을 저장한다.
+					busManager.recentSearch(userId, 1, throwStnId);
 					
-					// TODO: 즐겨찾기 여부 확인 후 저장
+					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveStnFav = true;
 					
 					while(canSaveStnFav) {
@@ -229,7 +289,20 @@ public class ProjectBusUI {
 						System.out.println("해당 정류장을 즐겨찾기 하시겠습니까?");
 						System.out.println("1. 예\n2. 아니오");
 						
-						int usersSelect2 = getIntFromUser();
+						int usersSelect2 = getIntFromUser();	// 예, 아니오 판별용
+						
+						if (usersSelect2 == 1) {
+							busManager.setFavoriteStn(userId, throwStnId);	// manager에 정류장 id를 넘겨주고 즐겨찾기에 저장시킨다.
+							
+							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
+							canSaveStnFav = false;
+							loop = false;	// 메인메뉴로 돌아감
+							
+						} else if (usersSelect2 == 2) {
+							System.out.println("[System] 저장하지 않고 메인 메뉴로 돌아갑니다.\n");
+							canSaveStnFav = false;
+							loop = false;	// 메인메뉴로 돌아감
+						}
 					}
 										
 					break;
@@ -247,7 +320,7 @@ public class ProjectBusUI {
 			}
 			
 		}
-	} // search();
+	} // search(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -255,13 +328,16 @@ public class ProjectBusUI {
 	 * 		: Main - switch 2
 	 */
 	private void favorite() {
-		System.out.println("--- < 즐  겨  찾  기 > ---");
-		// TODO: 1. 유저로부터 입력받은 버스번호 또는 정류장 검색에서 즐겨찾기 저장 여부 확인
+		// 1. 위의 버스번호 또는 정류장 검색에서 즐겨찾기 저장 여부 확인 받음
 		
 		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
+		System.out.println("--- < 즐  겨  찾  기 > ---");
+		
+		//busManager.getFavorite();
 		
 		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소
-	} // favorite();
+		
+	} // favorite(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -273,7 +349,7 @@ public class ProjectBusUI {
 		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
 		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
-	} // recentSearch();
+	} // recentSearch(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -303,7 +379,8 @@ public class ProjectBusUI {
 		}
 		
 		return inputInt;
-	}
+		
+	} // getIntFromUser(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -334,7 +411,8 @@ public class ProjectBusUI {
 		}
 		
 		return inputText;
-	}
+		
+	} // getTextFromUser(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -356,7 +434,8 @@ public class ProjectBusUI {
 		busList = manager.searchBuses(busNum);
 		
 		return busList;
-	}
+		
+	} // searchBusList(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -378,7 +457,8 @@ public class ProjectBusUI {
 		stnList = busManager.searchStations(stnName);
 		
 		return stnList;
-	}
+		
+	} // searchStnList(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -400,7 +480,8 @@ public class ProjectBusUI {
 		}
 		
 		return input;
-	}
+		
+	} // selectNum(); method end
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -428,8 +509,14 @@ public class ProjectBusUI {
 		}
 		
 		return true;
-	}
+		
+	} // isNumeric(); method end
 	
+	/**__________________________________________________________________________________________________
+	 * 
+	 * 		Database를 Update하게 해 주는 메소드
+	 * 
+	 */
 	private void databaseUpdate() {
 		
 		boolean canUpdate = busManager.databaseUpdate();
@@ -440,7 +527,7 @@ public class ProjectBusUI {
 			System.out.println("[Error] 업데이트에 실패하였습니다.");
 		}
 		
-	}
+	} // databaseUpdate(); method end
 	
 }
 
