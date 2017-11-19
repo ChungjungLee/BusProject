@@ -207,6 +207,23 @@ public class BusManager {
 		return true;
 	}
 	
+	/**
+	 * 즐겨찾기에 버스 ID를 추가한다.
+	 * @param busId
+	 * @return
+	 */
+	public boolean setFavoriteBus(int busId) {
+		return true;
+	}
+	
+	/**
+	 * 즐겨찾기에 정류장 ID를 추가한다.
+	 * @param stnId
+	 * @return
+	 */
+	public boolean setFavoriteStn(int stnId) {
+		return true;
+	}
 	
 	/*
 	 * ==================================== Parsing Methods ====================================
