@@ -12,9 +12,9 @@ public class BusDAO {
 	SqlSessionFactory factory = MybatisConfig.getSqlSessionFactory();
 	
 	/**
-	 * 
-	 * @param busesList
-	 * @return
+	 * 버스 목록을 넘겨 받아 데이터베이스에 저장한다.
+	 * @param busesList 저장할 버스 리스트
+	 * @return 저장 결과
 	 */
 	public boolean insertBuses(List<Bus> busesList) {
 		SqlSession session = null;
@@ -25,7 +25,9 @@ public class BusDAO {
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			for (Bus bus : busesList) {
-				mapper.insertBus(bus);
+				if (mapper.insertBus(bus) == 0) {
+					result = false;
+				}
 			}
 			
 			session.commit();
@@ -43,9 +45,9 @@ public class BusDAO {
 	}
 	
 	/**
-	 * 
-	 * @param stationsList
-	 * @return
+	 * 저장할 정류장 목록을 넘겨 받아 데이터베이스에 저장한다.
+	 * @param stationsList 저장할 정류장 리스트
+	 * @return 저장 결과
 	 */
 	public boolean insertStations(List<Station> stationsList) {
 		SqlSession session = null;
@@ -56,7 +58,9 @@ public class BusDAO {
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			for (Station station : stationsList) {
-				mapper.insertStation(station);
+				if(mapper.insertStation(station) == 0) {
+					result = false;
+				}
 			}
 			
 			session.commit();
@@ -69,7 +73,6 @@ public class BusDAO {
 				session.close();
 			}
 		}
-		
 		
 		return result;
 	}

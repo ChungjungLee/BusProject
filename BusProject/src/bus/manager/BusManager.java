@@ -1,7 +1,12 @@
 package bus.manager;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,11 +20,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import bus.dao.BusDAO;
 import bus.vo.Bus;
 import bus.vo.Station;
 
@@ -29,10 +38,11 @@ public class BusManager {
 	private final String serviceKey =
 			"9qJ%2FGyciiKC2bdjQYHAWCxxYmnJ0KmYn1ZySk6y8SJdOgcffBFBpTOxUgobyps504QppRIpzOrPbIkZoJWJhtg%3D%3D";
 	
-	public BusManager() {
-		
-	}
+	BusDAO busDao;
 	
+	public BusManager() {
+		busDao = new BusDAO();
+	}
 	
 	/**
 	 * 입력받은 숫자를 통해 해당 숫자를 포함하는 버스를 검색한다.
@@ -225,6 +235,54 @@ public class BusManager {
 		return true;
 	}
 	
+	/**
+	 * 최근 검색 목록 중 하나를 넘겨 받아 해당하는 검색 기록의 정보를 출력한다.
+	 * @param type
+	 * @param throwId
+	 * @return
+	 */
+	public List<Integer> recentSearch(int type, int throwId) {
+		// 버스 Type이면 0, 정류장 Type이면 1을 넘겨받는다.
+		return null;
+	}
+	
+	/**
+	 * 모든 버스의 정보를 파일로부터 읽어 DB에 저장한다.
+	 * @return 저장 성공 여부
+	 */
+	public boolean databaseUpdate() {
+		File file = new File("AllBusesList.txt");
+		FileInputStream fis = null;
+		InputStreamReader isr = null;
+		BufferedReader br = null;
+		String str = "";
+		
+		try {
+			fis = new FileInputStream(file);
+			isr = new InputStreamReader(fis);
+			br = new BufferedReader(isr);
+			
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				str += line;
+			}
+		} catch (FileNotFoundException e) {
+			System.out.println("[Error] DB 업데이트 파일을 찾을 수 없습니다.");
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("[Error] DB 업데이트 도중 오류가 발생했습니다.");
+			e.printStackTrace();
+		}
+		
+		if (!busDao.insertBuses(parseJSONBuses(str))) {
+			System.out.println("[Error] DB 업데이트 도중 오류가 발생했습니다.");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 	/*
 	 * ==================================== Parsing Methods ====================================
 	 */
@@ -296,15 +354,51 @@ public class BusManager {
 		
 		return doc;
 	}
-
-
-	public List<Integer> recentSearch(int type, int throwId) {
-		// 버스 Type이면 0, 정류장 Type이면 1을 넘겨받는다.
-		return null;
-	}
 	
-	public boolean databaseUpdate() {
-		return true;
+	/**
+	 * 버스 목록의 JSON 데이터를 받아 Bus 객체의 리스트로 파싱한다.
+	 * @param jsonData 파일로부터 읽어 들인 문자열
+	 * @return Bus 객체의 리스트
+	 */
+	public List<Bus> parseJSONBuses(String jsonData) {
+		List<Bus> busesList = new ArrayList<>();
+		
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
+			JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
+			
+			for (int i = 0; i < busArrayList.size(); i++) {
+				JSONObject busJSONObject = (JSONObject) busArrayList.get(i);
+				
+				Bus bus = new Bus();
+				bus.setRoutId(Integer.parseInt((String)busJSONObject.get("routId")));
+				bus.setRoutName((String) busJSONObject.get("routName"));
+				bus.setRoutType((String) busJSONObject.get("routType"));
+				bus.setStnFirst((String) busJSONObject.get("stnFirst"));
+				bus.setStnLast((String) busJSONObject.get("stnLast"));
+				bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
+				bus.setTimeLast((String) busJSONObject.get("timeLast"));
+				bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
+				bus.setSatTimeLast((String) busJSONObject.get("satTimeLast"));
+				bus.setHolTimeFirst((String) busJSONObject.get("holTimeFirst"));
+				bus.setHolTimeLast((String) busJSONObject.get("holTimeLast"));
+				bus.setNorTerms((String) busJSONObject.get("norTerms"));
+				bus.setSatTerms((String) busJSONObject.get("satTerms"));
+				bus.setHolTerms((String) busJSONObject.get("holTerms"));
+				bus.setCompanyNm((String) busJSONObject.get("companyNm"));
+				bus.setTelNo((String) busJSONObject.get("telNo"));
+				bus.setFaxNo((String) busJSONObject.get("faxNo"));
+				bus.setEmail((String) busJSONObject.get("email"));
+				
+				busesList.add(bus);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return busesList;
 	}
 }
 
