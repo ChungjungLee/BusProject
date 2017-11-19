@@ -339,15 +339,29 @@ public class ProjectBusUI {
 		
 		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		System.out.println("--- < 즐  겨  찾  기 > ---");
+		System.out.println("1. 저장된 버스 목록");
+		System.out.println("2. 저장된 정류장 목록");
 		
-		List<Object> catchFavoriteList = busManager.getFavorite(userId);	// 해당 유저의 즐겨찾기 목록을 출력한다.
+			// TODO: 해당 유저의 즐겨찾기 목록을 출력한다.
+		/*
+				
+		int selectMenuFromFav = getIntFromUser();
 		
 		if (catchFavoriteList == null || catchFavoriteList.isEmpty()) {
 			System.out.println("[System] 해당 ID에 등록된 즐겨찾기가 존재하지 않습니다.");
 			
 		} else {
 			
+			if (selectMenuFromFav == 1) {			// 저장된 버스 명 출력
+				
+			} else if (selectMenuFromFav == 2) {    // 저장된 정류장 명 출력
+			
+			}
 		}
+		
+		*/
+			
+		
 		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
 		// 객체 형태로 manager로 넘겨줄 것.
 		
@@ -446,7 +460,7 @@ public class ProjectBusUI {
 		busNum = getTextFromUser(2);
 		
 		// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
-		busList = manager.searchBuses(busNum);
+		busList = busManager.searchBuses(busNum);
 		
 		return busList;
 		
@@ -472,7 +486,7 @@ public class ProjectBusUI {
 		stnList = busManager.searchStations(stnName);
 		
 		return stnList;
-		
+		 
 	} // searchStnList(); method end
 	
 	/**__________________________________________________________________________________________________
