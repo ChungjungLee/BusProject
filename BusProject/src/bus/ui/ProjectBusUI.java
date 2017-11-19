@@ -25,6 +25,7 @@ public class ProjectBusUI {
 		System.out.println("1. 검색");
 		System.out.println("2. 즐겨찾기");
 		System.out.println("3. 최근 검색");
+		System.out.println("4. 데이터베이스 업데이트");
 		System.out.println("9. 프로그램 종료\n");
 		System.out.println("실행하실 메뉴를 선택하세요.");
 		
@@ -63,6 +64,11 @@ public class ProjectBusUI {
 					recentSearch();
 					break;
 					
+				case 4:			// database update
+					
+					databaseUpdate();
+					break;
+					
 				case 9:			// 프로그램 종료
 					
 					System.out.println("[System] 프로그램을 종료합니다.");
@@ -78,6 +84,7 @@ public class ProjectBusUI {
 		
 	}	// ProjectBusUI();
 	
+
 	/**__________________________________________________________________________________________________
 	 * 	
 	 * 		Search - 버스 / 정류장 검색
@@ -85,7 +92,7 @@ public class ProjectBusUI {
 	 */
 	private void search() {
 		
-		boolean loop = true;				// while 반복문용.
+		boolean loop = true;	// while 반복문용.
 		
 		while(loop) {
 			
@@ -131,26 +138,49 @@ public class ProjectBusUI {
 					
 					int inputToGetRouteMap = selectNum(busNumList.size());
 					
+					int throwBusId = busNumList.get(inputToGetRouteMap - 1).getRoutId();
+					
+					System.out.println();
+					
 					List<Station> busRoute = 
-							busManager.getRouteMap(busNumList.get(inputToGetRouteMap - 1).getRoutId());
+							busManager.getRouteMap(throwBusId);
 					
+					int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 					for (Station route : busRoute) {
-						System.out.println("| 정류장 이름 : " + route.getStnName() + 
-								"    ( 정류장 ID : " + route.getArsId() + " )" + "\n");
+						System.out.println();
+						System.out.println("| " + (x++) + " | " + route.getStnName() + 
+								"    ( 정류장 ID : " + route.getArsId() + " )");
 					}
 					
-					// TODO: 즐겨찾기 여부 확인 후 저장
-				/*
-					boolean canSaveFavorite = manager.getFavorite(busNum);
+					// 최근검색기록에 해당 버스를 저장한다.
+					busManager.recentSearch(0, throwBusId);
 					
-					if (canSaveFavorite) {
-						System.out.println("\n[Error] 이미 저장된 정보입니다.");
-					} else {
-						// TODO: 즐겨찾기 저장
-						System.out.println("[System] 정상적으로 저장되었습니다.\n");
-						loop = false; 	// 메인메뉴로 돌아감
+					// 즐겨찾기 여부 확인 후 저장
+					boolean canSaveBusFav = true;
+					
+					while(canSaveBusFav) {
+						
+						System.out.println("\n| 해당 버스를 즐겨찾기 하시겠습니까? |");
+						System.out.println("1. 예\n2. 아니오");
+						
+						int usersSelect1 = getIntFromUser();	// 예, 아니오 판별용
+						
+						if (usersSelect1 == 1) {
+							busManager.setFavoriteBus(throwBusId);
+							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
+							canSaveBusFav = false;
+							loop = false;	// 메인메뉴로 돌아감
+							
+						} else if (usersSelect1 == 2) {
+							System.out.println("[System] 저장하지 않고 메인 메뉴로 돌아갑니다.\n");
+							canSaveBusFav = false;
+							loop = false;
+							
+						} else {
+							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+						}
 					}
-				*/
+				
 					break;
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
@@ -172,6 +202,8 @@ public class ProjectBusUI {
 					
 					int inputToGetBuses = selectNum(foundBusList.size());
 					
+					int throwStnId = foundBusList.get(inputToGetBuses - 1).getStnId();
+					
 					List<HashMap<String, Object>> busArriveList =
 							busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
 					
@@ -186,7 +218,19 @@ public class ProjectBusUI {
 						System.out.println(busInfo.get("secondBusMsg"));
 					}
 					
+					// TODO: 최근검색기록에 해당 정류장을 저장한다.
+					busManager.recentSearch(1, throwStnId);
+					
 					// TODO: 즐겨찾기 여부 확인 후 저장
+					boolean canSaveStnFav = true;
+					
+					while(canSaveStnFav) {
+						
+						System.out.println("해당 정류장을 즐겨찾기 하시겠습니까?");
+						System.out.println("1. 예\n2. 아니오");
+						
+						int usersSelect2 = getIntFromUser();
+					}
 										
 					break;
 									
@@ -225,6 +269,7 @@ public class ProjectBusUI {
 	 *  	: Main - switch 3
 	 */
 	private void recentSearch() {
+		System.out.println("--- < 최  근  검  색 > ---");
 		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
 		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
@@ -294,7 +339,7 @@ public class ProjectBusUI {
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Search Bus List
-	 * 		@return busList
+	 * 		@return 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
 	 */
 	private List<Bus> searchBusList(){
 		
@@ -316,7 +361,7 @@ public class ProjectBusUI {
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Search Station List
-	 * 		@return stnList
+	 * 		@return 입력받은 숫자가 포함된 정류장의 목록을 불러온다.
 	 */
 	private List<Station> searchStnList(){
 		
@@ -329,7 +374,7 @@ public class ProjectBusUI {
 		// 두 글자 이상만 받도록 검사
 		stnName = getTextFromUser(2);
 			
-		// manager에서 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
+		// manager에서 입력받은 숫자가 포함된 정류장의 목록을 불러온다.
 		stnList = busManager.searchStations(stnName);
 		
 		return stnList;
@@ -357,10 +402,11 @@ public class ProjectBusUI {
 		return input;
 	}
 	
-	/**
-     * 입력받은 문자열이 숫자로만 이루어져 있는지 판별한다.
-     * @param text 입력받은  문자열
-     * @return 숫자인  문자로만  되어있으면  true, 아니면  false
+	/**__________________________________________________________________________________________________
+	 * 
+     * 		입력받은 문자열이 숫자로만 이루어져 있는지 판별한다.
+     * 		@param text 입력받은  문자열
+     * 		@return 숫자인  문자로만  되어있으면  true, 아니면  false
      */
 	private boolean isNumeric(String checkStr) {
 		if (checkStr == null || checkStr.trim().length() == 0) {
@@ -382,6 +428,18 @@ public class ProjectBusUI {
 		}
 		
 		return true;
+	}
+	
+	private void databaseUpdate() {
+		
+		boolean canUpdate = busManager.databaseUpdate();
+		
+		if (canUpdate) {
+			System.out.println("[System] 정상적으로 업데이트 되었습니다.");
+		} else {
+			System.out.println("[Error] 업데이트에 실패하였습니다.");
+		}
+		
 	}
 	
 }

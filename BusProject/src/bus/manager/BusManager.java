@@ -296,6 +296,16 @@ public class BusManager {
 		
 		return doc;
 	}
+
+
+	public List<Integer> recentSearch(int type, int throwId) {
+		// 버스 Type이면 0, 정류장 Type이면 1을 넘겨받는다.
+		return null;
+	}
+	
+	public boolean databaseUpdate() {
+		return true;
+	}
 }
 
 
