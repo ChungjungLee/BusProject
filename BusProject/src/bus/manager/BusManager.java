@@ -29,6 +29,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import bus.dao.BusDAO;
+import bus.vo.Account;
 import bus.vo.Bus;
 import bus.vo.Station;
 
@@ -44,6 +45,45 @@ public class BusManager {
 		busDao = new BusDAO();
 	}
 	
+	
+	/**
+	 * ID와 비밀번호를 입력받아 로그인을 시도한다.
+	 * @param userId 아이디
+	 * @param userPw 비밀번호
+	 * @return loginResult 0: 로그인 성공, 1: 비밀번호 오류, 2: 계정 존재하지 않음
+	 */
+	public int userLogIn(String userId, String userPw) {
+		Account accLoggedIn = busDao.selectAccount(userId);
+		
+		int loginResult = 0;
+		
+		if (accLoggedIn == null) {
+			loginResult = 2;
+		} else if (!accLoggedIn.getPw().equals(userPw)) {
+			loginResult = 1;
+		}
+		
+		return loginResult;
+	}
+
+	
+	/**
+	 * ID와 비밀번호를 입력받아 새로운 계정을 만든다.
+	 * @param userId 아이디
+	 * @param userPw 비밀번호
+	 */
+	public void signIn(String userId, String userPw) {
+		// 회원가입
+		Account account = new Account(userId, userPw);
+		
+		if (busDao.insertAccount(account)) {
+			
+		} else {
+			
+		}
+	}
+	
+	
 	/**
 	 * 입력받은 숫자를 통해 해당 숫자를 포함하는 버스를 검색한다.
 	 * @param busNum 검색하고자 하는 숫자
@@ -51,8 +91,9 @@ public class BusManager {
 	 */
 	public List<Bus> searchBuses(String busNum) {
 		// DB에서 받아올 것
+		List<Bus> busList = busDao.srchBusContainsNum(busNum);
 		
-		return null;
+		return busList;
 	}
 	
 	
@@ -251,20 +292,6 @@ public class BusManager {
 		return null;
 	}
 	
-	
-	public int userLogIn(String userId, String userPw) {
-		// 로그인
-		return 0;
-		
-	}
-
-
-	public void signIn(String userId, String userPw) {
-		// 회원가입
-		
-	}
-	
-	
 	/**
 	 * 모든 버스의 정보를 파일로부터 읽어 DB에 저장한다.
 	 * @return 저장 성공 여부
@@ -286,15 +313,15 @@ public class BusManager {
 				str += line;
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("[Error] DB 업데이트 파일을 찾을 수 없습니다.");
+			System.out.println("DB 업데이트 파일을 찾을 수 없습니다.");
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("[Error] DB 업데이트 도중 오류가 발생했습니다.");
+			System.out.println("DB 업데이트 파일에 오류가 발생했습니다.");
 			e.printStackTrace();
 		}
 		
 		if (!busDao.insertBuses(parseJSONBuses(str))) {
-			System.out.println("[Error] DB 업데이트 도중 오류가 발생했습니다.");
+			System.out.println("DB 업데이트 도중 오류가 발생했습니다.");
 			return false;
 		}
 		
