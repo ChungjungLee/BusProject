@@ -393,6 +393,43 @@ public class ProjectBusUI {
 								+ list.getRoutName() + " ( " + list.getRoutType() + ")");
 					}
 					
+					System.out.println("확인하고 싶은 버스를 선택해주세요.");
+					
+					int selectBusFromFav = selectNum(favoriteBusList.size());
+					
+					int throwBusId = favoriteBusList.get(selectBusFromFav - 1).getRoutId();
+					
+					List<Station> busRoute = busManager.getRouteMap(throwBusId);
+					
+					int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
+					for (Station route : busRoute) {
+						System.out.println();
+						System.out.println("| " + (x++) + " | " + route.getStnName() + 
+								"    ( 정류장 ID : " + route.getArsId() + " )");
+					}
+					
+					boolean loopInsideMenu = true;
+					
+					while(loopInsideMenu) {
+						
+						System.out.println("돌아갈 메뉴를 선택해주세요.");
+						System.out.println("1. 즐겨찾기 메뉴");
+						System.out.println("2. 메인 메뉴");
+						
+						int backToTheMenu = getIntFromUser();
+					
+						if (backToTheMenu != 1 && backToTheMenu != 2) {
+							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+							
+						} else if (backToTheMenu == 1) {
+							break;
+							
+						} else if (backToTheMenu == 2) {
+							loopInsideMenu = false;
+							loop = false;
+						}
+					}
+					
 					break;
 		
 				case 2:		// 정류장 목록 출력
@@ -407,6 +444,8 @@ public class ProjectBusUI {
 						System.out.println(" | " + (i + 1) + " | "
 								+ list.getStnName() + " ( 정류장 번호 : " + list.getArsId() + ")");
 					}
+					
+					System.out.println("확인하고 싶은 정류장을 선택해주세요.");
 					
 					break;
 					
