@@ -32,7 +32,7 @@ public class ProjectBusUI {
 			int option = 0;
 			
 			printMainMenu();			// Main 호출
-			option = getIntFromUser();	// 유저로부터 선택받기
+			option = getIntFromUser();	// 유저로부터 메뉴 선택받기
 			
 			switch (option) {
 			
@@ -200,11 +200,11 @@ public class ProjectBusUI {
 					// 선택지 이상의 숫자를 입력하면 error 출력
 					System.out.println("\n> 확인하고 싶은 버스를 선택해주세요. <");
 					
-					int inputToGetRouteMap = selectNum(busNumList.size());
+					int inputToGetRouteMap = selectNum(busNumList.size());	// 사용자로부터 출력을 원하는 버스 선택받기
 					
-					int throwBusId = busNumList.get(inputToGetRouteMap - 1).getRoutId();
+					int throwBusId = busNumList.get(inputToGetRouteMap - 1).getRoutId(); // 버스 루트 출력용
 					
-					Bus throwBus = busNumList.get(inputToGetRouteMap - 1);
+					Bus throwBus = busNumList.get(inputToGetRouteMap - 1); // 최근검색, 즐겨찾기에 넘겨줄 객체
 					
 					System.out.println();
 					
@@ -261,15 +261,15 @@ public class ProjectBusUI {
 					// 배열에 Numbering 해서 출력
 					for (int i = 0; i < foundBusList.size(); i++) {
 						System.out.println(" | " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
-								+ "    ( 정류장 ID : " + foundBusList.get(i).getArsId() + " )" + "\n");
+								+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
 					}
 					
 					// 선택지 이상의 숫자를 입력하면 false 반환
 					System.out.println("\n> 확인하고 싶은 정류장을 선택해주세요. <");
 					
-					int inputToGetBuses = selectNum(foundBusList.size());
+					int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
 					
-					Station throwStn = foundBusList.get(inputToGetBuses - 1);
+					Station throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
 										
 					List<HashMap<String, Object>> busArriveList =
 							busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
@@ -340,9 +340,17 @@ public class ProjectBusUI {
 		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		System.out.println("--- < 즐  겨  찾  기 > ---");
 		
-		//busManager.getFavorite();
+		List<Object> catchFavoriteList = busManager.getFavorite(userId);	// 해당 유저의 즐겨찾기 목록을 출력한다.
 		
-		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소
+		if (catchFavoriteList == null || catchFavoriteList.isEmpty()) {
+			System.out.println("[System] 해당 ID에 등록된 즐겨찾기가 존재하지 않습니다.");
+			
+		} else {
+			
+		}
+		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
+		// 객체 형태로 manager로 넘겨줄 것.
+		
 		
 	} // favorite(); method end
 	

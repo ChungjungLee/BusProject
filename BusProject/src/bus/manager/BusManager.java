@@ -213,8 +213,8 @@ public class BusManager {
 	 * @param 
 	 * @return
 	 */
-	public boolean getFavorite(String busNum) {
-		return true;
+	public List<Object> getFavorite(String busNum) {
+		return null;
 	}
 	
 	
