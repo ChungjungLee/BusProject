@@ -2,6 +2,7 @@ package bus.ui;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import bus.manager.BusManager;
@@ -23,9 +24,12 @@ public class ProjectBusUI {
 	
 	public ProjectBusUI() {
 	
+		
 		logIn();	// 유저로부터 사용자 정보를 입력받아 로그인 시킨다. 로그인 완료시 다음 메소드로 넘어간다.
 		
-		boolean loop = true;
+		boolean canUpdate = false;		// 업데이트가 되어있지 않다면 실행할 수 없도록 만들어둔 장치
+		
+		boolean loop = true;			// while 반복문용
 		
 		while(loop){
 			
@@ -38,22 +42,37 @@ public class ProjectBusUI {
 			
 				case 1:			// 검색
 					
-					search();
+					if (canUpdate == true) {
+						search();
+					} else {
+						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
+					}
+					
 					break;
 	
 				case 2:			// 즐겨찾기
 					
-					favorite();
+					if (canUpdate == true) {
+						favorite();
+					} else {
+						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
+					}
+					
 					break;
 					
 				case 3:			// 최근검색
 					
-					recentSearch();
+					if (canUpdate == true) {
+						recentSearch();
+					} else {
+						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
+					}
 					break;
 					
 				case 4:			// database update
 					
 					databaseUpdate();
+					canUpdate = true;	// DB 업데이트 완료
 					break;
 					
 				case 9:			// 프로그램 종료
@@ -84,6 +103,9 @@ public class ProjectBusUI {
 		
 		while(canLogIn) {
 			
+			System.out.println("--- < Bus Program > ---\n");
+			System.out.println("- Log-in & Sign-in -");
+			
 			System.out.print("ID를 입력해주세요.\n");
 			userId = getTextFromUser(2);
 			
@@ -92,6 +114,7 @@ public class ProjectBusUI {
 			
 			usersInfo = busManager.userLogIn(userId, userPw); // 0, 1, 2 로 넘겨받는다.
 			
+			// ID, PW 검사
 			switch (usersInfo) {
 			
 				case 0:		// ID, PW 둘 다 저장된 정보와 일치 -> login 완료
@@ -103,7 +126,7 @@ public class ProjectBusUI {
 				case 1:		// ID는 일치하지만 PW가 불일치 -> 다시 입력받는다
 					
 					System.out.println("[Error] 해당 ID의 저장된 비밀번호와 일치하지 않습니다.");
-					System.out.println("[System] 다시 로그인 해주세요.");
+					System.out.println("[System] 다시 로그인 해주세요.\n");
 					break;
 					
 				case 2:		// ID가 존재하지 않음 -> 회원가입 받기
@@ -112,12 +135,13 @@ public class ProjectBusUI {
 					System.out.println("\n입력하신 ID로 회원가입 하시겠습니까?");
 					System.out.println("1. 예\n2. 아니오");
 					
-					int isChoiceSignIn = getIntFromUser();
+					int isChoiceSignIn = getIntFromUser();	// 1 또는 2 입력받음
 					
 					if (isChoiceSignIn == 1) { 			 // 예
 						
-						busManager.signIn(userId, userPw);
-						System.out.println("[System] 해당 아이디로 회원가입 및 로그인이 완료되었습니다.");
+						busManager.signIn(userId, userPw);	// 입력받은 ID, PW로 회원가입 완료
+						
+						System.out.println("[System] 해당 아이디로 회원가입 및 로그인이 완료되었습니다.\n");
 						canLogIn = false;
 					
 					} else if (isChoiceSignIn == 2){	 // 아니오
@@ -139,7 +163,8 @@ public class ProjectBusUI {
 	 */
 	private void printMainMenu() {
 		
-		System.out.println("=== [ Bus Program ] ===");
+		System.out.println("=== [ Main Menu ] ===");
+		System.out.println("* 첫 실행시 DB 업데이트 이후 사용하세요. *\n");
 		System.out.println("1. 검색");
 		System.out.println("2. 즐겨찾기");
 		System.out.println("3. 최근 검색");
@@ -168,22 +193,23 @@ public class ProjectBusUI {
 			int option = 0;
 			
 			while(true) {
-				option = getIntFromUser();
+				
+				option = getIntFromUser();		// 유저로부터 메뉴 선택받음
 				
 				if (option == 1 || option == 2 || option == 9) {
 					break;
 				}
 				
-				System.out.println("[Error] 출력된 메뉴만 선택해주세요.\n");
+				System.out.println("[Error] 출력된 메뉴만 선택해주세요.\n"); // 1, 2, 9가 아닐 경우 다시 선택받음
 			}
 			
 			switch (option) {
 			
 				case 1:		// 버스 번호로 검색 -> 노선도 확인 -> 즐겨찾기 여부 확인
 					
-					List<Bus> busNumList = searchBusList();
+					List<Bus> busNumList = searchBusList();					// 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
 					
-					if (busNumList.isEmpty() || busNumList == null) {
+					if (busNumList.isEmpty() || busNumList == null) { 		// 해당 버스가 없는 경우
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break;
 					} 
@@ -192,9 +218,10 @@ public class ProjectBusUI {
 					System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
 					
 					for (int i = 0; i < busNumList.size(); i++) {
+						Bus list = busNumList.get(i);
+						
 						System.out.println(" | " + (i + 1) + " | " 
-								+ busNumList.get(i).getRoutName() + "  " 
-								+ busNumList.get(i).getRoutType());
+								+ list.getRoutName() + "  " + list.getRoutType());
 					}						
 					
 					// 선택지 이상의 숫자를 입력하면 error 출력
@@ -208,8 +235,7 @@ public class ProjectBusUI {
 					
 					System.out.println();
 					
-					List<Station> busRoute = 
-							busManager.getRouteMap(throwBusId);
+					List<Station> busRoute = busManager.getRouteMap(throwBusId);
 					
 					int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 					for (Station route : busRoute) {
@@ -244,7 +270,7 @@ public class ProjectBusUI {
 							loop = false;	// 메인메뉴로 돌아감
 							
 						} else {
-							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");	// while문 반복
 						}
 					}
 				
@@ -252,13 +278,14 @@ public class ProjectBusUI {
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
 					
-					List<Station> foundBusList = searchStnList();
+					List<Station> foundBusList = searchStnList();	 // 입력받은 숫자가 포함된 정류장의 목록을 불러온다.
+					
 					if (foundBusList.isEmpty() || foundBusList == null) {
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break;
 					}
 					
-					// 배열에 Numbering 해서 출력
+					// 불러온 정류장 목록의 배열에 Numbering 해서 출력
 					for (int i = 0; i < foundBusList.size(); i++) {
 						System.out.println(" | " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
 								+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
@@ -270,7 +297,8 @@ public class ProjectBusUI {
 					int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
 					
 					Station throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
-										
+					
+					// open-api 정보에서 현 정류장에 도착할 버스들의 도착 시간을 불러와 출력
 					List<HashMap<String, Object>> busArriveList =
 							busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
 					
@@ -293,7 +321,7 @@ public class ProjectBusUI {
 					
 					while(canSaveStnFav) {
 						
-						System.out.println("해당 정류장을 즐겨찾기 하시겠습니까?");
+						System.out.println("\n해당 정류장을 즐겨찾기 하시겠습니까?");
 						System.out.println("1. 예\n2. 아니오");
 						
 						int usersSelect2 = getIntFromUser();	// 예, 아니오 판별용
@@ -335,36 +363,74 @@ public class ProjectBusUI {
 	 * 		: Main - switch 2
 	 */
 	private void favorite() {
-		// 1. 위의 버스번호 또는 정류장 검색에서 즐겨찾기 저장 여부 확인 받음
+						
+		int selectMenuFromFav = 0; 	// 유저로부터 항목을 선택받는다.
 		
-		// TODO: 2. 이 메소드에서는 즐겨찾기한 목록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
-		System.out.println("--- < 즐  겨  찾  기 > ---");
-		System.out.println("1. 저장된 버스 목록");
-		System.out.println("2. 저장된 정류장 목록");
-		
-			// TODO: 해당 유저의 즐겨찾기 목록을 출력한다.
-		/*
+		boolean loop = true;		// while 반복문용
 				
-		int selectMenuFromFav = getIntFromUser();
+		while(loop) {
+			
+			System.out.println("\n--- < 즐  겨  찾  기 > ---");
+			System.out.println("1. 저장된 버스 목록");
+			System.out.println("2. 저장된 정류장 목록");
+			System.out.println("3. 저장된 즐겨찾기 취소");
+			System.out.println("9. 메인메뉴로 돌아가기");
+			
+			selectMenuFromFav = getIntFromUser();
+			
+			switch (selectMenuFromFav) {
+			
+				case 1:		// 버스 목록 출력
+					
+					// 유저 ID에 해당하는 즐겨찾기 목록 출력
+					List<Bus> favoriteBusList = busManager.getFavoriteBusList(userId);
+					
+					for (int i = 0; i < favoriteBusList.size(); i++) {
+						Bus list = favoriteBusList.get(i);
+						
+						System.out.println();
+						System.out.println(" | " + (i + 1) + " | " 
+								+ list.getRoutName() + " ( " + list.getRoutType() + ")");
+					}
+					
+					break;
 		
-		if (catchFavoriteList == null || catchFavoriteList.isEmpty()) {
-			System.out.println("[System] 해당 ID에 등록된 즐겨찾기가 존재하지 않습니다.");
-			
-		} else {
-			
-			if (selectMenuFromFav == 1) {			// 저장된 버스 명 출력
-				
-			} else if (selectMenuFromFav == 2) {    // 저장된 정류장 명 출력
-			
+				case 2:		// 정류장 목록 출력
+					
+					// 유저 ID에 해당하는 즐겨찾기 목록 출력
+					List<Station> favoriteStnList = busManager.getFavoriteStnList(userId);
+					
+					for (int i = 0; i < favoriteStnList.size(); i++) {
+						Station list = favoriteStnList.get(i);
+						
+						System.out.println();
+						System.out.println(" | " + (i + 1) + " | "
+								+ list.getStnName() + " ( 정류장 번호 : " + list.getArsId() + ")");
+					}
+					
+					break;
+					
+				case 3: 	// 저장된 즐겨찾기 취소
+					
+					// TODO: 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
+										
+					
+					break;
+					
+				case 9:		// 메인메뉴로 돌아가기
+					
+					System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
+					loop = false;
+					break;
+					
+				default:	// 잘못 입력받을 경우
+					
+					System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+					break;
 			}
 		}
-		
-		*/
-			
-		
-		// TODO: 3. 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
-		// 객체 형태로 manager로 넘겨줄 것.
-		
+							
+				
 		
 	} // favorite(); method end
 	
@@ -551,9 +617,9 @@ public class ProjectBusUI {
 		boolean canUpdate = busManager.databaseUpdate();
 		
 		if (canUpdate) {
-			System.out.println("[System] 정상적으로 업데이트 되었습니다.");
+			System.out.println("[System] 정상적으로 업데이트 되었습니다.\n");
 		} else {
-			System.out.println("[Error] 업데이트에 실패하였습니다.");
+			System.out.println("[Error] 업데이트에 실패하였습니다.\n");
 		}
 		
 	} // databaseUpdate(); method end

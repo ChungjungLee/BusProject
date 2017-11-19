@@ -478,6 +478,18 @@ public class BusManager {
 		
 		return busesList;
 	}
+
+
+	public List<Bus> getFavoriteBusList(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public List<Station> getFavoriteStnList(String userId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
 
