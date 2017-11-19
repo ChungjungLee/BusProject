@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -286,10 +287,24 @@ public class BusManager {
 	 * @param userId 사용자의 ID
 	 * @return 버스와 정류장 정보를 차례로 가지는 맵
 	 */
-	public List<Object> getFavorite(String userId) {
-		return null;
+	public Map<String, Object> getFavorite(String userId) {
+		// 버스는 번호
+		// 정류장은 정류장 이름과 정류장 번호만 출력하려고 한다
+		
+		return busDao.selectFavorite(userId);
 	}
 	
+	
+	/**
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public HashMap<String, Object> getHistory(String userId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		return map;
+	}
 	
 	/**
 	 * 유저의 최근 검색 목록 전부를 반환한다.
@@ -307,6 +322,7 @@ public class BusManager {
 		
 		return null;
 	}
+	
 	
 	/**
 	 * 모든 버스의 정보를 파일로부터 읽어 DB에 저장한다.

@@ -1,6 +1,9 @@
 package bus.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -164,9 +167,10 @@ public class BusDAO {
 		return result;
 	}
 	
+	
 	/**
-	 * 
-	 * @param favorite
+	 * 즐겨찾기 정보를 데이터베이스에 저장한다.
+	 * @param favorite 저장할 즐겨찾기 정보
 	 * @return boolean 즐겨찾기 저장 결과
 	 */
 	public boolean insertFavorite(Favorite favorite) {
@@ -195,4 +199,49 @@ public class BusDAO {
 		return result;
 	}
 	
+	
+	/**
+	 * 계정에 저장되어 있는 즐겨찾기 정보를 가져와 각각의 즐겨찾기 목록에 대한 정보를 받아온다. 
+	 * @param userId 사용자 ID
+	 * @return favorMap 버스리스트, 정류장리스트가 저장되어 있는 Map
+	 */
+	public Map<String, Object> selectFavorite(String userId) {
+		SqlSession session = null;
+		Map<String, Object> favorMap = new HashMap<>();
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			List<Favorite> favorList = mapper.selectFavorite(userId);
+			
+			List<Bus> busList = new ArrayList<>();
+			List<Station> stnList = new ArrayList<>();
+			
+			for (Favorite favorite : favorList) {
+				if (favorite.getBusOrStnType().equals("B")) {
+					Bus bus = mapper.selectBus(favorite.getBusOrStnId());
+					busList.add(bus);
+					
+				} else {
+					Station station = mapper.selectStation(favorite.getBusOrStnId());
+					stnList.add(station);
+					
+				}
+			}
+			
+			favorMap.put("Bus", busList);
+			favorMap.put("Station", stnList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return favorMap;
+	}
 }
