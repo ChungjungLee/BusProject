@@ -31,6 +31,7 @@ import org.xml.sax.SAXException;
 import bus.dao.BusDAO;
 import bus.vo.Account;
 import bus.vo.Bus;
+import bus.vo.Favorite;
 import bus.vo.Station;
 
 public class BusManager {
@@ -250,30 +251,45 @@ public class BusManager {
 	
 	
 	/**
-	 * 즐겨찾기에 등록되어 있는 버스, 정류장 ID를 반환한다.
-	 * @param 
-	 * @return
+	 * 즐겨찾기에 버스, 정류장 ID를 추가한다.
+	 * @param userId 사용자 ID
+	 * @param favObj 추가하고자 하는 데이터 객체 
+	 * @return 추가 결과
 	 */
-	public List<Object> getFavorite(String busNum) {
-		return null;
+	public boolean setFavorite(String userId, Object favObj) {
+		boolean result = true;
+		
+		Favorite favorite = new Favorite(userId);
+		
+		if (favObj.getClass() == Bus.class) {
+			Bus bus = (Bus) favObj;
+			favorite.setBusOrStnId(bus.getRoutId());
+			favorite.setTypeBus();
+			
+		} else if (favObj.getClass() == Station.class) {
+			Station station = (Station) favObj;
+			favorite.setBusOrStnId(station.getStnId());
+			favorite.setTypeStation();
+			
+		}
+		
+		if (!busDao.insertFavorite(favorite)) {
+			result = false;
+		}
+		
+		return result;
 	}
 	
 	
 	/**
-	 * 즐겨찾기에 버스, 정류장 ID를 추가한다.
-	 * @param userId, favObj
-	 * @return
+	 * 유저의 즐겨찾기에 등록되어 있는 버스, 정류장 정보를 반환한다.
+	 * @param userId 사용자의 ID
+	 * @return 버스와 정류장 정보를 차례로 가지는 맵
 	 */
-	public boolean setFavorite(String userId, Object favObj) {
-		
-		if (favObj.getClass() == Bus.class) {
-			
-		} else if (favObj.getClass() == Station.class) {
-			
-		}
-		
-		return true;
+	public List<Object> getFavorite(String userId) {
+		return null;
 	}
+	
 	
 	/**
 	 * 유저의 최근 검색 목록 전부를 반환한다.

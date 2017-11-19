@@ -10,6 +10,14 @@ public class Favorite {
 	 */
 	public Favorite() {}
 	
+	public Favorite(String userId) {
+		this.userId = userId;
+	}
+	public Favorite(String userId, int busOrStnId) {
+		this.userId = userId;
+		this.busOrStnId = busOrStnId;
+	}
+	
 	public Favorite(String userId, int busOrStnId, String busOrStnType) {
 		this.userId = userId;
 		this.busOrStnId = busOrStnId;
@@ -35,4 +43,10 @@ public class Favorite {
 		this.busOrStnType = busOrStnType;
 	}
 	
+	public void setTypeBus() {
+		this.busOrStnType = "B";
+	}
+	public void setTypeStation() {
+		this.busOrStnType = "S";
+	}
 }

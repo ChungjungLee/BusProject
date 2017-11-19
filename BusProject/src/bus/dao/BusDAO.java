@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import bus.vo.Account;
 import bus.vo.Bus;
+import bus.vo.Favorite;
 import bus.vo.Station;
 
 public class BusDAO {
@@ -163,5 +164,35 @@ public class BusDAO {
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param favorite
+	 * @return boolean 즐겨찾기 저장 결과
+	 */
+	public boolean insertFavorite(Favorite favorite) {
+		SqlSession session = null;
+		boolean result = true;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			if (mapper.insertFavorite(favorite) != 1) {
+				result = false;
+			}
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
 	
 }

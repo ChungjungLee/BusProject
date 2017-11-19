@@ -42,4 +42,11 @@ public class History {
 	public void setIndate(String indate) {
 		this.indate = indate;
 	}
+	
+	public void setTypeBus() {
+		this.busOrStnType = "B";
+	}
+	public void setTypeStation() {
+		this.busOrStnType = "S";
+	}
 }
