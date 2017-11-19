@@ -407,11 +407,7 @@ public class BusManager {
 		return null;
 	}
 	
-	public boolean databaseUpdate() {
-		return true;
-	}
-
-
+	
 	public int userLogIn(String userId, String userPw) {
 		// ·Î±×ÀÎ
 		return 0;
