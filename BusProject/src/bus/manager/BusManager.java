@@ -283,15 +283,37 @@ public class BusManager {
 	
 	
 	/**
+	 * 유저의 즐겨찾기에 등록되어 있는 버스 정보를 반환한다.
+	 * @param userId 사용자의 ID
+	 * @return 즐겨찾기 된 버스의 리스트
+	 */
+	public List<Bus> getFavoriteBusList(String userId) {
+		
+		return busDao.selectFavoriteBus(userId);
+	}
+	
+	
+	/**
+	 * 유저의 즐겨찾기에 등록되어 있는 정류장 정보를 반환한다.
+	 * @param userId 사용자의 ID
+	 * @return 즐겨찾기 된 정류장의 리스트
+	 */
+	public List<Station> getFavoriteStnList(String userId) {
+		
+		return busDao.selectFavoriteStn(userId);
+	}
+	
+	
+	/**
 	 * 유저의 즐겨찾기에 등록되어 있는 버스, 정류장 정보를 반환한다.
 	 * @param userId 사용자의 ID
 	 * @return 버스와 정류장 정보를 차례로 가지는 맵
 	 */
-	public Map<String, Object> getFavorite(String userId) {
+	public Map<String, Object> getFavoriteAll(String userId) {
 		// 버스는 번호
 		// 정류장은 정류장 이름과 정류장 번호만 출력하려고 한다
 		
-		return busDao.selectFavorite(userId);
+		return busDao.selectFavoriteAll(userId);
 	}
 	
 	
@@ -478,20 +500,7 @@ public class BusManager {
 		
 		return busesList;
 	}
-
-
-	public List<Bus> getFavoriteBusList(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	public List<Station> getFavoriteStnList(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
+	
 	public boolean searchFavorite(String userId, Bus throwBus) {
 		// TODO Auto-generated method stub
 		return false;

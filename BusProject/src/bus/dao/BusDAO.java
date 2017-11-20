@@ -208,13 +208,70 @@ public class BusDAO {
 		return result;
 	}
 	
+	/**
+	 * 즐겨찾기 정보 중 버스만 받아온다.
+	 * @param userId 사용자 ID
+	 * @return busList 즐겨찾기에 등록된 버스의 리스트
+	 */
+	public List<Bus> selectFavoriteBus(String userId) {
+		SqlSession session = null;
+		List<Bus> busList = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			busList = mapper.selectFavoriteBus(userId);
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return busList;
+	}
 	
 	/**
-	 * 계정에 저장되어 있는 즐겨찾기 정보를 가져와 각각의 즐겨찾기 목록에 대한 정보를 받아온다. 
+	 * 즐겨찾기 정보 중 정류장만 받아온다.
+	 * @param userId 사용자 ID
+	 * @return busList 즐겨찾기에 등록된 정류장의 리스트
+	 */
+	public List<Station> selectFavoriteStn(String userId) {
+		SqlSession session = null;
+		List<Station> stnList = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			stnList = mapper.selectFavoriteStn(userId);
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return stnList;
+	}
+	
+	/**
+	 * 계정에 저장되어 있는 즐겨찾기 정보를 모두를 가져와 대응되는 버스, 정류장 정보를 받아온다. 
 	 * @param userId 사용자 ID
 	 * @return favorMap 버스리스트, 정류장리스트가 저장되어 있는 Map
 	 */
-	public Map<String, Object> selectFavorite(String userId) {
+	public Map<String, Object> selectFavoriteAll(String userId) {
 		SqlSession session = null;
 		Map<String, Object> favorMap = new HashMap<>();
 		

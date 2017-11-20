@@ -26,6 +26,10 @@ public interface BusMapper {
 	
 	int insertFavorite(Favorite favorite);
 	
+	List<Bus> selectFavoriteBus(String userId);
+	
+	List<Station> selectFavoriteStn(String userId);
+	
 	List<Favorite> selectFavorite(String userId);
 	
 	int insertHistory(History history);

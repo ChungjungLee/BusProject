@@ -119,7 +119,52 @@
 	</insert>
 	
 	
-	<!-- 즐겨찾기 정보 가져오기 -->
+	<!-- 즐겨찾기 버스 정보 가져오기 -->
+	<select id="selectFavoriteBus" parameterType="string" resultType="bus">
+		SELECT
+			b.routId		AS routId,
+			b.routName		AS routName,
+			b.routType		AS routType,
+			b.stnFirst		AS stnFirst,
+			b.stnLast		AS stnLast,
+			b.timeFirst		AS timeFirst,
+			b.timeLast		AS timeLast,
+			b.satTimeFirst	AS satTimeFirst,
+			b.satTimeLast	AS satTimeLast,
+			b.holTimeFirst	AS holTimeFirst,
+			b.holTimeLast	AS holTimeLast,
+			b.norTerms		AS norTerms,
+			b.satTerms		AS satTerms,
+			b.holTerms		AS holTerms,
+			b.companyNm		AS companyNm,
+			b.telNo			AS telNo,
+			b.faxNo			AS faxNo,
+			b.email			AS email
+		FROM
+			bus b, favorite f
+		WHERE
+			f.userId = #{userId} AND
+			f.busOrStnType = 'B' AND
+			f.busOrStnId = b.routId
+	</select>
+	
+	
+	<!-- 즐겨찾기 정류장 정보 가져오기 -->
+	<select id="selectFavoriteStn" parameterType="string" resultType="station">
+		SELECT
+			s.stnId		AS stnId,
+			s.arsId		AS arsId,
+			s.stnName	AS stnName
+		FROM
+			station s, favorite f
+		WHERE
+			f.userId = #{userId} AND
+			f.busOrStnType = 'S' AND
+			f.busOrStnId = s.stnId
+	</select>
+	
+	
+	<!-- 즐겨찾기 모든 정보 가져오기 -->
 	<select id="selectFavorite" parameterType="string" resultType="favorite">
 		SELECT
 			*
