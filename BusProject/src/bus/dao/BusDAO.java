@@ -208,6 +208,35 @@ public class BusDAO {
 		return result;
 	}
 	
+	
+	/**
+	 * 사용자의 즐겨찾기 정보를 가져온다.
+	 * @param userId 사용자 ID
+	 * @return 즐겨찾기 정보
+	 */
+	public List<Favorite> selectFavoriteInfo(String userId) {
+		SqlSession session = null;
+		List<Favorite> favList = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			favList = mapper.selectFavorite(userId);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return favList;
+	}
+	
+	
 	/**
 	 * 즐겨찾기 정보 중 버스만 받아온다.
 	 * @param userId 사용자 ID
@@ -222,8 +251,6 @@ public class BusDAO {
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			busList = mapper.selectFavoriteBus(userId);
-			
-			session.commit();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -251,8 +278,6 @@ public class BusDAO {
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			stnList = mapper.selectFavoriteStn(userId);
-			
-			session.commit();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -310,4 +335,5 @@ public class BusDAO {
 		
 		return favorMap;
 	}
+	
 }

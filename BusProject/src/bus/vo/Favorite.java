@@ -49,4 +49,24 @@ public class Favorite {
 	public void setTypeStation() {
 		this.busOrStnType = "S";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof Favorite)) {
+			return false;
+		}
+		
+		Favorite favCmp = (Favorite) obj;
+		
+		if (!favCmp.getUserId().equals(this.userId) 
+				|| favCmp.getBusOrStnId() != this.busOrStnId) {
+			return false;
+		}
+		
+		return true;
+	}
 }

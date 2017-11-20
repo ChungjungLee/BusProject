@@ -252,6 +252,37 @@ public class BusManager {
 	
 	
 	/**
+	 * 사용자의 즐겨찾기 목록에 해당 버스 혹은 정류장 정보가 들어가 있는지 확인한다.
+	 * @param userId 사용자 ID
+	 * @param busOrStn 확인코자 하는 정보 객체
+	 * @return boolean 이미 있으면 true, 없으면 false
+	 */
+	public boolean searchFavorite(String userId, Object favObj) {
+		
+		Favorite favorite = new Favorite(userId);
+		
+		if (favObj.getClass() == Bus.class) {
+			Bus bus = (Bus) favObj;
+			favorite.setBusOrStnId(bus.getRoutId());
+			
+		} else if (favObj.getClass() == Station.class) {
+			Station station = (Station) favObj;
+			favorite.setBusOrStnId(station.getStnId());
+		}
+		
+		List<Favorite> favList = busDao.selectFavoriteInfo(userId);
+		
+		for (Favorite favInList : favList) {
+			if (favorite.equals(favInList)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	/**
 	 * 즐겨찾기에 버스, 정류장 ID를 추가한다.
 	 * @param userId 사용자 ID
 	 * @param favObj 추가하고자 하는 데이터 객체 
@@ -499,11 +530,6 @@ public class BusManager {
 		}
 		
 		return busesList;
-	}
-	
-	public boolean searchFavorite(String userId, Object busOrStn) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 	
 }
