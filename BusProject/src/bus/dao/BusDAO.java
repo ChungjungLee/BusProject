@@ -339,6 +339,38 @@ public class BusDAO {
 	
 	
 	/**
+	 * 지우고자 하는 즐겨찾기 목록을 삭제한다.
+	 * @param stnOrBusId 지우고자 하는 버스 혹은 정류장 ID
+	 * @return 삭제 결과
+	 */
+	public boolean deleteFavorite(Favorite toRemove) {
+		SqlSession session = null;
+		boolean result = true;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+		
+			if (mapper.deleteFavorite(toRemove) != 1) {
+				result = false;
+			}
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	/**
 	 * 검색 기록을 데이터베이스에 저장한다.
 	 * @param history 저장할 검색 정보
 	 * @return boolean 검색 결과를 저장한 결과
@@ -352,6 +384,66 @@ public class BusDAO {
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			if (mapper.insertHistory(history) != 1) {
+				result = false;
+			}
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 사용자의 검색 기록 정보를 가져온다.
+	 * @param userId 사용자 ID
+	 * @return 검색 기록 정보
+	 */
+	public List<History> selectHistoryInfo(String userId) {
+		SqlSession session = null;
+		List<History> hisList = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			hisList = mapper.selectHistory(userId);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return hisList;
+	}
+	
+	
+	/**
+	 * 검색 기록의 시간을 수정한다.
+	 * @param userId 사용자 ID
+	 * @return 수정 여부
+	 */
+	public boolean updateHistoryInfo(History history) {
+		SqlSession session = null;
+		boolean result = true;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			if (mapper.updateHistory(history) != 1) {
 				result = false;
 			}
 			

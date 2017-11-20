@@ -184,6 +184,9 @@ public class BusManager {
 			srchStnList.add(station);
 		}
 		
+		// DB에 저장
+		busDao.insertStations(srchStnList);
+		
 		return srchStnList;
 	}
 	
@@ -348,6 +351,88 @@ public class BusManager {
 	
 	
 	/**
+	 * 유저의 즐겨찾기에 등록되어 있는 것중 삭제하고 싶은 것을 삭제한다.
+	 * @param userId 사용자의 ID
+	 * @param busOrStn 버스 혹은 정류장 객체
+	 * @return 삭제 결과
+	 */
+	public boolean deleteFavorite(String userId, Object busOrStn) {
+		Favorite favorite = null;
+		
+		if (busOrStn.getClass() == Bus.class) {
+			Bus bus = (Bus) busOrStn;
+			favorite = new Favorite(userId, bus.getRoutId());
+			favorite.setTypeBus();
+			
+		} else if (busOrStn.getClass() == Station.class) {
+			Station station = (Station) busOrStn;
+			favorite = new Favorite(userId, station.getStnId());
+			favorite.setTypeStation();
+		}
+		
+		return busDao.deleteFavorite(favorite);
+	}
+	
+	
+	/**
+	 * 사용자의 최근 검색 목록에 해당 버스 혹은 정류장 정보가 들어가 있는지 확인한다.
+	 * @param userId 사용자 ID
+	 * @param busOrStn 확인코자 하는 정보 객체
+	 * @return boolean 이미 있으면 true, 없으면 false
+	 */
+	public boolean searchHistory(String userId, Object busOrStn) {
+		
+		History history = new History(userId);
+		
+		if (busOrStn.getClass() == Bus.class) {
+			Bus bus = (Bus) busOrStn;
+			history.setBusOrStnId(bus.getRoutId());
+			
+		} else if (busOrStn.getClass() == Station.class) {
+			Station station = (Station) busOrStn;
+			history.setBusOrStnId(station.getStnId());
+		}
+		
+		List<History> hisList = busDao.selectHistoryInfo(userId);
+		
+		for (History hisInList : hisList) {
+			if (history.equals(hisInList)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	
+	/**
+	 * 이미 저장되어 있는 검색 기록을 시간만 바꿔 업데이트 한다.
+	 * @param userId 사용자 ID
+	 * @param busOrStn 시간 수정하려는 정보 객체
+	 * @return 수정 결과
+	 */
+	public boolean updateHistory(String userId, Object busOrStn) {
+		boolean result = true;
+		
+		History history = new History(userId);
+		
+		if (busOrStn.getClass() == Bus.class) {
+			Bus bus = (Bus) busOrStn;
+			history.setBusOrStnId(bus.getRoutId());
+			
+		} else if (busOrStn.getClass() == Station.class) {
+			Station station = (Station) busOrStn;
+			history.setBusOrStnId(station.getStnId());
+		}
+		
+		if (!busDao.updateHistoryInfo(history)) {
+			result = false;
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * 사용자의 검색 기록을 저장한다.
 	 * @param userId 사용자 ID
 	 * @param hisObj 저장하려는 버스 혹은 정류장 객체
@@ -388,8 +473,8 @@ public class BusManager {
 		// List<Object> 형태로 리턴
 		// 받는 곳에서 Bus, Station, History 타입에 따라 다른 행동
 		
+		/*
 		List<Object> hisList = busDao.selectHistoryAll(userId);
-		
 		for (int i = 0; i < hisList.size(); i += 2) {
 			History history = (History) hisList.get(i);
 			System.out.print("[" + (i+1) + "] " + history.getIndate());
@@ -403,11 +488,9 @@ public class BusManager {
 				System.out.print(" station: " + station.getStnName());
 			}
 		}
+		*/
 		
-		
-		
-		return null;
-		//return busDao.selectHistoryAll(userId);
+		return busDao.selectHistoryAll(userId);
 	}
 	
 	

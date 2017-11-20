@@ -32,7 +32,11 @@ public interface BusMapper {
 	
 	List<Favorite> selectFavorite(String userId);
 	
+	int deleteFavorite(Favorite favorite);
+	
 	int insertHistory(History history);
 	
 	List<History> selectHistory(String userId);
+
+	int updateHistory(History history);
 }

@@ -53,4 +53,24 @@ public class History {
 	public void setTypeStation() {
 		this.busOrStnType = "S";
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof History)) {
+			return false;
+		}
+		
+		History hisCmp = (History) obj;
+		
+		if (!hisCmp.getUserId().equals(this.userId) 
+				|| hisCmp.getBusOrStnId() != this.busOrStnId) {
+			return false;
+		}
+		
+		return true;
+	}
 }

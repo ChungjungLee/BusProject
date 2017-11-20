@@ -175,6 +175,15 @@
 	</select>
 	
 	
+	<!-- 즐겨찾기 정보 지우기 -->
+	<delete id="deleteFavorite" parameterType="int">
+		DELETE FROM
+			favorite
+		WHERE
+			busOrStnId = #{busOrStnId}
+	</delete>
+	
+	
 	<!-- 검색 기록 저장 -->
 	<insert id="insertHistory" parameterType="history">
 		INSERT INTO history
@@ -192,7 +201,21 @@
 			history
 		WHERE
 			userId = #{userId}
+		ORDER BY
+			indate DESC
 	</select>
+	
+	
+	<!-- 검색 기록 업데이트하기 -->
+	<update id="updateHistory" parameterType="history">
+		UPDATE
+			history
+		SET
+			indate = SYSDATE
+		WHERE
+			userId = #{userId} AND
+			busOrStnId = #{busOrStnId}
+	</update>
 	
 </mapper>
 
