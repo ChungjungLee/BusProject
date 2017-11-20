@@ -6,10 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,6 +23,7 @@ import org.json.simple.parser.JSONParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class ApiTest {
@@ -29,6 +32,9 @@ public class ApiTest {
 	private final String serviceKey =
 			"9qJ%2FGyciiKC2bdjQYHAWCxxYmnJ0KmYn1ZySk6y8SJdOgcffBFBpTOxUgobyps504QppRIpzOrPbIkZoJWJhtg%3D%3D";
 	
+	// 구글 지도 API 활용을 위한 서비스 키
+	private final String geocodingKey = 
+			"AIzaSyAJ4G_Bsn0dBdkXBjn7CpfN1L3WDxumBu0";
 	
 	private String busNumber;
 	Socket socket;
@@ -45,7 +51,7 @@ public class ApiTest {
 		
 	}
 	
-	
+	/*
 	public void start() {
 		// URL로부터 XML정보를 입력 받는 부분
 		//String urlString = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByName?serviceKey=" + serviceKey + "&stSrch=" + "종합운동장";
@@ -110,7 +116,85 @@ public class ApiTest {
 		}
 		
 	}
+	*/
 	
+	public void start() {
+		String keyword = "삼성동 코엑스";
+		
+		String encodedKeyword = null;
+		try {
+			encodedKeyword = URLEncoder.encode(keyword, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		String urlString = "https://maps.googleapis.com/maps/api/geocode/json?"
+							+ "address=" + encodedKeyword
+							+ "&key=" + geocodingKey;
+		
+		URL url = null;
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			System.out.println("잘못된 URL 입력");
+			e.printStackTrace();
+		}
+		
+		URLConnection connection = null;
+		try {
+			System.out.println("url connection");
+			connection = url.openConnection();
+			connection.connect();
+		} catch (IOException e) {
+			System.out.println("URL 접속 오류");
+			e.printStackTrace();
+		}
+		
+		/* 응답을 처리 */
+		String responseStr = "";
+		try {
+			
+			BufferedReader br = 
+					new BufferedReader(
+							new InputStreamReader(connection.getInputStream()));
+			
+			String line;
+			
+			while(true) {
+				line = br.readLine();
+				System.out.println("printLine: " + line);
+				if (line == null) {
+					break;
+				}
+				
+				responseStr += line + "\n";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		/* JSON data parsing */
+		String result = "";
+		try {
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(responseStr);
+			JSONArray locationList = (JSONArray) jsonObject.get("results");
+			
+			for (int i = 0; i < locationList.size(); i++) {
+				JSONObject location = (JSONObject) locationList.get(i);
+				result += "lat: " + location.get("lat") + "\n";
+				result += "lng: " + location.get("lng") + "\n";
+			}
+			
+			System.out.println(result);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		
+	}
 	
 	private Document parseXML(InputStream stream) {
 		DocumentBuilderFactory objDocumentBuilderFactory = null;

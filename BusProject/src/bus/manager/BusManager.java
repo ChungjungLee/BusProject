@@ -34,6 +34,7 @@ import bus.vo.Account;
 import bus.vo.Bus;
 import bus.vo.Favorite;
 import bus.vo.History;
+import bus.vo.RealTimeStation;
 import bus.vo.Station;
 
 public class BusManager {
@@ -105,24 +106,32 @@ public class BusManager {
 	 * @param busId 확인하려는 버스의 ID
 	 * @return 노선도와 실시간 위치
 	 */
-	public List<Station> getRouteMap(int busRouteId) {
-		String urlString = "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRouteAll?serviceKey=" + serviceKey + 
+	public List<RealTimeStation> getRouteMap(int busRouteId) {
+		
+		String urlGetRouteMap = "http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRouteAll?serviceKey=" + serviceKey + 
 				"&busRouteId=" + busRouteId;
 		
-		Document doc = getDocumentByUrl(urlString);
+		String urlGetRealTimeBus = "http://ws.bus.go.kr/api/rest/buspos/getBusPosByRtid?serviceKey=" + serviceKey +
+				"&busRouteId=" + busRouteId;
 		
-		if (doc == null) {
+		Document docRouteMap = getDocumentByUrl(urlGetRouteMap);
+		Document docRealTimeBus = getDocumentByUrl(urlGetRealTimeBus);
+		
+		if (docRouteMap == null || docRealTimeBus == null) {
 			return null;
 		}
 		
-		List<Station> routeMap = new ArrayList<>();
+		NodeList itemListRoute = docRouteMap.getElementsByTagName("itemList");
+		NodeList itemListRealTimeBus = docRealTimeBus.getElementsByTagName("itemList");
 		
-		NodeList itemList = doc.getElementsByTagName("itemList");
+		List<RealTimeStation> routeMap = new ArrayList<>();	// 실제 반환할 리스트
 		
-		for (int i = 0; i < itemList.getLength(); i++) {
+		int indexRealTimeBus = 0;
+		for (int indexRoute = 0; indexRoute < itemListRoute.getLength(); indexRoute++) {
 			
-			Station station = new Station();
-			for (Node node = itemList.item(i).getFirstChild(); node != null; node = node.getNextSibling()) {
+			RealTimeStation station = new RealTimeStation();
+			// 먼저 노선도 정보를 하나 읽어들인다.
+			for (Node node = itemListRoute.item(indexRoute).getFirstChild(); node != null; node = node.getNextSibling()) {
 				
 				if (node.getNodeName().equals("stNm")) {
 					station.setStnName(node.getTextContent());
@@ -131,6 +140,27 @@ public class BusManager {
 				} else if (node.getNodeName().equals("stId")) {
 					station.setStnId(Integer.parseInt(node.getTextContent()));
 				}
+			}
+			
+			// 실시간 버스 정보를 하나 읽어들인다.
+			int tempBusType = 0;
+			int tempNextStId = 0;
+			String tempPlainNo = null;
+			for (Node node = itemListRealTimeBus.item(indexRealTimeBus).getFirstChild(); node != null; node = node.getNextSibling()) {
+				if (node.getNodeName().equals("busType")) {
+					tempBusType = Integer.parseInt(node.getTextContent());
+				} else if (node.getNodeName().equals("nextStId")) {
+					tempNextStId = Integer.parseInt(node.getTextContent());
+				} else if (node.getNodeName().equals("plainNo")) {
+					tempPlainNo = node.getTextContent();
+				}
+			}
+			
+			// 아까 생성한 정류소와 실시간 버스의 다음 도착 정류소가 같으면 도착 정보 추가
+			if (tempNextStId == station.getStnId()) {
+				station.setBusType(tempBusType);
+				station.setPlainNo(tempPlainNo);
+				indexRealTimeBus++;
 			}
 			
 			routeMap.add(station);
