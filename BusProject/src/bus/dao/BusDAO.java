@@ -11,6 +11,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import bus.vo.Account;
 import bus.vo.Bus;
 import bus.vo.Favorite;
+import bus.vo.History;
 import bus.vo.Station;
 
 public class BusDAO {
@@ -336,4 +337,81 @@ public class BusDAO {
 		return favorMap;
 	}
 	
+	
+	/**
+	 * 검색 기록을 데이터베이스에 저장한다.
+	 * @param history 저장할 검색 정보
+	 * @return boolean 검색 결과를 저장한 결과
+	 */
+	public boolean insertHistory(History history) {
+		SqlSession session = null;
+		boolean result = true;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			if (mapper.insertHistory(history) != 1) {
+				result = false;
+			}
+			
+			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 계정에 저장되어 있는 검색 기록 모두를 가져와 대응되는 버스, 정류장 정보를 받아온다. 
+	 * @param userId 사용자 ID
+	 * @return favorMap 버스리스트, 정류장리스트가 저장되어 있는 Map
+	 */
+	public Map<String, Object> selectHistoryAll(String userId) {
+		SqlSession session = null;
+		Map<String, Object> hisMap = new HashMap<>();
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			List<History> hisList = mapper.selectHistory(userId);
+			
+			List<Bus> busList = new ArrayList<>();
+			List<Station> stnList = new ArrayList<>();
+			
+			for (History history : hisList) {
+				if (history.getBusOrStnType().equals("B")) {
+					Bus bus = mapper.selectBus(history.getBusOrStnId());
+					busList.add(bus);
+					
+				} else {
+					Station station = mapper.selectStation(history.getBusOrStnId());
+					stnList.add(station);
+					
+				}
+			}
+			
+			hisMap.put("Bus", busList);
+			hisMap.put("Station", stnList);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return hisMap;
+	}
 }

@@ -33,6 +33,7 @@ import bus.dao.BusDAO;
 import bus.vo.Account;
 import bus.vo.Bus;
 import bus.vo.Favorite;
+import bus.vo.History;
 import bus.vo.Station;
 
 public class BusManager {
@@ -341,23 +342,53 @@ public class BusManager {
 	 * @return 버스와 정류장 정보를 차례로 가지는 맵
 	 */
 	public Map<String, Object> getFavoriteAll(String userId) {
-		// 버스는 번호
-		// 정류장은 정류장 이름과 정류장 번호만 출력하려고 한다
 		
 		return busDao.selectFavoriteAll(userId);
 	}
 	
 	
 	/**
-	 * 
-	 * @param userId
-	 * @return
+	 * 사용자의 검색 기록을 저장한다.
+	 * @param userId 사용자 ID
+	 * @param hisObj 저장하려는 버스 혹은 정류장 객체
+	 * @return 추가 결과
 	 */
-	public HashMap<String, Object> getHistory(String userId) {
-		HashMap<String, Object> map = new HashMap<String, Object>();
+	public boolean setHistory(String userId, Object hisObj) {
 		
-		return map;
+		boolean result = true;
+		
+		History history = new History(userId);
+		
+		if (hisObj.getClass() == Bus.class) {
+			Bus bus = (Bus) hisObj;
+			history.setBusOrStnId(bus.getRoutId());
+			history.setTypeBus();
+			
+		} else if (hisObj.getClass() == Station.class) {
+			Station station = (Station) hisObj;
+			history.setBusOrStnId(station.getStnId());
+			history.setTypeStation();
+			
+		}
+		
+		if (!busDao.insertHistory(history)) {
+			result = false;
+		}
+		
+		return result;
 	}
+	
+	
+	/**
+	 * 유저의 최근 검색기록에 저장되어 있는 버스, 정류장 정보를 반환한다. 
+	 * @param userId 사용자 ID
+	 * @return 버스와 정류장 정보를 가지는 맵
+	 */
+	public Map<String, Object> getHistory(String userId) {
+		
+		return busDao.selectHistoryAll(userId);
+	}
+	
 	
 	/**
 	 * 유저의 최근 검색 목록 전부를 반환한다.
@@ -491,7 +522,7 @@ public class BusManager {
 	 * @param jsonData 파일로부터 읽어 들인 문자열
 	 * @return Bus 객체의 리스트
 	 */
-	public List<Bus> parseJSONBuses(String jsonData) {
+	private List<Bus> parseJSONBuses(String jsonData) {
 		List<Bus> busesList = new ArrayList<>();
 		
 		try {

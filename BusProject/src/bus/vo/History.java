@@ -11,6 +11,10 @@ public class History {
 	 */
 	public History() {}
 	
+	public History(String userId) {
+		this.userId = userId;
+	}
+	
 	public History(String userId, int busOrStnId, String busOrStnType, String indate) {
 		this.userId = userId;
 		this.busOrStnId = busOrStnId;
