@@ -137,7 +137,7 @@ public class ProjectBusUI {
 					System.out.println("\n입력하신 ID로 회원가입 하시겠습니까?");
 					System.out.println("1. 예\n2. 아니오");
 					
-					int isChoiceSignIn = getIntFromUser();	// 1 또는 2 입력받음
+					int isChoiceSignIn = selectNum(2);	// 1 또는 2 입력받음
 					
 					if (isChoiceSignIn == 1) { 			 // 예
 						
@@ -330,8 +330,8 @@ public class ProjectBusUI {
 										
 					boolean out1 = loopFavMenu();
 					
-					if (out1) {
-						loop = false;
+					if (out1) { 
+						loop = false; 
 					}
 					
 					break;
@@ -345,17 +345,16 @@ public class ProjectBusUI {
 										
 					boolean out2 = loopFavMenu();
 					
-					if (out2) {
-						loop = false;
+					if (out2) { 
+						loop = false; 
 					}
 					
 					break;
 					
 				case 3: 	// 저장된 즐겨찾기 취소
 					
-					// TODO: 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
-					/*
-					 * 	1.	버스 및 정류장 목록 모두 출력받음
+					/* 	해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
+					  	1.	버스 및 정류장 목록 모두 출력받음
 						2.	출력받은 목록에 넘버링
 						3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
 					 */
@@ -449,7 +448,9 @@ public class ProjectBusUI {
 		
 		List<Object> history = busManager.getHistory(userId);	// 해당 ID에 맞는 최근 검색 기록 호출 (userId = 첫번째 인자)
 		
-		int sum = 1;	// Numbering용
+		int sum = 1;				// Numbering용
+		
+		Object busOrStn = null;		// 버스 또는 정류장
 		
 		for (int i = 0; i < history.size(); i += 2) {
 			
@@ -457,7 +458,7 @@ public class ProjectBusUI {
 						
 			System.out.print(" | " + (sum++) + " | "+ busOrStnHistory.getIndate() + " | ");
 						
-			Object busOrStn = history.get(i + 1);				// 두 번째 인자 = 버스 또는 정류장
+			busOrStn = history.get(i + 1);						// 두 번째 인자 = 버스 또는 정류장
 			
 			if (busOrStn.getClass() == Bus.class) {				// 버스일 경우 호출될 문구
 				
@@ -472,8 +473,56 @@ public class ProjectBusUI {
 													+ stnHistory.getArsId() + " ) ");
 			}
 		}
-		
 		System.out.println();
+		
+		System.out.println("- 확인하고 싶은 목록의 번호를 입력하세요. -");
+		
+		int inputNumInHistory = selectNum(sum);		// 유저로부터 확인하고 싶은 목록의 번호를 입력받는다.
+				
+		Object busOrStn1 = history.get(inputNumInHistory);
+		
+		if (busOrStn1.getClass() == Bus.class) {
+			
+			Bus callBusRoute = (Bus) busOrStn1;
+			
+			int busIdFromHistory = callBusRoute.getRoutId();
+			
+			List<Station> busRoute = busManager.getRouteMap(busIdFromHistory);
+			
+			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
+			
+			for (Station route : busRoute) {
+				System.out.println();
+				System.out.println("| " + (x++) + " | " + route.getStnName() + 
+						"    ( 정류장 ID : " + route.getArsId() + " )");
+			}
+			
+			System.out.println();
+							
+		} else {
+			
+			Station callStnsBusList = (Station) busOrStn1;
+											
+			List<HashMap<String, Object>> busArriveList =
+					busManager.getBuses(callStnsBusList.getArsId());
+			
+			for (HashMap<String, Object> busInfo : busArriveList) {
+				System.out.println();
+				System.out.println("<" + busInfo.get("busNumber") + ">");
+				
+				System.out.print("다음 차:");
+				System.out.println(busInfo.get("firstBusMsg"));
+				
+				System.out.print("다다음 차:");
+				System.out.println(busInfo.get("secondBusMsg"));
+			}
+			
+			System.out.println();
+		}
+		
+		System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
+			
+		
 		
 	} // recentSearch(); method end
 	
@@ -685,8 +734,9 @@ public class ProjectBusUI {
 			
 			int usersSelect = getIntFromUser();	// 예, 아니오 판별용
 			
+			// manager에 id를 넘겨주고, 즐겨찾기에 저장시킨다.
 			if (usersSelect == 1) {
-				busManager.setFavorite(userId, busOrStn); 	// manager에 id를 넘겨주고, 즐겨찾기에 저장시킨다.
+				busManager.setFavorite(userId, busOrStn); 
 				
 				System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
 				loopFav = false;
@@ -738,6 +788,7 @@ public class ProjectBusUI {
 			List<Station> busRoute = busManager.getRouteMap(throwBusId); // manager에서 받아온 노선도
 			
 			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
+			
 			for (Station route : busRoute) {
 				System.out.println();
 				System.out.println("| " + (x++) + " | " + route.getStnName() + 
