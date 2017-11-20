@@ -346,12 +346,26 @@ public class ProjectBusUI {
 						2.	출력받은 목록에 넘버링
 						3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
 					 */
-					System.out.println("- 현재까지 즐겨찾기한 목록입니다. -");
+					System.out.println("- 현재까지 즐겨찾기한 목록입니다. -\n");
 					
 					Map<String, Object> favList = busManager.getFavoriteAll(userId);
 					
-					favList.get("busList");
-					favList.get("stnList");
+					for (int i = 0; i < favList.size(); i++) {
+						
+												
+						System.out.print(" | " + (i + 1) + " | ");
+												
+						if (favList.getClass() == Bus.class) {
+							favList.get("Bus");
+							System.out.print(" 버스 번호 : " + favList.getRoutName() + "  ( " 
+														  + favList.getRoutType() + " )\n");
+							
+						} else if (favList.getClass() == Station.class) {
+							List<Station> stn = (List<Station>) favList.get(i);
+							System.out.print(" 정류장 이름 : " 	+ stn.get(i).getStnName() + "  ( " 
+															+ stn.get(i).getArsId() + " )\n");
+						}
+					}
 					
 					break;
 					
@@ -377,10 +391,13 @@ public class ProjectBusUI {
 	 *  	: Main - switch 3
 	 */
 	private void recentSearch() {
+		
 		System.out.println("--- < 최  근  검  색 > ---");
 		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
 		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		List<Object> history = busManager.getHistory(userId);
+		
+		
 		
 	} // recentSearch(); method end
 	
@@ -631,7 +648,7 @@ public class ProjectBusUI {
 				
 				System.out.println();
 				System.out.println(" | " + (i + 1) + " | " 
-						+ list.getRoutName() + " ( " + list.getRoutType() + ")");
+						+ list.getRoutName() + " ( " + list.getRoutType() + " )");
 			}
 			
 			System.out.println("\n확인하고 싶은 버스를 선택해주세요.");
