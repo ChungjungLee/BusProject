@@ -8,6 +8,7 @@ import java.util.Scanner;
 import bus.manager.BusManager;
 import bus.vo.Bus;
 import bus.vo.History;
+import bus.vo.RealTimeStation;
 import bus.vo.Station;
 
 public class ProjectBusUI {
@@ -368,7 +369,7 @@ public class ProjectBusUI {
 					
 					for (i = 0; i < busFavList.size(); i++) {
 					
-						System.out.print(" | " + (i + 1) + " | ");
+						System.out.print("| " + (i + 1) + " | ");
 						
 						System.out.print(" 버스 번호 : " + busFavList.get(i).getRoutName() + "  ( " 
 													+ busFavList.get(i).getRoutType() + " )\n");
@@ -378,7 +379,7 @@ public class ProjectBusUI {
 					
 					for (int j = 0; j < stnFavList.size(); j++) {
 						
-						System.out.print(" | " + (i + 1) + " | ");
+						System.out.print("| " + (i + 1) + " | ");
 						
 						i++;
 						
@@ -456,7 +457,7 @@ public class ProjectBusUI {
 			
 			History busOrStnHistory = (History) history.get(i); // 호출된 배열에서 불러낼 객체
 						
-			System.out.print(" | " + (sum++) + " | "+ busOrStnHistory.getIndate() + " | ");
+			System.out.print("| " + (sum++) + " | "+ busOrStnHistory.getIndate() + " | ");
 						
 			busOrStn = history.get(i + 1);						// 두 번째 인자 = 버스 또는 정류장
 			
@@ -487,14 +488,18 @@ public class ProjectBusUI {
 			
 			int busIdFromHistory = callBusRoute.getRoutId();
 			
-			List<Station> busRoute = busManager.getRouteMap(busIdFromHistory);
+			List<RealTimeStation> busRoute = busManager.getRouteMap(busIdFromHistory);
 			
 			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 			
-			for (Station route : busRoute) {
+			for (RealTimeStation route : busRoute) {
 				System.out.println();
 				System.out.println("| " + (x++) + " | " + route.getStnName() + 
 						"    ( 정류장 ID : " + route.getArsId() + " )");
+				
+				if (route.getPlainNo() != null) {
+					System.out.println("★  " + route.getPlainNo());
+				}
 			}
 			
 			System.out.println();
@@ -773,7 +778,7 @@ public class ProjectBusUI {
 				Bus list = busList.get(i);
 				
 				System.out.println();
-				System.out.println(" | " + (i + 1) + " | " 
+				System.out.println("| " + (i + 1) + " | " 
 						+ list.getRoutName() + " ( " + list.getRoutType() + " )");
 			}
 			
@@ -785,15 +790,19 @@ public class ProjectBusUI {
 			
 			throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
 			
-			List<Station> busRoute = busManager.getRouteMap(throwBusId); // manager에서 받아온 노선도
+			List<RealTimeStation> busRoute = busManager.getRouteMap(throwBusId); // manager에서 받아온 노선도
 			
 			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 			
-			for (Station route : busRoute) {
+			for (RealTimeStation route : busRoute) {
 				System.out.println();
-				System.out.println("| " + (x++) + " | " + route.getStnName() + 
+				System.out.print("| " + (x++) + " | " + route.getStnName() + 
 						"    ( 정류장 ID : " + route.getArsId() + " )");
+				if (route.getPlainNo() != null) {
+					System.out.print(" |  ★     |  " + route.getPlainNo());
+				}
 			}
+			
 		}
 		
 		return throwBus;
@@ -818,7 +827,7 @@ public class ProjectBusUI {
 		} else {
 			
 			for (int i = 0; i < foundBusList.size(); i++) {
-				System.out.println(" | " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
+				System.out.println("| " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
 						+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
 			}
 			
