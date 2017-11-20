@@ -224,7 +224,7 @@ public class ProjectBusUI {
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveBusFav = busManager.searchFavorite(userId, throwBus);
 					
-					if (canSaveBusFav == false) {
+					if (canSaveBusFav == true) {
 						System.out.println("\n[Error] 이미 등록된 버스 정보입니다.");
 						System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
 												
@@ -253,7 +253,7 @@ public class ProjectBusUI {
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveStnFav = busManager.searchFavorite(userId, throwStn);
 										
-					if (canSaveStnFav == false) {
+					if (canSaveStnFav == true) {
 						System.out.println("[Error] 이미 등록된 정류장 정보입니다.");
 						System.out.println("[System] 메인 메뉴로 돌아갑니다.");
 						
@@ -309,7 +309,7 @@ public class ProjectBusUI {
 					List<Bus> busList = busManager.getFavoriteBusList(userId);
 					
 					catchBusList(busList);
-					
+										
 					boolean out1 = loopFavMenu();
 					
 					if (out1) {
@@ -603,30 +603,39 @@ public class ProjectBusUI {
 	 * 		@return 선택된 Bus 객체
 	 */
 	private Bus catchBusList(List<Bus> busList) {
-							
-		for (int i = 0; i < busList.size(); i++) {
-			Bus list = busList.get(i);
+		
+		Bus throwBus = null;	// 최근검색, 즐겨찾기에 넘겨줄 객체
+		
+		// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
+		if (busList == null || busList.isEmpty()) {
+			System.out.println("[Error] 즐겨찾기한 버스가 없습니다.\n");
 			
-			System.out.println();
-			System.out.println(" | " + (i + 1) + " | " 
-					+ list.getRoutName() + " ( " + list.getRoutType() + ")");
-		}
+		} else {
 		
-		System.out.println("\n확인하고 싶은 버스를 선택해주세요.");
-		
-		int selectBus = selectNum(busList.size());
-		
-		int throwBusId = busList.get(selectBus - 1).getRoutId();
-		
-		Bus throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
-		
-		List<Station> busRoute = busManager.getRouteMap(throwBusId);
-		
-		int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
-		for (Station route : busRoute) {
-			System.out.println();
-			System.out.println("| " + (x++) + " | " + route.getStnName() + 
-					"    ( 정류장 ID : " + route.getArsId() + " )");
+			for (int i = 0; i < busList.size(); i++) {
+				Bus list = busList.get(i);
+				
+				System.out.println();
+				System.out.println(" | " + (i + 1) + " | " 
+						+ list.getRoutName() + " ( " + list.getRoutType() + ")");
+			}
+			
+			System.out.println("\n확인하고 싶은 버스를 선택해주세요.");
+			
+			int selectBus = selectNum(busList.size());	// 유저로부터 넘버링된 숫자를 입력받는다
+			
+			int throwBusId = busList.get(selectBus - 1).getRoutId(); // 버스 id를 넘겨주고 노선도를 받아올 변수
+			
+			throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
+			
+			List<Station> busRoute = busManager.getRouteMap(throwBusId);
+			
+			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
+			for (Station route : busRoute) {
+				System.out.println();
+				System.out.println("| " + (x++) + " | " + route.getStnName() + 
+						"    ( 정류장 ID : " + route.getArsId() + " )");
+			}
 		}
 		
 		return throwBus;
@@ -641,31 +650,40 @@ public class ProjectBusUI {
 	 */
 	private Station catchStnList(List<Station> foundBusList) {
 		
-		for (int i = 0; i < foundBusList.size(); i++) {
-			System.out.println(" | " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
-					+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
-		}
-		
-		// 선택지 이상의 숫자를 입력하면 false 반환
-		System.out.println("\n- 확인하고 싶은 정류장을 선택해주세요. -");
-		
-		int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
-		
-		Station throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
-		
-		// open-api 정보에서 현 정류장에 도착할 버스들의 도착 시간을 불러와 출력
-		List<HashMap<String, Object>> busArriveList =
-				busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
-		
-		for (HashMap<String, Object> busInfo : busArriveList) {
-			System.out.println();
-			System.out.println("<" + busInfo.get("busNumber") + ">");
+		Station throwStn = null;
+				
+		// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
+		if (foundBusList == null || foundBusList.isEmpty()) {
+			System.out.println("[Error] 즐겨찾기한 정류장이 없습니다.\n");
 			
-			System.out.print("다음 차:");
-			System.out.println(busInfo.get("firstBusMsg"));
+		} else {
 			
-			System.out.print("다다음 차:");
-			System.out.println(busInfo.get("secondBusMsg"));
+			for (int i = 0; i < foundBusList.size(); i++) {
+				System.out.println(" | " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
+						+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
+			}
+			
+			// 선택지 이상의 숫자를 입력하면 false 반환
+			System.out.println("\n- 확인하고 싶은 정류장을 선택해주세요. -");
+			
+			int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
+			
+			throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
+			
+			// open-api 정보에서 현 정류장에 도착할 버스들의 도착 시간을 불러와 출력
+			List<HashMap<String, Object>> busArriveList =
+					busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
+			
+			for (HashMap<String, Object> busInfo : busArriveList) {
+				System.out.println();
+				System.out.println("<" + busInfo.get("busNumber") + ">");
+				
+				System.out.print("다음 차:");
+				System.out.println(busInfo.get("firstBusMsg"));
+				
+				System.out.print("다다음 차:");
+				System.out.println(busInfo.get("secondBusMsg"));
+			}
 		}
 		
 		return throwStn;
