@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import bus.manager.BusManager;
 import bus.vo.Bus;
+import bus.vo.History;
 import bus.vo.Station;
 
 public class ProjectBusUI {
@@ -313,7 +314,7 @@ public class ProjectBusUI {
 			System.out.println("\n--- < 즐  겨  찾  기 > ---");
 			System.out.println("1. 저장된 버스 목록");
 			System.out.println("2. 저장된 정류장 목록");
-			System.out.println("3. 저장된 즐겨찾기 취소");
+			System.out.println("3. 저장된 즐겨찾기 목록 및 해제");
 			System.out.println("9. 메인메뉴로 돌아가기");
 			
 			selectMenuFromFav = getIntFromUser();
@@ -358,7 +359,7 @@ public class ProjectBusUI {
 						2.	출력받은 목록에 넘버링
 						3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
 					 */
-					System.out.println("- 현재까지 즐겨찾기한 목록입니다. -\n");
+					System.out.println("\n- 현재까지 즐겨찾기한 목록입니다. -\n");
 					
 					Map<String, Object> favList = busManager.getFavoriteAll(userId);
 																	
@@ -385,7 +386,37 @@ public class ProjectBusUI {
 						System.out.print(" 정류장 이름 : " 	+ stnFavList.get(j).getStnName() + "  ( " 
 														+ stnFavList.get(j).getArsId() + " )\n");
 					}
-										
+					
+					System.out.println("\n- 즐겨찾기를 취소하실 번호를 선택해주세요. -");
+					
+					int inputToDelete = selectNum(i);
+					
+					if (inputToDelete < busFavList.size() + 1) {
+						// 버스 객체를 넘겨준다
+						Bus deleteBus = busFavList.get(inputToDelete - 1);
+						boolean canDeleteBus = busManager.deleteFavorite(userId, deleteBus);
+						
+						if (canDeleteBus) {
+							System.out.println("\n[System] 정상적으로 해제되었습니다.");
+						} else {
+							System.out.println("\n[Error] 즐겨찾기 해제가 되지 않았습니다.");
+						}
+						
+					} else if (inputToDelete > busFavList.size()) {
+						// 정류장 객체를 넘겨준다
+						Station deleteStn = stnFavList.get(inputToDelete - 1);
+						boolean canDeleteStn = busManager.deleteFavorite(userId, deleteStn);
+						
+						if (canDeleteStn) {
+							System.out.println("\n[System] 정상적으로 해제되었습니다.");
+						} else {
+							System.out.println("\n[Error] 즐겨찾기 해제가 되지 않았습니다.");
+						}
+						
+					} else {
+						System.out.println("[System] 삭제하지 않고 돌아갑니다.");
+					}
+					
 					break;
 					
 				case 9:		// 메인메뉴로 돌아가기
@@ -411,20 +442,38 @@ public class ProjectBusUI {
 	 */
 	private void recentSearch() {
 		
-		System.out.println("--- < 최  근  검  색 > ---");
-		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
-		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
-		List<Object> history = busManager.getHistory(userId);
+		//  1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
+		//  2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		
-		for (int i = 0; i < history.size(); i++) {
-			Object busOrStnHistory = history.get(i);
+		System.out.println("\n--- < 최  근  검  색 > ---\n");
+		
+		List<Object> history = busManager.getHistory(userId);	// 해당 ID에 맞는 최근 검색 기록 호출 (userId = 첫번째 인자)
+		
+		int sum = 1;	// Numbering용
+		
+		for (int i = 0; i < history.size(); i += 2) {
 			
-			if (busOrStnHistory.getClass() == Bus.class) {
-				Bus busHistory = (Bus) busOrStnHistory;
+			History busOrStnHistory = (History) history.get(i); // 호출된 배열에서 불러낼 객체
+						
+			System.out.print(" | " + (sum++) + " | "+ busOrStnHistory.getIndate() + " | ");
+						
+			Object busOrStn = history.get(i + 1);				// 두 번째 인자 = 버스 또는 정류장
+			
+			if (busOrStn.getClass() == Bus.class) {				// 버스일 경우 호출될 문구
+				
+				Bus busHistory = (Bus) busOrStn;
 				System.out.println(" 버스번호 : " 	+ busHistory.getRoutName() + " ( " 
 												+ busHistory.getRoutType() + " )");
+				
+			} else if (busOrStn.getClass() == Station.class) {	// 정류장일 경우 호출될 문구
+				
+				Station stnHistory = (Station) busOrStn;
+				System.out.println(" 정류장 이름 : " + stnHistory.getStnName() + " ( "
+													+ stnHistory.getArsId() + " ) ");
 			}
 		}
+		
+		System.out.println();
 		
 	} // recentSearch(); method end
 	
@@ -686,7 +735,7 @@ public class ProjectBusUI {
 			
 			throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
 			
-			List<Station> busRoute = busManager.getRouteMap(throwBusId);
+			List<Station> busRoute = busManager.getRouteMap(throwBusId); // manager에서 받아온 노선도
 			
 			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 			for (Station route : busRoute) {
