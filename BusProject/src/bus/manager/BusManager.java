@@ -384,27 +384,30 @@ public class BusManager {
 	 * @param userId 사용자 ID
 	 * @return 버스와 정류장 정보를 가지는 맵
 	 */
-	public Map<String, Object> getHistory(String userId) {
+	public List<Object> getHistory(String userId) {
+		// List<Object> 형태로 리턴
+		// 받는 곳에서 Bus, Station, History 타입에 따라 다른 행동
 		
-		return busDao.selectHistoryAll(userId);
-	}
-	
-	
-	/**
-	 * 유저의 최근 검색 목록 전부를 반환한다.
-	 * @param type
-	 * @param throwId
-	 * @return
-	 */
-	public List<Integer> recentSearch(String userId, Object srchedObj) {
+		List<Object> hisList = busDao.selectHistoryAll(userId);
 		
-		if (srchedObj.getClass() == Bus.class) {
+		for (int i = 0; i < hisList.size(); i += 2) {
+			History history = (History) hisList.get(i);
+			System.out.print("[" + (i+1) + "] " + history.getIndate());
 			
-		} else if (srchedObj.getClass() == Station.class) {
-			
+			Object busOrStn = hisList.get(i + 1);
+			if (busOrStn.getClass() == Bus.class) {
+				Bus bus = (Bus) busOrStn;
+				System.out.print(" bus: " + bus.getRoutName());
+			} else if (busOrStn.getClass() == Station.class) {
+				Station station = (Station) busOrStn;
+				System.out.print(" station: " + station.getStnName());
+			}
 		}
 		
+		
+		
 		return null;
+		//return busDao.selectHistoryAll(userId);
 	}
 	
 	

@@ -375,9 +375,9 @@ public class BusDAO {
 	 * @param userId 사용자 ID
 	 * @return favorMap 버스리스트, 정류장리스트가 저장되어 있는 Map
 	 */
-	public Map<String, Object> selectHistoryAll(String userId) {
+	public List<Object> selectHistoryAll(String userId) {
 		SqlSession session = null;
-		Map<String, Object> hisMap = new HashMap<>();
+		List<Object> hisInfoList = new ArrayList<>();
 		
 		try {
 			session = factory.openSession();
@@ -385,23 +385,19 @@ public class BusDAO {
 			
 			List<History> hisList = mapper.selectHistory(userId);
 			
-			List<Bus> busList = new ArrayList<>();
-			List<Station> stnList = new ArrayList<>();
-			
 			for (History history : hisList) {
+				hisInfoList.add(history);
+				
 				if (history.getBusOrStnType().equals("B")) {
 					Bus bus = mapper.selectBus(history.getBusOrStnId());
-					busList.add(bus);
+					hisInfoList.add(bus);
 					
 				} else {
 					Station station = mapper.selectStation(history.getBusOrStnId());
-					stnList.add(station);
+					hisInfoList.add(station);
 					
 				}
 			}
-			
-			hisMap.put("Bus", busList);
-			hisMap.put("Station", stnList);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -412,6 +408,6 @@ public class BusDAO {
 			}
 		}
 		
-		return hisMap;
+		return hisInfoList;
 	}
 }
