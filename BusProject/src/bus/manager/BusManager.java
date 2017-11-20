@@ -501,7 +501,7 @@ public class BusManager {
 		return busesList;
 	}
 	
-	public boolean searchFavorite(String userId, Bus throwBus) {
+	public boolean searchFavorite(String userId, Object busOrStn) {
 		// TODO Auto-generated method stub
 		return false;
 	}

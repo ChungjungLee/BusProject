@@ -327,9 +327,18 @@ public class ProjectBusUI {
 					busManager.recentSearch(userId, throwStn);
 					
 					// 즐겨찾기 여부 확인 후 저장
-					boolean canSaveStnFav = true;
 					
-					while(canSaveStnFav) {
+					boolean canSaveStnFav = busManager.searchFavorite(userId, throwStn);
+										
+					if (canSaveStnFav == false) {
+						System.out.println("[Error] 이미 등록된 버스정보입니다.");
+						System.out.println("[System] 메인 메뉴로 돌아갑니다.");
+						loop = false;
+					}
+					
+					boolean loopStnFav = true;
+					
+					while(loopStnFav) {
 						
 						System.out.println("\n해당 정류장을 즐겨찾기 하시겠습니까?");
 						System.out.println("1. 예\n2. 아니오");
@@ -503,7 +512,17 @@ public class ProjectBusUI {
 				case 3: 	// 저장된 즐겨찾기 취소
 					
 					// TODO: 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
-										
+					/*
+					 * 	1.	버스 및 정류장 목록 모두 출력받음
+						2.	출력받은 목록에 넘버링
+						3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
+					 */
+					System.out.println("- 현재까지 즐겨찾기한 목록입니다. -");
+					
+					Map<String, Object> favList = busManager.getFavoriteAll(userId);
+					
+					favList.get("busList");
+					favList.get("stnList");
 					
 					break;
 					
