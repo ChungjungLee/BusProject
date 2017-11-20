@@ -82,15 +82,16 @@ public class BusDAO {
 	public boolean insertBuses(List<Bus> busesList) {
 		SqlSession session = null;
 		boolean result = true;
+		int numOfInserted = 0;
+		int numOfInsertTry = 0;
 		
 		try {
 			session = factory.openSession();
 			BusMapper mapper = session.getMapper(BusMapper.class);
 			
 			for (Bus bus : busesList) {
-				if (mapper.insertBus(bus) == 0) {
-					result = false;
-				}
+				numOfInsertTry++;
+				numOfInserted = numOfInserted + mapper.insertBus(bus);
 			}
 			
 			session.commit();
@@ -102,6 +103,14 @@ public class BusDAO {
 			if (session != null) {
 				session.close();
 			}
+		}
+		
+		if (numOfInsertTry != busesList.size()) {
+			result = false;
+		}
+		
+		if (numOfInserted != numOfInsertTry) {
+			System.out.println("업데이트가 이미 되었습니다.");
 		}
 		
 		return result;
