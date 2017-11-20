@@ -490,6 +490,12 @@ public class BusManager {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+	public boolean searchFavorite(String userId, Bus throwBus) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
 

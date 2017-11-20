@@ -13,8 +13,7 @@ import bus.vo.Station;
 public class ProjectBusUI {
 
 	private Scanner sc = new Scanner(System.in);			// Scanner 선언
-	ProjectBusManager manager = new ProjectBusManager();	// Manager class 연결(진행 되면서 지워야 함)
-	BusManager busManager = new BusManager();				// Manager class 연결
+	private BusManager busManager = new BusManager();		// Manager class 연결
 	private String userId = null;							// User 각각의 다른 정보 저장을 위해 입력받는 id
 		
 	/**__________________________________________________________________________________________________
@@ -67,6 +66,7 @@ public class ProjectBusUI {
 					} else {
 						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
 					}
+					
 					break;
 					
 				case 4:			// database update
@@ -112,7 +112,7 @@ public class ProjectBusUI {
 			System.out.print("비밀번호를 입력해주세요.\n");
 			String userPw = getTextFromUser(4);
 			
-			usersInfo = busManager.userLogIn(userId, userPw); // 0, 1, 2 로 넘겨받는다.
+			usersInfo = busManager.userLogIn(userId, userPw); // 매니저에서 ID, PW 검사 후 [0, 1, 2] 로 넘겨받는다.
 			
 			// ID, PW 검사
 			switch (usersInfo) {
@@ -144,7 +144,7 @@ public class ProjectBusUI {
 						System.out.println("[System] 해당 아이디로 회원가입 및 로그인이 완료되었습니다.\n");
 						canLogIn = false;
 					
-					} else if (isChoiceSignIn == 2){	 // 아니오
+					} else if (isChoiceSignIn == 2) {	 // 아니오
 						
 						System.out.println("[System] 다시 로그인 해주세요.");
 					}
@@ -215,7 +215,7 @@ public class ProjectBusUI {
 					} 
 					
 					// 불러온 버스 목록의 배열에 Numbering 해서 출력
-					System.out.println("\n> 입력하신 숫자에 해당되는 버스 목록입니다. <\n");
+					System.out.println("\n- 입력하신 숫자에 해당되는 버스 목록입니다. -\n");
 					
 					for (int i = 0; i < busNumList.size(); i++) {
 						Bus list = busNumList.get(i);
@@ -248,29 +248,39 @@ public class ProjectBusUI {
 					busManager.recentSearch(userId, throwBus);
 					
 					// 즐겨찾기 여부 확인 후 저장
-					boolean canSaveBusFav = true;
+					boolean canSaveBusFav = busManager.searchFavorite(userId, throwBus);
 					
-					while(canSaveBusFav) {
+					boolean loopBusFav = true;
+					
+					if (canSaveBusFav == false) {
+						System.out.println("[Error] 이미 등록된 버스정보입니다.");
+						System.out.println("[System] 메인 메뉴로 돌아갑니다.");
+						loop = false;
 						
-						System.out.println("\n| 해당 버스를 즐겨찾기 하시겠습니까? |");
-						System.out.println("1. 예\n2. 아니오");
+					} else {
 						
-						int usersSelect1 = getIntFromUser();	// 예, 아니오 판별용
-						
-						if (usersSelect1 == 1) {
-							busManager.setFavorite(userId, throwBus); 	// manager에 버스 id를 넘겨주고, 즐겨찾기에 저장시킨다.
+						while(loopBusFav) {
+														
+							System.out.println("\n| 해당 버스를 즐겨찾기 하시겠습니까? |");
+							System.out.println("1. 예\n2. 아니오");
 							
-							System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
-							canSaveBusFav = false;
-							loop = false;	// 메인메뉴로 돌아감
+							int usersSelect1 = getIntFromUser();	// 예, 아니오 판별용
 							
-						} else if (usersSelect1 == 2) {
-							System.out.println("[System] 저장하지 않고 메인 메뉴로 돌아갑니다.\n");
-							canSaveBusFav = false;
-							loop = false;	// 메인메뉴로 돌아감
-							
-						} else {
-							System.out.println("[Error] 출력된 메뉴만 선택해주세요.");	// while문 반복
+							if (usersSelect1 == 1) {
+								busManager.setFavorite(userId, throwBus); 	// manager에 버스 id를 넘겨주고, 즐겨찾기에 저장시킨다.
+								
+								System.out.println("[System] 저장이 정상적으로 완료되었습니다.\n");
+								loopBusFav = false;
+								loop = false;	// 메인메뉴로 돌아감
+								
+							} else if (usersSelect1 == 2) {
+								System.out.println("[System] 저장하지 않고 메인 메뉴로 돌아갑니다.\n");
+								loopBusFav = false;
+								loop = false;	// 메인메뉴로 돌아감
+								
+							} else {
+								System.out.println("[Error] 출력된 메뉴만 선택해주세요.");	// while문 반복
+							}
 						}
 					}
 				
