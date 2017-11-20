@@ -223,7 +223,13 @@ public class ProjectBusUI {
 					Bus throwBus = catchBusList(busNumList);
 					
 					// 최근검색기록에 해당 버스를 저장한다.
-					busManager.setHistory(userId, throwBus);
+					boolean canSaveBusHistory = busManager.searchHistory(userId, throwBus);
+					
+					if (canSaveBusHistory) {
+						busManager.updateHistory(userId, throwBus);
+					} else {
+						busManager.setHistory(userId, throwBus);
+					}
 					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveBusFav = busManager.searchFavorite(userId, throwBus);
@@ -252,8 +258,14 @@ public class ProjectBusUI {
 					Station throwStn = catchStnList(foundBusList);
 					
 					// 최근검색기록에 해당 정류장을 저장한다.
-					busManager.setHistory(userId, throwStn);
+					boolean canSaveStnHistory = busManager.searchHistory(userId, throwStn);
 				
+					if (canSaveStnHistory) {
+						busManager.updateHistory(userId, throwStn);
+					} else {
+						busManager.setHistory(userId, throwStn);
+					}
+					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveStnFav = busManager.searchFavorite(userId, throwStn);
 										
@@ -349,24 +361,31 @@ public class ProjectBusUI {
 					System.out.println("- 현재까지 즐겨찾기한 목록입니다. -\n");
 					
 					Map<String, Object> favList = busManager.getFavoriteAll(userId);
+																	
+					List<Bus> busFavList = (List<Bus>) favList.get("Bus");
 					
-					for (int i = 0; i < favList.size(); i++) {
-						
-												
+					int i = 0;
+					
+					for (i = 0; i < busFavList.size(); i++) {
+					
 						System.out.print(" | " + (i + 1) + " | ");
-												
-						if (favList.getClass() == Bus.class) {
-							favList.get("Bus");
-							System.out.print(" 버스 번호 : " + favList.getRoutName() + "  ( " 
-														  + favList.getRoutType() + " )\n");
-							
-						} else if (favList.getClass() == Station.class) {
-							List<Station> stn = (List<Station>) favList.get(i);
-							System.out.print(" 정류장 이름 : " 	+ stn.get(i).getStnName() + "  ( " 
-															+ stn.get(i).getArsId() + " )\n");
-						}
+						
+						System.out.print(" 버스 번호 : " + busFavList.get(i).getRoutName() + "  ( " 
+													+ busFavList.get(i).getRoutType() + " )\n");
 					}
+										
+					List<Station> stnFavList = (List<Station>) favList.get("Station");
 					
+					for (int j = 0; j < stnFavList.size(); j++) {
+						
+						System.out.print(" | " + (i + 1) + " | ");
+						
+						i++;
+						
+						System.out.print(" 정류장 이름 : " 	+ stnFavList.get(j).getStnName() + "  ( " 
+														+ stnFavList.get(j).getArsId() + " )\n");
+					}
+										
 					break;
 					
 				case 9:		// 메인메뉴로 돌아가기
@@ -397,7 +416,15 @@ public class ProjectBusUI {
 		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
 		List<Object> history = busManager.getHistory(userId);
 		
-		
+		for (int i = 0; i < history.size(); i++) {
+			Object busOrStnHistory = history.get(i);
+			
+			if (busOrStnHistory.getClass() == Bus.class) {
+				Bus busHistory = (Bus) busOrStnHistory;
+				System.out.println(" 버스번호 : " 	+ busHistory.getRoutName() + " ( " 
+												+ busHistory.getRoutType() + " )");
+			}
+		}
 		
 	} // recentSearch(); method end
 	
