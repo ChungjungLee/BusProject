@@ -14,7 +14,8 @@ public class ProjectBusUI {
 	private Scanner sc = new Scanner(System.in);			// Scanner 선언
 	private BusManager busManager = new BusManager();		// Manager class 연결
 	private String userId = null;							// User 각각의 다른 정보 저장을 위해 입력받는 id
-		
+	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Bus UI
@@ -89,6 +90,7 @@ public class ProjectBusUI {
 		
 	}	// ProjectBusUI(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 *		Log-in
@@ -156,6 +158,7 @@ public class ProjectBusUI {
 		
 	} // logIn(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Main Menu
@@ -172,6 +175,7 @@ public class ProjectBusUI {
 		System.out.println("실행하실 메뉴를 선택하세요.");
 		
 	} // printMainManu(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 	
@@ -219,7 +223,7 @@ public class ProjectBusUI {
 					Bus throwBus = catchBusList(busNumList);
 					
 					// 최근검색기록에 해당 버스를 저장한다.
-					busManager.recentSearch(userId, throwBus);
+					busManager.setHistory(userId, throwBus);
 					
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveBusFav = busManager.searchFavorite(userId, throwBus);
@@ -248,7 +252,7 @@ public class ProjectBusUI {
 					Station throwStn = catchStnList(foundBusList);
 					
 					// 최근검색기록에 해당 정류장을 저장한다.
-					busManager.recentSearch(userId, throwStn);
+					busManager.setHistory(userId, throwStn);
 				
 					// 즐겨찾기 여부 확인 후 저장
 					boolean canSaveStnFav = busManager.searchFavorite(userId, throwStn);
@@ -279,6 +283,7 @@ public class ProjectBusUI {
 			
 		}
 	} // search(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -362,10 +367,9 @@ public class ProjectBusUI {
 					break;
 			}
 		}
-							
-				
-		
+	
 	} // favorite(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -376,8 +380,10 @@ public class ProjectBusUI {
 		System.out.println("--- < 최  근  검  색 > ---");
 		// TODO: 1. 위의 search() 에서 검색된 버스 또는 정류장이 있다면 그자리에서 바로 count를 올리는 방식.
 		// TODO: 2. 이 메소드에서는 가장 최근에 검색한 값이 가장 상단에 노출되도록 출력, 선택받아 해당 버스 또는 정류장 정보 출력
+		List<Object> history = busManager.getHistory(userId);
 		
 	} // recentSearch(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -409,6 +415,7 @@ public class ProjectBusUI {
 		return inputInt;
 		
 	} // getIntFromUser(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -442,6 +449,7 @@ public class ProjectBusUI {
 		
 	} // getTextFromUser(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Search Bus List
@@ -464,6 +472,7 @@ public class ProjectBusUI {
 		return busList;
 		
 	} // searchBusList(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -488,6 +497,7 @@ public class ProjectBusUI {
 		 
 	} // searchStnList(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		목록 내의 숫자만 입력받게 한다.
@@ -510,6 +520,7 @@ public class ProjectBusUI {
 		return input;
 		
 	} // selectNum(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -540,6 +551,7 @@ public class ProjectBusUI {
 		
 	} // isNumeric(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 
 	 * 		Database를 Update하게 해 주는 메소드
@@ -556,6 +568,7 @@ public class ProjectBusUI {
 		}
 		
 	} // databaseUpdate(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -596,6 +609,7 @@ public class ProjectBusUI {
 		
 	} // printFavMenu(); method end
 	
+	
 	/**__________________________________________________________________________________________________
 	 * 		
 	 * 		버스 리스트를 받아, 각각 넘버링 해서 넘겨준다.
@@ -606,7 +620,7 @@ public class ProjectBusUI {
 		
 		Bus throwBus = null;	// 최근검색, 즐겨찾기에 넘겨줄 객체
 		
-		// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
+		// 즐겨찾기한 버스가 없으면 돌아갈 메뉴 선택받기
 		if (busList == null || busList.isEmpty()) {
 			System.out.println("[Error] 즐겨찾기한 버스가 없습니다.\n");
 			
@@ -641,6 +655,7 @@ public class ProjectBusUI {
 		return throwBus;
 		
 	} // catchBusList(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -687,7 +702,9 @@ public class ProjectBusUI {
 		}
 		
 		return throwStn;
-	}
+		
+	} // catchStnList(); method end
+	
 	
 	/**__________________________________________________________________________________________________
 	 * 
@@ -701,7 +718,7 @@ public class ProjectBusUI {
 		
 		while(loopInsideMenu) {
 			
-			System.out.println("돌아갈 메뉴를 선택해주세요.");
+			System.out.println("\n돌아갈 메뉴를 선택해주세요.");
 			System.out.println("1. 즐겨찾기 메뉴");
 			System.out.println("2. 메인 메뉴");
 			
@@ -721,6 +738,7 @@ public class ProjectBusUI {
 		}
 				
 		return out;
-	}
+		
+	} // loopFavMenu(); method end
 }
 
