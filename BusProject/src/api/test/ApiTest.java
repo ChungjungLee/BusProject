@@ -118,6 +118,14 @@ public class ApiTest {
 	*/
 	
 	public void start() {
+		
+		String testStr1 = "abcdefghi";
+		String testStr2 = "abcdefghijklmnopqr";
+		
+		System.out.println(String.format("%-20s%s", testStr1, "zkzkzk"));
+		System.out.println(String.format("%-20s%s", testStr2, "zkzkzk"));
+		
+		/*
 		String keyword = "»ï¼ºµ¿ ÄÚ¿¢½º";
 		
 		String encodedKeyword = null;
@@ -175,7 +183,7 @@ public class ApiTest {
 		System.out.println(resultObject.get("formatted_address"));
 		int lat = Integer.parseInt((String) locationObject.get("lat"));
 		int lng = Integer.parseInt((String) locationObject.get("lng"));
-		
+		*/
 	}
 	
 	private Document parseXML(InputStream stream) {
