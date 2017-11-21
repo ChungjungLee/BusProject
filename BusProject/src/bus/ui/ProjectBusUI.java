@@ -470,7 +470,7 @@ public class ProjectBusUI {
 		List<Object> history = busManager.getHistory(userId);	// 해당 ID에 맞는 최근 검색 기록 호출 (userId = 첫번째 인자)
 		
 		if (history == null || history.isEmpty()) {
-			System.out.println("[Error] 저장된 정보가 없습니다.");
+			System.out.println("[Error] 저장된 정보가 없습니다.\n");
 			return;
 		}
 		
