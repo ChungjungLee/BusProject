@@ -863,9 +863,9 @@ public class ProjectBusUI {
 			boolean canSaveBusHistory = busManager.searchHistory(userId, busOrStn);
 			
 			if (canSaveBusHistory) {
-				busManager.updateHistory(userId, busOrStn);
+				busManager.updateHistory(userId, busOrStn);		// 기록에 저장되어 있다면 가장 최근 검색으로
 			} else {
-				busManager.setHistory(userId, busOrStn);
+				busManager.setHistory(userId, busOrStn);		// 기록이 없다면 검색 기록에 남김
 			}
 			
 			// 즐겨찾기 여부 확인 후 저장
@@ -885,9 +885,9 @@ public class ProjectBusUI {
 			boolean canSaveStnHistory = busManager.searchHistory(userId, busOrStn);
 		
 			if (canSaveStnHistory) {
-				busManager.updateHistory(userId, busOrStn);
+				busManager.updateHistory(userId, busOrStn);		// 기록에 저장되어 있다면 가장 최근 검색으로
 			} else {
-				busManager.setHistory(userId, busOrStn);
+				busManager.setHistory(userId, busOrStn);		// 기록이 없다면 검색 기록에 남김
 			}
 			
 			// 즐겨찾기 여부 확인 후 저장
