@@ -145,6 +145,7 @@ public class ProjectBusUI {
 						busManager.signIn(userId, userPw);	// 입력받은 ID, PW로 회원가입 완료
 						
 						System.out.println("[System] 해당 아이디로 회원가입 및 로그인이 완료되었습니다.\n");
+						
 						canLogIn = false;
 					
 					} else if (isChoiceSignIn == 2) {	 // 아니오
@@ -252,6 +253,7 @@ public class ProjectBusUI {
 					if (canSaveFavStn) {
 						loop = false;
 					}
+					
 					break;
 				
 				case 3:		// 주소로 주변 정류장 검색
@@ -274,6 +276,7 @@ public class ProjectBusUI {
 						
 						if (inputRange > 1500) {
 							System.out.println("[Error] 최대 반경은 1500미터 입니다.");
+							
 						} else {
 							canInputRange = false;
 						}
@@ -370,6 +373,7 @@ public class ProjectBusUI {
 				
 				if (selectMenuFromFav != 1 && selectMenuFromFav != 2 && selectMenuFromFav != 9) {
 					System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+					
 				} else {
 					flag = false;
 				}
@@ -414,8 +418,10 @@ public class ProjectBusUI {
 					int inputToDelete = selectNum(i);
 					
 					if (inputToDelete < busFavList.size() + 1) {
+						
 						// 버스 객체를 넘겨준다
 						Bus deleteBus = busFavList.get(inputToDelete - 1);
+						
 						boolean canDeleteBus = busManager.deleteFavorite(userId, deleteBus);
 						
 						if (canDeleteBus) {
@@ -425,8 +431,10 @@ public class ProjectBusUI {
 						}
 						
 					} else {
+						
 						// 정류장 객체를 넘겨준다
 						Station deleteStn = stnFavList.get((inputToDelete - 1) - busFavList.size());
+						
 						boolean canDeleteStn = busManager.deleteFavorite(userId, deleteStn);
 						
 						if (canDeleteStn) {
@@ -450,6 +458,7 @@ public class ProjectBusUI {
 					System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
 					break;
 			}
+		
 		}
 	
 	} // favorite(); method end
@@ -499,6 +508,7 @@ public class ProjectBusUI {
 													+ stnHistory.getArsId() + " ) ");
 			}
 		}
+		
 		System.out.println();
 		
 		System.out.println("- 확인하고 싶은 목록의 번호를 입력하세요. -");
@@ -527,6 +537,7 @@ public class ProjectBusUI {
 		int inputInt = 0;
 		
 		while(true) {
+			
 			String inputText = getTextFromUser(1);
 			
 			if (!isNumeric(inputText)) {
@@ -583,7 +594,7 @@ public class ProjectBusUI {
 	} // getTextFromUser(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		Search Bus List
 	 * 		@return 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
@@ -638,6 +649,7 @@ public class ProjectBusUI {
 	 * 		@return int
 	 */
 	private int selectNum(int size){
+		
 		int input = 0;
 		
 		while(true) {
