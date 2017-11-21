@@ -126,13 +126,11 @@ public class BusManager {
 		
 		List<RealTimeStation> routeMap = new ArrayList<>();	// 실제 반환할 리스트
 		
-		int indexRealTimeBus = 0;
 		for (int indexRoute = 0; indexRoute < itemListRoute.getLength(); indexRoute++) {
 			
 			RealTimeStation station = new RealTimeStation();
 			// 먼저 노선도 정보를 하나 읽어들인다.
 			for (Node node = itemListRoute.item(indexRoute).getFirstChild(); node != null; node = node.getNextSibling()) {
-				
 				if (node.getNodeName().equals("stNm")) {
 					station.setStnName(node.getTextContent());
 				} else if (node.getNodeName().equals("arsId")) {
@@ -142,28 +140,31 @@ public class BusManager {
 				}
 			}
 			
-			// 실시간 버스 정보를 하나 읽어들인다.
+			routeMap.add(station);
+		}
+		
+		for (int indexRealTimeBus = 0; indexRealTimeBus < itemListRealTimeBus.getLength(); indexRealTimeBus++) {
 			int tempBusType = 0;
-			int tempNextStId = 0;
+			int tempLastStId = 0;
 			String tempPlainNo = null;
+			
 			for (Node node = itemListRealTimeBus.item(indexRealTimeBus).getFirstChild(); node != null; node = node.getNextSibling()) {
 				if (node.getNodeName().equals("busType")) {
 					tempBusType = Integer.parseInt(node.getTextContent());
-				} else if (node.getNodeName().equals("nextStId")) {
-					tempNextStId = Integer.parseInt(node.getTextContent());
+				} else if (node.getNodeName().equals("lastStnId")) {
+					tempLastStId = Integer.parseInt(node.getTextContent());
 				} else if (node.getNodeName().equals("plainNo")) {
 					tempPlainNo = node.getTextContent();
 				}
 			}
 			
-			// 아까 생성한 정류소와 실시간 버스의 다음 도착 정류소가 같으면 도착 정보 추가
-			if (tempNextStId == station.getStnId()) {
-				station.setBusType(tempBusType);
-				station.setPlainNo(tempPlainNo);
-				indexRealTimeBus++;
+			for (RealTimeStation station : routeMap) {
+				if (station.getStnId() == tempLastStId) {
+					station.setBusType(tempBusType);
+					station.setPlainNo(tempPlainNo);
+					break;
+				}
 			}
-			
-			routeMap.add(station);
 		}
 		
 		return routeMap;
