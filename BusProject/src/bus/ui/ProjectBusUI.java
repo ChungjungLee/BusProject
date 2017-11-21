@@ -262,21 +262,36 @@ public class ProjectBusUI {
 					System.out.println("- 주소를 입력해주세요. -");
 					String inputAddr = getTextFromUser(2);
 					
-					System.out.println("- 검색 반경을 입력해주세요. (단위 : m) -");
-					int inputRange = getIntFromUser(); 
+					int inputRange = 0;
+					
+					boolean canInputRange = true;
+					
+					while(canInputRange) {
+						
+						System.out.println("- 검색 반경을 입력해주세요.(단위 : m, 최대 1500m) -");
+						
+						inputRange = getIntFromUser(); 
+						
+						if (inputRange > 1500) {
+							System.out.println("[Error] 최대 반경은 1500미터 입니다.");
+						} else {
+							canInputRange = false;
+						}
+					}
+					
 					System.out.println();
 					
-					List<Station> stnList = busManager.searchNearStations(inputAddr, inputRange);
+					List<Station> gpsStnList = busManager.searchNearStations(inputAddr, inputRange);
 					
-					if (stnList.isEmpty() || stnList == null) {
+					if (gpsStnList.isEmpty() || gpsStnList == null) {
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break; // 검색 결과가 없으면 검색 메뉴로 다시 돌아간다.
 					}
 					
 					// 불러온 정류장 목록의 배열에 Numbering 해서 출력
-					Station throwStn1 = catchStnList(stnList);
+					Station throwStnList = catchStnList(gpsStnList);
 					
-					boolean canSaveFavStn1 = favAndHistory(throwStn1);
+					boolean canSaveFavStn1 = favAndHistory(throwStnList);
 					
 					// 모든 과정이 끝나면 메인 메뉴로 돌아감
 					if (canSaveFavStn1) {
@@ -409,9 +424,9 @@ public class ProjectBusUI {
 							System.out.println("\n[Error] 즐겨찾기 해제가 되지 않았습니다.");
 						}
 						
-					} else if (inputToDelete > busFavList.size()) {
+					} else {
 						// 정류장 객체를 넘겨준다
-						Station deleteStn = stnFavList.get(inputToDelete - 1);
+						Station deleteStn = stnFavList.get((inputToDelete - 1) - busFavList.size());
 						boolean canDeleteStn = busManager.deleteFavorite(userId, deleteStn);
 						
 						if (canDeleteStn) {
@@ -420,9 +435,7 @@ public class ProjectBusUI {
 							System.out.println("\n[Error] 즐겨찾기 해제가 되지 않았습니다.");
 						}
 						
-					} else {
-						System.out.println("[System] 삭제하지 않고 돌아갑니다.");
-					}
+					} 
 					
 					break;
 								
@@ -455,6 +468,11 @@ public class ProjectBusUI {
 		System.out.println("\n--- < 최  근  검  색 > ---\n");
 		
 		List<Object> history = busManager.getHistory(userId);	// 해당 ID에 맞는 최근 검색 기록 호출 (userId = 첫번째 인자)
+		
+		if (history == null || history.isEmpty()) {
+			System.out.println("[Error] 저장된 정보가 없습니다.");
+			return;
+		}
 		
 		int sum = 1;				// Numbering용
 		
@@ -493,6 +511,7 @@ public class ProjectBusUI {
 		
 		printBusOrStnList(busOrStn1);		// 해당 버스 또는 정류장 정보 출력
 		
+		System.out.println("[System] 검색이 끝났습니다.");
 		System.out.println("\n[System] 메인 메뉴로 돌아갑니다.\n");
 	
 	} // recentSearch(); method end
