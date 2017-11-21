@@ -872,6 +872,9 @@ public class ProjectBusUI {
 			
 			List<RealTimeStation> busRoute = busManager.getRouteMap(callBusId);		// 버스ID에 맞는 노선도 호출
 			
+			System.out.println("\n--- < " + callBusRoute.getRoutName() + " ( " 
+										+ callBusRoute.getRoutType() + " )" + " > ---");
+			
 			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
 			
 			for (RealTimeStation route : busRoute) {		// 출력
@@ -880,7 +883,7 @@ public class ProjectBusUI {
 						"    ( 정류장 ID : " + route.getArsId() + " )"));
 				
 				if (route.getPlainNo() != null) {
-					System.out.print("  	|  ★  출 발 ★    |  " + route.getPlainNo());
+					System.out.print("|  ★  출 발 ★    | " + route.getPlainNo());
 				}
 			}
 			
@@ -890,6 +893,8 @@ public class ProjectBusUI {
 			
 			Station callStnsBusList = (Station) busOrStn;	// 객체의 클래스가 정류장 타입일 경우
 
+			System.out.println("\n--- < " + callStnsBusList.getStnName() 
+								+ " ( ID : " + callStnsBusList.getArsId() + " )" + " > ---");
 			
 			// 정류장이 가지고 있는 ID로 해당 정류장을 지나가는 버스 리스트 호출
 			List<HashMap<String, Object>> busArriveList =
