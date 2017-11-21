@@ -255,10 +255,33 @@ public class ProjectBusUI {
 					break;
 				
 				case 3:		// 주소로 주변 정류장 검색
+										
+					// 1. 사용자한테 입력받은 주소 str
+					// 2. 검색반경 int
 					
-					System.out.println("- 정류장을 찾고싶은 주소를 입력해주세요. -");
+					System.out.println("- 주소를 입력해주세요. -");
+					String inputAddr = getTextFromUser(2);
 					
-					List<Station> stnList = busManager.searchNearStations( , );
+					System.out.println("- 검색 반경을 입력해주세요. (단위 : m) -");
+					int inputRange = getIntFromUser(); 
+					System.out.println();
+					
+					List<Station> stnList = busManager.searchNearStations(inputAddr, inputRange);
+					
+					if (stnList.isEmpty() || stnList == null) {
+						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
+						break; // 검색 결과가 없으면 검색 메뉴로 다시 돌아간다.
+					}
+					
+					// 불러온 정류장 목록의 배열에 Numbering 해서 출력
+					Station throwStn1 = catchStnList(stnList);
+					
+					boolean canSaveFavStn1 = favAndHistory(throwStn1);
+					
+					// 모든 과정이 끝나면 메인 메뉴로 돌아감
+					if (canSaveFavStn1) {
+						loop = false;
+					}
 					
 					break;
 					
