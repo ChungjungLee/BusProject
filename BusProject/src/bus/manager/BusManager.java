@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,6 +44,10 @@ public class BusManager {
 	// 공공데이터 API 활용을 위한 서비스 인증키
 	private final String serviceKey =
 			"9qJ%2FGyciiKC2bdjQYHAWCxxYmnJ0KmYn1ZySk6y8SJdOgcffBFBpTOxUgobyps504QppRIpzOrPbIkZoJWJhtg%3D%3D";
+	
+	// 구글 geocode API 활용을 위한 서비스 인증키
+	private final String geocodeKey = 
+			"AIzaSyAJ4G_Bsn0dBdkXBjn7CpfN1L3WDxumBu0";
 	
 	BusDAO busDao;
 	
@@ -219,6 +225,59 @@ public class BusManager {
 		busDao.insertStations(srchStnList);
 		
 		return srchStnList;
+	}
+	
+	
+	/**
+	 * 주소를 입력 받아 근처의 버스 정류장을 검색한다.
+	 * @param keyword 검색할 주소
+	 * @param radius 검색할 반경 범위(m)
+	 * @return 정류장의 목록 
+	 */
+	public List<Station> searchNearStations(String keyword, int radius) {
+		
+		int[] gpsLoc = getGpsLocation(keyword);
+		
+		if (gpsLoc[0] == 0 && gpsLoc[0] == 0) {
+			return null;
+		}
+		
+		String urlString = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByPos?serviceKey=" + serviceKey +
+				"&tmX=" + gpsLoc[1] +
+				"&tmY=" + gpsLoc[0] +
+				"&radius=" + radius;
+		
+		Document doc = getDocumentByUrl(urlString);
+		
+		if (doc == null) {
+			return null;
+		}
+		
+		List<Station> nearStnList = new ArrayList<>();
+		
+		NodeList itemList = doc.getElementsByTagName("itemList");
+		
+		for (int i = 0; i < itemList.getLength(); i++) {
+			
+			Station station = new Station();
+			for (Node node = itemList.item(i).getFirstChild(); node != null; node = node.getNextSibling()) {
+				
+				if (node.getNodeName().equals("stNm")) {
+					station.setStnName(node.getTextContent());
+				} else if (node.getNodeName().equals("arsId")) {
+					station.setArsId(node.getTextContent());
+				} else if (node.getNodeName().equals("stId")) {
+					station.setStnId(Integer.parseInt(node.getTextContent()));
+				}
+			}
+			
+			nearStnList.add(station);
+		}
+		
+		// DB에 저장
+		busDao.insertStations(nearStnList);
+		
+		return nearStnList;
 	}
 	
 	
@@ -504,23 +563,6 @@ public class BusManager {
 		// List<Object> 형태로 리턴
 		// 받는 곳에서 Bus, Station, History 타입에 따라 다른 행동
 		
-		/*
-		List<Object> hisList = busDao.selectHistoryAll(userId);
-		for (int i = 0; i < hisList.size(); i += 2) {
-			History history = (History) hisList.get(i);
-			System.out.print("[" + (i+1) + "] " + history.getIndate());
-			
-			Object busOrStn = hisList.get(i + 1);
-			if (busOrStn.getClass() == Bus.class) {
-				Bus bus = (Bus) busOrStn;
-				System.out.print(" bus: " + bus.getRoutName());
-			} else if (busOrStn.getClass() == Station.class) {
-				Station station = (Station) busOrStn;
-				System.out.print(" station: " + station.getStnName());
-			}
-		}
-		*/
-		
 		return busDao.selectHistoryAll(userId);
 	}
 	
@@ -559,6 +601,75 @@ public class BusManager {
 		}
 		
 		return true;
+	}
+	
+	
+	/**
+	 * 문자열 주소를 입력 받아 좌표 위치를 반환한다.
+	 * @param address 변환할 주소 문자열
+	 * @return 정수형 배열; [0]에는 gpsY, [1]에는 gpsX 값이 들어가 있다.
+	 */
+	private int[] getGpsLocation(String address) {
+		
+		String encodedAddress = null;
+		try {
+			encodedAddress = URLEncoder.encode(address, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		String urlString = "https://maps.googleapis.com/maps/api/geocode/json?"
+							+ "address=" + encodedAddress
+							+ "&key=" + geocodeKey;
+		
+		URL url = null;
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			System.out.println("잘못된 URL 입력");
+			e.printStackTrace();
+		}
+		
+		// read from the URL
+	    Scanner scan = null;
+		try {
+			scan = new Scanner(url.openStream());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	    String str = new String();
+	    
+	    while (scan.hasNext()) {
+	        str += scan.nextLine();
+	    }
+	    scan.close();
+	 
+	    // build a JSON object
+	    JSONParser jsonParser = new JSONParser();
+	    
+	    JSONObject jsonObject = null;
+		try {
+			jsonObject = (JSONObject) jsonParser.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	    
+		if (! jsonObject.get("status").equals("OK")) {
+			System.out.println("google geocode api response error");
+		}
+		
+		JSONObject resultObject = (JSONObject) ((JSONArray) jsonObject.get("results")).get(0);    
+		
+		JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
+		JSONObject locationObject = (JSONObject) geometryObject.get("location");
+		
+		int[] gpsLoc = {0, 0};
+		
+		gpsLoc[0] = Integer.parseInt((String) locationObject.get("lat"));	// gpsY
+		gpsLoc[1] = Integer.parseInt((String) locationObject.get("lng"));	// gpsX
+		
+		return gpsLoc;
 	}
 	
 	
@@ -642,39 +753,42 @@ public class BusManager {
 	private List<Bus> parseJSONBuses(String jsonData) {
 		List<Bus> busesList = new ArrayList<>();
 		
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject = null;
+		
 		try {
-			JSONParser jsonParser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonData);
-			JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
-			
-			for (int i = 0; i < busArrayList.size(); i++) {
-				JSONObject busJSONObject = (JSONObject) busArrayList.get(i);
-				
-				Bus bus = new Bus();
-				bus.setRoutId(Integer.parseInt((String)busJSONObject.get("routId")));
-				bus.setRoutName((String) busJSONObject.get("routName"));
-				bus.setRoutType((String) busJSONObject.get("routType"));
-				bus.setStnFirst((String) busJSONObject.get("stnFirst"));
-				bus.setStnLast((String) busJSONObject.get("stnLast"));
-				bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
-				bus.setTimeLast((String) busJSONObject.get("timeLast"));
-				bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
-				bus.setSatTimeLast((String) busJSONObject.get("satTimeLast"));
-				bus.setHolTimeFirst((String) busJSONObject.get("holTimeFirst"));
-				bus.setHolTimeLast((String) busJSONObject.get("holTimeLast"));
-				bus.setNorTerms((String) busJSONObject.get("norTerms"));
-				bus.setSatTerms((String) busJSONObject.get("satTerms"));
-				bus.setHolTerms((String) busJSONObject.get("holTerms"));
-				bus.setCompanyNm((String) busJSONObject.get("companyNm"));
-				bus.setTelNo((String) busJSONObject.get("telNo"));
-				bus.setFaxNo((String) busJSONObject.get("faxNo"));
-				bus.setEmail((String) busJSONObject.get("email"));
-				
-				busesList.add(bus);
-			}
-			
+			jsonObject = (JSONObject) jsonParser.parse(jsonData);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return busesList;
+		}
+		
+		JSONArray busArrayList = (JSONArray) jsonObject.get("rows");
+		
+		for (int i = 0; i < busArrayList.size(); i++) {
+			JSONObject busJSONObject = (JSONObject) busArrayList.get(i);
+			
+			Bus bus = new Bus();
+			bus.setRoutId(Integer.parseInt((String)busJSONObject.get("routId")));
+			bus.setRoutName((String) busJSONObject.get("routName"));
+			bus.setRoutType((String) busJSONObject.get("routType"));
+			bus.setStnFirst((String) busJSONObject.get("stnFirst"));
+			bus.setStnLast((String) busJSONObject.get("stnLast"));
+			bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
+			bus.setTimeLast((String) busJSONObject.get("timeLast"));
+			bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
+			bus.setSatTimeLast((String) busJSONObject.get("satTimeLast"));
+			bus.setHolTimeFirst((String) busJSONObject.get("holTimeFirst"));
+			bus.setHolTimeLast((String) busJSONObject.get("holTimeLast"));
+			bus.setNorTerms((String) busJSONObject.get("norTerms"));
+			bus.setSatTerms((String) busJSONObject.get("satTerms"));
+			bus.setHolTerms((String) busJSONObject.get("holTerms"));
+			bus.setCompanyNm((String) busJSONObject.get("companyNm"));
+			bus.setTelNo((String) busJSONObject.get("telNo"));
+			bus.setFaxNo((String) busJSONObject.get("faxNo"));
+			bus.setEmail((String) busJSONObject.get("email"));
+			
+			busesList.add(bus);
 		}
 		
 		return busesList;

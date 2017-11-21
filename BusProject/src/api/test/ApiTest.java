@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,10 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class ApiTest {
@@ -140,59 +139,42 @@ public class ApiTest {
 			e.printStackTrace();
 		}
 		
-		URLConnection connection = null;
+		// read from the URL
+	    Scanner scan = null;
 		try {
-			System.out.println("url connection");
-			connection = url.openConnection();
-			connection.connect();
+			scan = new Scanner(url.openStream());
 		} catch (IOException e) {
-			System.out.println("URL 접속 오류");
 			e.printStackTrace();
 		}
 		
-		/* 응답을 처리 */
-		String responseStr = "";
+	    String str = new String();
+	    
+	    while (scan.hasNext())
+	        str += scan.nextLine();
+	    scan.close();
+	 
+	    // build a JSON object
+	    JSONParser jsonParser = new JSONParser();
+	    
+	    JSONObject jsonObject = null;
 		try {
-			
-			BufferedReader br = 
-					new BufferedReader(
-							new InputStreamReader(connection.getInputStream()));
-			
-			String line;
-			
-			while(true) {
-				line = br.readLine();
-				System.out.println("printLine: " + line);
-				if (line == null) {
-					break;
-				}
-				
-				responseStr += line + "\n";
-			}
-			
-		} catch (Exception e) {
+			jsonObject = (JSONObject) jsonParser.parse(str);
+		} catch (ParseException e) {
 			e.printStackTrace();
+		}
+	    
+		if (! jsonObject.get("status").equals("OK")) {
+			System.out.println("google geocode api response error");
 		}
 		
-		/* JSON data parsing */
-		String result = "";
-		try {
-			JSONParser jsonParser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) jsonParser.parse(responseStr);
-			JSONArray locationList = (JSONArray) jsonObject.get("results");
-			
-			for (int i = 0; i < locationList.size(); i++) {
-				JSONObject location = (JSONObject) locationList.get(i);
-				result += "lat: " + location.get("lat") + "\n";
-				result += "lng: " + location.get("lng") + "\n";
-			}
-			
-			System.out.println(result);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	
+		JSONObject resultObject = (JSONObject) ((JSONArray) jsonObject.get("results")).get(0);    
+		
+		JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
+		JSONObject locationObject = (JSONObject) geometryObject.get("location");
+		
+		System.out.println(resultObject.get("formatted_address"));
+		int lat = Integer.parseInt((String) locationObject.get("lat"));
+		int lng = Integer.parseInt((String) locationObject.get("lng"));
 		
 	}
 	
