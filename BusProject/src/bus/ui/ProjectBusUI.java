@@ -18,7 +18,7 @@ public class ProjectBusUI {
 	private String userId = null;							// User 각각의 다른 정보 저장을 위해 입력받는 id
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		Bus UI
 	 */
@@ -93,7 +93,7 @@ public class ProjectBusUI {
 	}	// ProjectBusUI(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 *		Log-in
 	 *		@param 	유저로부터 아이디와 비밀번호를 입력받는다. 
@@ -161,7 +161,7 @@ public class ProjectBusUI {
 	} // logIn(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		Main Menu
 	 */
@@ -179,7 +179,7 @@ public class ProjectBusUI {
 	} // printMainManu(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 	
 	 * 		Search - 버스 / 정류장 검색
 	 * 		: Main - switch 1
@@ -299,7 +299,7 @@ public class ProjectBusUI {
 	} // search(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		즐겨찾기
 	 * 		: Main - switch 2
@@ -326,8 +326,14 @@ public class ProjectBusUI {
 					
 					// 유저 ID에 해당하는 즐겨찾기 목록 출력
 					List<Bus> busList = busManager.getFavoriteBusList(userId);
-					
-					catchBusList(busList);
+										
+					// 즐겨찾기한 버스가 없으면 돌아갈 메뉴 선택받기
+					if (busList == null || busList.isEmpty()) {
+						System.out.println("[Error] 즐겨찾기한 버스가 없습니다.\n");
+						
+					} else {
+						catchBusList(busList);
+					}
 										
 					boolean out1 = loopFavMenu();
 					
@@ -341,8 +347,14 @@ public class ProjectBusUI {
 					
 					// 유저 ID에 해당하는 즐겨찾기 목록 출력
 					List<Station> favoriteStnList = busManager.getFavoriteStnList(userId);
-										
-					catchStnList(favoriteStnList);
+					
+					// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
+					if (favoriteStnList == null || favoriteStnList.isEmpty()) {
+						System.out.println("[Error] 즐겨찾기한 정류장이 없습니다.\n");
+						
+					} else {
+						catchStnList(favoriteStnList);
+					}
 										
 					boolean out2 = loopFavMenu();
 					
@@ -435,7 +447,7 @@ public class ProjectBusUI {
 	} // favorite(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 *  	최근 검색
 	 *  	: Main - switch 3
@@ -478,52 +490,11 @@ public class ProjectBusUI {
 		
 		System.out.println("- 확인하고 싶은 목록의 번호를 입력하세요. -");
 		
-		int inputNumInHistory = selectNum(sum);		// 유저로부터 확인하고 싶은 목록의 번호를 입력받는다.
+		int inputNumInHistory = selectNum(sum - 1);		// 유저로부터 확인하고 싶은 목록의 번호를 입력받는다.
 				
 		Object busOrStn1 = history.get(inputNumInHistory);
 		
-		if (busOrStn1.getClass() == Bus.class) {
-			
-			Bus callBusRoute = (Bus) busOrStn1;
-			
-			int busIdFromHistory = callBusRoute.getRoutId();
-			
-			List<RealTimeStation> busRoute = busManager.getRouteMap(busIdFromHistory);
-			
-			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
-			
-			for (RealTimeStation route : busRoute) {
-				System.out.println();
-				System.out.println("| " + (x++) + " | " + route.getStnName() + 
-						"    ( 정류장 ID : " + route.getArsId() + " )");
-				
-				if (route.getPlainNo() != null) {
-					System.out.println("★  " + route.getPlainNo());
-				}
-			}
-			
-			System.out.println();
-							
-		} else {
-			
-			Station callStnsBusList = (Station) busOrStn1;
-											
-			List<HashMap<String, Object>> busArriveList =
-					busManager.getBuses(callStnsBusList.getArsId());
-			
-			for (HashMap<String, Object> busInfo : busArriveList) {
-				System.out.println();
-				System.out.println("<" + busInfo.get("busNumber") + ">");
-				
-				System.out.print("다음 차:");
-				System.out.println(busInfo.get("firstBusMsg"));
-				
-				System.out.print("다다음 차:");
-				System.out.println(busInfo.get("secondBusMsg"));
-			}
-			
-			System.out.println();
-		}
+		printBusOrStnList(busOrStn1);
 		
 		System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
 			
@@ -532,7 +503,7 @@ public class ProjectBusUI {
 	} // recentSearch(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		유저로부터 숫자만 받아오게 한다.
 	 * 		@return int
@@ -564,10 +535,11 @@ public class ProjectBusUI {
 	} // getIntFromUser(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		유저로부터 입력받은 텍스트 메소드
-	 * 		@return String 공백을 제외한 최소 두 글자 이상의 입력받은 문자열
+	 * 		@param int : 최소 크기
+	 * 		@return String : 공백을 제외한 최소 두 글자 이상의 입력받은 문자열
 	 */
 	private String getTextFromUser(int minSize) {
 		
@@ -621,7 +593,7 @@ public class ProjectBusUI {
 	} // searchBusList(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		Search Station List
 	 * 		@return 입력받은 숫자가 포함된 정류장의 목록을 불러온다.
@@ -645,10 +617,10 @@ public class ProjectBusUI {
 	} // searchStnList(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		목록 내의 숫자만 입력받게 한다.
-	 * 		@param int
+	 * 		@param 리스트의 크기
 	 * 		@return int
 	 */
 	private int selectNum(int size){
@@ -669,7 +641,7 @@ public class ProjectBusUI {
 	} // selectNum(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
      * 		입력받은 문자열이 숫자로만 이루어져 있는지 판별한다.
      * 		@param text 입력받은  문자열
@@ -699,7 +671,7 @@ public class ProjectBusUI {
 	} // isNumeric(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		Database를 Update하게 해 주는 메소드
 	 * 
@@ -717,7 +689,7 @@ public class ProjectBusUI {
 	} // databaseUpdate(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		버스 또는 정류장의 객체에 맞게 해당 문구를 출력한다.
 	 * 		@param busOrStn
@@ -758,7 +730,7 @@ public class ProjectBusUI {
 	} // printFavMenu(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 		
 	 * 		버스 리스트를 받아, 각각 넘버링 해서 넘겨준다.
 	 * 		@param 	List<Bus> busList
@@ -768,49 +740,28 @@ public class ProjectBusUI {
 		
 		Bus throwBus = null;	// 최근검색, 즐겨찾기에 넘겨줄 객체
 		
-		// 즐겨찾기한 버스가 없으면 돌아갈 메뉴 선택받기
-		if (busList == null || busList.isEmpty()) {
-			System.out.println("[Error] 즐겨찾기한 버스가 없습니다.\n");
+		for (int i = 0; i < busList.size(); i++) {
+			Bus list = busList.get(i);
 			
-		} else {
-		
-			for (int i = 0; i < busList.size(); i++) {
-				Bus list = busList.get(i);
-				
-				System.out.println();
-				System.out.println("| " + (i + 1) + " | " 
-						+ list.getRoutName() + " ( " + list.getRoutType() + " )");
-			}
-			
-			System.out.println("\n확인하고 싶은 버스를 선택해주세요.");
-			
-			int selectBus = selectNum(busList.size());	// 유저로부터 넘버링된 숫자를 입력받는다
-			
-			int throwBusId = busList.get(selectBus - 1).getRoutId(); // 버스 id를 넘겨주고 노선도를 받아올 변수
-			
-			throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
-			
-			List<RealTimeStation> busRoute = busManager.getRouteMap(throwBusId); // manager에서 받아온 노선도
-			
-			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
-			
-			for (RealTimeStation route : busRoute) {
-				System.out.println();
-				System.out.print("| " + (x++) + " | " + route.getStnName() + 
-						"    ( 정류장 ID : " + route.getArsId() + " )");
-				if (route.getPlainNo() != null) {
-					System.out.print(" |  ★     |  " + route.getPlainNo());
-				}
-			}
-			
+			System.out.println();
+			System.out.println("| " + (i + 1) + " | " 
+					+ list.getRoutName() + " ( " + list.getRoutType() + " )");
 		}
+		
+		System.out.println("\n확인하고 싶은 버스를 선택해주세요.");
+		
+		int selectBus = selectNum(busList.size());	// 유저로부터 넘버링된 숫자를 입력받는다
+				
+		throwBus = busList.get(selectBus - 1);  // 최근검색, 즐겨찾기에 넘겨줄 객체
+		
+		printBusOrStnList(throwBus);
 		
 		return throwBus;
 		
 	} // catchBusList(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		정류장 리스트를 받아, 각각 넘버링 해서 넘겨준다.
 	 * 		@param 	List<Station> foundBusList
@@ -819,47 +770,27 @@ public class ProjectBusUI {
 	private Station catchStnList(List<Station> foundBusList) {
 		
 		Station throwStn = null;
-				
-		// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
-		if (foundBusList == null || foundBusList.isEmpty()) {
-			System.out.println("[Error] 즐겨찾기한 정류장이 없습니다.\n");
-			
-		} else {
-			
-			for (int i = 0; i < foundBusList.size(); i++) {
-				System.out.println("| " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
-						+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
-			}
-			
-			// 선택지 이상의 숫자를 입력하면 false 반환
-			System.out.println("\n- 확인하고 싶은 정류장을 선택해주세요. -");
-			
-			int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
-			
-			throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
-			
-			// open-api 정보에서 현 정류장에 도착할 버스들의 도착 시간을 불러와 출력
-			List<HashMap<String, Object>> busArriveList =
-					busManager.getBuses(foundBusList.get(inputToGetBuses - 1).getArsId());
-			
-			for (HashMap<String, Object> busInfo : busArriveList) {
-				System.out.println();
-				System.out.println("<" + busInfo.get("busNumber") + ">");
-				
-				System.out.print("다음 차:");
-				System.out.println(busInfo.get("firstBusMsg"));
-				
-				System.out.print("다다음 차:");
-				System.out.println(busInfo.get("secondBusMsg"));
-			}
+		
+		for (int i = 0; i < foundBusList.size(); i++) {
+			System.out.println("| " + (i + 1) + " | " + foundBusList.get(i).getStnName() 
+					+ "    ( 정류장 번호 : " + foundBusList.get(i).getArsId() + " )" + "\n");
 		}
+		
+		// 선택지 이상의 숫자를 입력하면 false 반환
+		System.out.println("\n- 확인하고 싶은 정류장을 선택해주세요. -");
+		
+		int inputToGetBuses = selectNum(foundBusList.size());	// 사용자로부터 출력을 원하는 정류장 선택받기
+		
+		throwStn = foundBusList.get(inputToGetBuses - 1);	// 최근검색, 즐겨찾기에 넘겨줄 객체
+		
+		printBusOrStnList(throwStn);
 		
 		return throwStn;
 		
 	} // catchStnList(); method end
 	
 	
-	/**__________________________________________________________________________________________________
+	/**
 	 * 
 	 * 		즐겨찾기 내부에서 즐겨찾기 메뉴로 돌아갈건지, 메인메뉴로 돌아갈건지 묻는 메소드
 	 * 
@@ -893,5 +824,58 @@ public class ProjectBusUI {
 		return out;
 		
 	} // loopFavMenu(); method end
+	
+	
+	/**
+	 * 
+	 * 		버스일 경우 출력되는 문구, 정류장일 경우 출력되는 문구
+	 * 		@param Bus 또는 Station 객체 형태
+	 */
+	private void printBusOrStnList(Object busOrStn) {
+					
+		if (busOrStn.getClass() == Bus.class) {		// 객체의 클래스가 버스 타입일 경우
+			
+			Bus callBusRoute = (Bus) busOrStn;		// 버스로 down-casting
+			
+			int callBusId = callBusRoute.getRoutId();	// 버스 ID를 불러온다
+			
+			List<RealTimeStation> busRoute = busManager.getRouteMap(callBusId);		// 버스ID에 맞는 노선도 호출
+			
+			int x = 1; // 정류장 이름 앞에 숫자 붙여서 출력하는 용도
+			
+			for (RealTimeStation route : busRoute) {		// 출력
+				System.out.println();
+				System.out.print("| " + (x++) + " | " + route.getStnName() + 
+						"    ( 정류장 ID : " + route.getArsId() + " )");
+				
+				if (route.getPlainNo() != null) {
+					System.out.print("	|  ★     |  " + route.getPlainNo());
+				}
+			}
+			
+			System.out.println();
+							
+		} else {
+			
+			Station callStnsBusList = (Station) busOrStn;	// 객체의 클래스가 정류장 타입일 경우
+
+			// 정류장이 가지고 있는 ID로 해당 정류장을 지나가는 버스 리스트 호출
+			List<HashMap<String, Object>> busArriveList =
+					busManager.getBuses(callStnsBusList.getArsId());	
+			
+			for (HashMap<String, Object> busInfo : busArriveList) {		// 출력
+				System.out.println();
+				System.out.println("<" + busInfo.get("busNumber") + ">");
+				
+				System.out.print("다음 차:");
+				System.out.println(busInfo.get("firstBusMsg"));
+				
+				System.out.print("다다음 차:");
+				System.out.println(busInfo.get("secondBusMsg"));
+			}
+			
+			System.out.println();
+		}
+	} // printBusOrStnList(); method end
 }
 
