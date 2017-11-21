@@ -193,6 +193,7 @@ public class ProjectBusUI {
 			System.out.println("\n--- < 검  색  > ---");
 			System.out.println("1. 버스 번호로 검색");
 			System.out.println("2. 정류장으로 검색");
+			System.out.println("3. 주소로 주변 정류장 검색");
 			System.out.println("9. 메인메뉴\n");
 			
 			int option = 0;
@@ -223,28 +224,14 @@ public class ProjectBusUI {
 					System.out.println("\n- 입력하신 숫자에 해당되는 버스 목록입니다. -");
 					
 					Bus throwBus = catchBusList(busNumList);
-					
-					// 최근검색기록에 해당 버스를 저장한다.
-					boolean canSaveBusHistory = busManager.searchHistory(userId, throwBus);
-					
-					if (canSaveBusHistory) {
-						busManager.updateHistory(userId, throwBus);
-					} else {
-						busManager.setHistory(userId, throwBus);
-					}
-					
-					// 즐겨찾기 여부 확인 후 저장
-					boolean canSaveBusFav = busManager.searchFavorite(userId, throwBus);
-					
-					if (canSaveBusFav == true) {
-						System.out.println("\n[Error] 이미 등록된 버스 정보입니다.");
-						System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
-												
-					} else {
-						printFavMenu(throwBus);
-					}
+										
+					boolean canSaveFavBus = favAndHistory(throwBus);
 				
-					loop = false;
+					// 모든 과정이 끝나면 메인 메뉴로 돌아감
+					if (canSaveFavBus) {
+						loop = false;
+					}
+					
 					break;
 		
 				case 2:		// 정류장으로 검색 -> 지나다니는 버스 확인 -> 즐겨찾기 여부 확인
@@ -259,30 +246,19 @@ public class ProjectBusUI {
 					// 불러온 정류장 목록의 배열에 Numbering 해서 출력
 					Station throwStn = catchStnList(foundBusList);
 					
-					// 최근검색기록에 해당 정류장을 저장한다.
-					boolean canSaveStnHistory = busManager.searchHistory(userId, throwStn);
-				
-					if (canSaveStnHistory) {
-						busManager.updateHistory(userId, throwStn);
-					} else {
-						busManager.setHistory(userId, throwStn);
-					}
-					
-					// 즐겨찾기 여부 확인 후 저장
-					boolean canSaveStnFav = busManager.searchFavorite(userId, throwStn);
-										
-					if (canSaveStnFav == true) {
-						System.out.println("[Error] 이미 등록된 정류장 정보입니다.");
-						System.out.println("[System] 메인 메뉴로 돌아갑니다.");
-						
-					} else {
-						printFavMenu(throwStn);
-					}
+					boolean canSaveFavStn = favAndHistory(throwStn);
 					
 					// 모든 과정이 끝나면 메인 메뉴로 돌아감
-					loop = false;
+					if (canSaveFavStn) {
+						loop = false;
+					}
 					break;
-									
+				
+				case 3:		// 주소로 주변 정류장 검색
+					
+					System.out.println("- 정류장을 찾고싶은 주소를 입력해주세요. -");
+					break;
+					
 				case 9:		// 메소드 종료
 					
 					System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
@@ -305,99 +281,92 @@ public class ProjectBusUI {
 	 * 		: Main - switch 2
 	 */
 	private void favorite() {
-						
-		int selectMenuFromFav = 0; 	// 유저로부터 항목을 선택받는다.
-		
+			
 		boolean loop = true;		// while 반복문용
-				
+			
 		while(loop) {
+
+			System.out.println("\n--- < 즐  겨  찾  기  목  록 > ---\n");
 			
-			System.out.println("\n--- < 즐  겨  찾  기 > ---");
-			System.out.println("1. 저장된 버스 목록");
-			System.out.println("2. 저장된 정류장 목록");
-			System.out.println("3. 저장된 즐겨찾기 목록 및 해제");
-			System.out.println("9. 메인메뉴로 돌아가기");
+			Map<String, Object> favList = busManager.getFavoriteAll(userId);
 			
-			selectMenuFromFav = getIntFromUser();
+			List<Bus> busFavList = (List<Bus>) favList.get("Bus");
+			
+			int i = 0;
+			
+			for (i = 0; i < busFavList.size(); i++) {
+			
+				System.out.print("| " + (i + 1) + " | ");
+				
+				System.out.print(" 버스 번호 : " + busFavList.get(i).getRoutName() + "  ( " 
+											+ busFavList.get(i).getRoutType() + " )\n");
+			}
+								
+			List<Station> stnFavList = (List<Station>) favList.get("Station");
+			
+			for (int j = 0; j < stnFavList.size(); j++) {
+				
+				System.out.print("| " + (i + 1) + " | ");
+				
+				i++;
+				
+				System.out.print(" 정류장 이름 : " 	+ stnFavList.get(j).getStnName() + "  ( " 
+												+ stnFavList.get(j).getArsId() + " )\n");
+			}
+						
+			int selectMenuFromFav = 0;
+			
+			boolean flag = true;
+			
+			while(flag) {
+				
+				System.out.println("\n--- < 메   뉴  > ---");
+				System.out.println("1. 즐겨찾기 검색");
+				System.out.println("2. 즐겨찾기 해제");
+				System.out.println("9. 메인메뉴로 돌아가기\n");
+				
+				selectMenuFromFav = getIntFromUser(); 	// 유저로부터 항목을 선택받는다.
+				
+				if (selectMenuFromFav != 1 && selectMenuFromFav != 2 && selectMenuFromFav != 9) {
+					System.out.println("[Error] 출력된 메뉴만 선택해주세요.");
+				} else {
+					flag = false;
+				}
+			}
 			
 			switch (selectMenuFromFav) {
 			
-				case 1:		// 버스 목록 출력
+				case 1:		// 목록 검색
 					
-					// 유저 ID에 해당하는 즐겨찾기 목록 출력
-					List<Bus> busList = busManager.getFavoriteBusList(userId);
-										
-					// 즐겨찾기한 버스가 없으면 돌아갈 메뉴 선택받기
-					if (busList == null || busList.isEmpty()) {
-						System.out.println("[Error] 즐겨찾기한 버스가 없습니다.\n");
+					// 유저로부터 검색하고 싶은 숫자 입력받기
+					System.out.println("\n- 즐겨찾기 목록에서 검색을 원하시는 번호를 선택해주세요.");
+					
+					int selectFavList = selectNum(favList.size() + 1);
+					
+					if (selectFavList < busFavList.size() + 1) {
+						Bus getBus = busFavList.get(selectFavList - 1);
+						printBusOrStnList(getBus);
 						
-					} else {
-						catchBusList(busList);
+					} else if (selectFavList > busFavList.size()){
+						Station getStn = stnFavList.get((selectFavList - 1) - busFavList.size());
+						printBusOrStnList(getStn);
 					}
-										
-					boolean out1 = loopFavMenu();
+											
+					boolean out = loopFavMenu();
 					
-					if (out1) { 
+					if (out) { 
 						loop = false; 
 					}
 					
 					break;
 		
-				case 2:		// 정류장 목록 출력
-					
-					// 유저 ID에 해당하는 즐겨찾기 목록 출력
-					List<Station> favoriteStnList = busManager.getFavoriteStnList(userId);
-					
-					// 즐겨찾기한 정류장이 없으면 돌아갈 메뉴 선택받기
-					if (favoriteStnList == null || favoriteStnList.isEmpty()) {
-						System.out.println("[Error] 즐겨찾기한 정류장이 없습니다.\n");
+				case 2:		// 저장된 즐겨찾기 취소
 						
-					} else {
-						catchStnList(favoriteStnList);
-					}
-										
-					boolean out2 = loopFavMenu();
-					
-					if (out2) { 
-						loop = false; 
-					}
-					
-					break;
-					
-				case 3: 	// 저장된 즐겨찾기 취소
-					
-					/* 	해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
-					  	1.	버스 및 정류장 목록 모두 출력받음
-						2.	출력받은 목록에 넘버링
-						3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
-					 */
-					System.out.println("\n- 현재까지 즐겨찾기한 목록입니다. -\n");
-					
-					Map<String, Object> favList = busManager.getFavoriteAll(userId);
-																	
-					List<Bus> busFavList = (List<Bus>) favList.get("Bus");
-					
-					int i = 0;
-					
-					for (i = 0; i < busFavList.size(); i++) {
-					
-						System.out.print("| " + (i + 1) + " | ");
-						
-						System.out.print(" 버스 번호 : " + busFavList.get(i).getRoutName() + "  ( " 
-													+ busFavList.get(i).getRoutType() + " )\n");
-					}
-										
-					List<Station> stnFavList = (List<Station>) favList.get("Station");
-					
-					for (int j = 0; j < stnFavList.size(); j++) {
-						
-						System.out.print("| " + (i + 1) + " | ");
-						
-						i++;
-						
-						System.out.print(" 정류장 이름 : " 	+ stnFavList.get(j).getStnName() + "  ( " 
-														+ stnFavList.get(j).getArsId() + " )\n");
-					}
+						/* 해당 버스 또는 정류장의 즐겨찾기 취소 (사용자 id, 취소하려고 하는 버스 또는 정류장의 id)
+					  		1.	버스 및 정류장 목록 모두 출력받음
+							2.	출력받은 목록에 넘버링
+							3.	넘버링한 숫자를 유저로부터 선택받아 해당 버스 또는 정류장을 즐겨찾기 해제
+						*/
 					
 					System.out.println("\n- 즐겨찾기를 취소하실 번호를 선택해주세요. -");
 					
@@ -430,7 +399,7 @@ public class ProjectBusUI {
 					}
 					
 					break;
-					
+								
 				case 9:		// 메인메뉴로 돌아가기
 					
 					System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
@@ -492,14 +461,14 @@ public class ProjectBusUI {
 		
 		int inputNumInHistory = selectNum(sum - 1);		// 유저로부터 확인하고 싶은 목록의 번호를 입력받는다.
 				
-		Object busOrStn1 = history.get(inputNumInHistory);
+		Object busOrStn1 = history.get(inputNumInHistory + (inputNumInHistory - 1));
 		
-		printBusOrStnList(busOrStn1);
+		busManager.updateHistory(userId, busOrStn1);	// 검색 기록을 저장한다.
 		
-		System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
-			
+		printBusOrStnList(busOrStn1);		// 해당 버스 또는 정류장 정보 출력
 		
-		
+		System.out.println("\n[System] 메인 메뉴로 돌아갑니다.\n");
+	
 	} // recentSearch(); method end
 	
 	
@@ -694,7 +663,7 @@ public class ProjectBusUI {
 	 * 		버스 또는 정류장의 객체에 맞게 해당 문구를 출력한다.
 	 * 		@param busOrStn
 	 */
-	private void printFavMenu(Object busOrStn) {
+	private void canSaveFav(Object busOrStn) {
 		
 		boolean loopFav = true;
 		
@@ -845,11 +814,11 @@ public class ProjectBusUI {
 			
 			for (RealTimeStation route : busRoute) {		// 출력
 				System.out.println();
-				System.out.print("| " + (x++) + " | " + route.getStnName() + 
-						"    ( 정류장 ID : " + route.getArsId() + " )");
+				System.out.print(String.format("%-55s", "| " + (x++) + " | " + route.getStnName() + 
+						"    ( 정류장 ID : " + route.getArsId() + " )"));
 				
 				if (route.getPlainNo() != null) {
-					System.out.print("	|  ★     |  " + route.getPlainNo());
+					System.out.print("  	|  ★  출 발 ★    |  " + route.getPlainNo());
 				}
 			}
 			
@@ -859,6 +828,7 @@ public class ProjectBusUI {
 			
 			Station callStnsBusList = (Station) busOrStn;	// 객체의 클래스가 정류장 타입일 경우
 
+			
 			// 정류장이 가지고 있는 ID로 해당 정류장을 지나가는 버스 리스트 호출
 			List<HashMap<String, Object>> busArriveList =
 					busManager.getBuses(callStnsBusList.getArsId());	
@@ -877,5 +847,62 @@ public class ProjectBusUI {
 			System.out.println();
 		}
 	} // printBusOrStnList(); method end
+	
+	
+	/**
+	 * 
+	 * 		최근 검색 기록과 즐겨찾기 추가 메소드
+	 * 		@param busOrStn
+	 * 		@return true
+	 */
+	private boolean favAndHistory(Object busOrStn) {
+		
+		if (busOrStn.getClass() == Bus.class) {
+			
+			// 최근검색기록에 해당 버스를 저장한다.
+			boolean canSaveBusHistory = busManager.searchHistory(userId, busOrStn);
+			
+			if (canSaveBusHistory) {
+				busManager.updateHistory(userId, busOrStn);
+			} else {
+				busManager.setHistory(userId, busOrStn);
+			}
+			
+			// 즐겨찾기 여부 확인 후 저장
+			boolean canSaveBusFav = busManager.searchFavorite(userId, busOrStn);
+			
+			if (canSaveBusFav == true) {
+				System.out.println("\n[Error] 이미 등록된 버스 정보입니다.");
+				System.out.println("[System] 메인 메뉴로 돌아갑니다.\n");
+			
+			} else {
+				canSaveFav(busOrStn);
+			}
+			
+		} else if (busOrStn.getClass() == Station.class) {
+			
+			// 최근검색기록에 해당 정류장을 저장한다.
+			boolean canSaveStnHistory = busManager.searchHistory(userId, busOrStn);
+		
+			if (canSaveStnHistory) {
+				busManager.updateHistory(userId, busOrStn);
+			} else {
+				busManager.setHistory(userId, busOrStn);
+			}
+			
+			// 즐겨찾기 여부 확인 후 저장
+			boolean canSaveStnFav = busManager.searchFavorite(userId, busOrStn);
+								
+			if (canSaveStnFav == true) {
+				System.out.println("[Error] 이미 등록된 정류장 정보입니다.");
+				System.out.println("[System] 메인 메뉴로 돌아갑니다.");
+				
+			} else {
+				canSaveFav(busOrStn);
+			}
+		}
+		
+		return true;
+	}
 }
 
