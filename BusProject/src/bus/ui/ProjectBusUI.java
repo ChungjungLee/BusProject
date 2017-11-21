@@ -334,6 +334,11 @@ public class ProjectBusUI {
 			
 			Map<String, Object> favList = busManager.getFavoriteAll(userId);
 			
+			if (favList == null) {
+				System.out.println("즐겨찾기없음");
+				return;
+			}
+			
 			List<Bus> busFavList = (List<Bus>) favList.get("Bus");
 			
 			int i = 0;

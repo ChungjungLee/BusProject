@@ -30,41 +30,11 @@
 		INSERT /*+ IGNORE_ROW_ON_DUPKEY_INDEX (bus(routId)) */ INTO bus
 			(routId
 			,routName
-			,routType
-			,stnFirst
-			,stnLast
-			,timeFirst
-			,timeLast
-			,satTimeFirst
-			,satTimeLast
-			,holTimeFirst
-			,holTimeLast
-			,norTerms
-			,satTerms
-			,holTerms
-			,companyNm
-			,telNo
-			,faxNo
-			,email)
+			,routType)
 		VALUES
 			(#{routId}
 			,#{routName}
-			,#{routType}
-			,#{stnFirst}
-			,#{stnLast}
-			,#{timeFirst,jdbcType=VARCHAR}
-			,#{timeLast,jdbcType=VARCHAR}
-			,#{satTimeFirst}
-			,#{satTimeLast}
-			,#{holTimeFirst}
-			,#{holTimeLast}
-			,#{norTerms}
-			,#{satTerms}
-			,#{holTerms}
-			,#{companyNm}
-			,#{telNo,jdbcType=VARCHAR}
-			,#{faxNo,jdbcType=VARCHAR}
-			,#{email,jdbcType=VARCHAR})
+			,#{routType})
 	</insert>
 	
 	

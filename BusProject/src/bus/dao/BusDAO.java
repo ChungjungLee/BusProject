@@ -370,6 +370,13 @@ public class BusDAO {
 			List<Station> stnList = new ArrayList<>();
 			
 			for (Favorite favorite : favorList) {
+				
+				if (mapper.selectBus(favorite.getBusOrStnId()) == null &&
+						mapper.selectStation(favorite.getBusOrStnId()) == null) {
+					session.close();
+					return null;
+				}
+				
 				if (favorite.getBusOrStnType().equals("B")) {
 					Bus bus = mapper.selectBus(favorite.getBusOrStnId());
 					busList.add(bus);
@@ -524,7 +531,7 @@ public class BusDAO {
 	/**
 	 * 계정에 저장되어 있는 검색 기록 모두를 가져와 대응되는 버스, 정류장 정보를 받아온다. 
 	 * @param userId 사용자 ID
-	 * @return favorMap 버스리스트, 정류장리스트가 저장되어 있는 Map
+	 * @return (History, Bus/Station)을 한 쌍으로 하는 리스트
 	 */
 	public List<Object> selectHistoryAll(String userId) {
 		SqlSession session = null;
@@ -537,14 +544,27 @@ public class BusDAO {
 			List<History> hisList = mapper.selectHistory(userId);
 			
 			for (History history : hisList) {
-				hisInfoList.add(history);
 				
 				if (history.getBusOrStnType().equals("B")) {
 					Bus bus = mapper.selectBus(history.getBusOrStnId());
+					
+					if (bus == null) {
+						session.close();
+						return null;
+					}
+					
+					hisInfoList.add(history);
 					hisInfoList.add(bus);
 					
 				} else {
 					Station station = mapper.selectStation(history.getBusOrStnId());
+					
+					if (station == null) {
+						session.close();
+						return null;
+					}
+					
+					hisInfoList.add(history);
 					hisInfoList.add(station);
 					
 				}

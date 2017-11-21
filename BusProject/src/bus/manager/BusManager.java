@@ -793,21 +793,6 @@ public class BusManager {
 			bus.setRoutId(Integer.parseInt((String)busJSONObject.get("routId")));
 			bus.setRoutName((String) busJSONObject.get("routName"));
 			bus.setRoutType((String) busJSONObject.get("routType"));
-			bus.setStnFirst((String) busJSONObject.get("stnFirst"));
-			bus.setStnLast((String) busJSONObject.get("stnLast"));
-			bus.setTimeFirst((String) busJSONObject.get("timeFirst"));
-			bus.setTimeLast((String) busJSONObject.get("timeLast"));
-			bus.setSatTimeFirst((String) busJSONObject.get("satTimeFirst"));
-			bus.setSatTimeLast((String) busJSONObject.get("satTimeLast"));
-			bus.setHolTimeFirst((String) busJSONObject.get("holTimeFirst"));
-			bus.setHolTimeLast((String) busJSONObject.get("holTimeLast"));
-			bus.setNorTerms((String) busJSONObject.get("norTerms"));
-			bus.setSatTerms((String) busJSONObject.get("satTerms"));
-			bus.setHolTerms((String) busJSONObject.get("holTerms"));
-			bus.setCompanyNm((String) busJSONObject.get("companyNm"));
-			bus.setTelNo((String) busJSONObject.get("telNo"));
-			bus.setFaxNo((String) busJSONObject.get("faxNo"));
-			bus.setEmail((String) busJSONObject.get("email"));
 			
 			busesList.add(bus);
 		}
