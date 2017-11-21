@@ -216,7 +216,7 @@ public class ProjectBusUI {
 					
 					List<Bus> busNumList = searchBusList();					// 입력받은 숫자가 포함된 버스들의 목록을 불러온다.
 					
-					if (busNumList.isEmpty() || busNumList == null) { 		// 해당 버스가 없는 경우
+					if (busNumList == null || busNumList.isEmpty()) { 		// 해당 버스가 없는 경우
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break;
 					} 
@@ -239,7 +239,7 @@ public class ProjectBusUI {
 					
 					List<Station> foundBusList = searchStnList();	 // 입력받은 숫자가 포함된 정류장의 목록을 불러온다.
 					
-					if (foundBusList.isEmpty() || foundBusList == null) {
+					if (foundBusList == null || foundBusList.isEmpty()) {
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break; // 검색 결과가 없으면 검색 메뉴로 다시 돌아간다.
 					}
@@ -286,7 +286,7 @@ public class ProjectBusUI {
 					
 					List<Station> gpsStnList = busManager.searchNearStations(inputAddr, inputRange);
 					
-					if (gpsStnList.isEmpty() || gpsStnList == null) {
+					if (gpsStnList == null || gpsStnList.isEmpty()) {
 						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
 						break; // 검색 결과가 없으면 검색 메뉴로 다시 돌아간다.
 					}
