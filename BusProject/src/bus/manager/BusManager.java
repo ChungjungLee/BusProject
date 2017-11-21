@@ -676,19 +676,20 @@ public class BusManager {
 			e.printStackTrace();
 		}
 	    
-		if (! jsonObject.get("status").equals("OK")) {
-			System.out.println("google geocode api response error");
-		}
-		
-		JSONObject resultObject = (JSONObject) ((JSONArray) jsonObject.get("results")).get(0);    
-		
-		JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
-		JSONObject locationObject = (JSONObject) geometryObject.get("location");
-		
 		double[] gpsLoc = {0.0, 0.0};
 		
-		gpsLoc[0] = Double.parseDouble((String) locationObject.get("lat").toString());	// gpsY
-		gpsLoc[1] = Double.parseDouble((String) locationObject.get("lng").toString());	// gpsX
+		if (! jsonObject.get("status").equals("OK")) {
+			System.out.println("google geocode api response error");
+			
+		} else {
+			JSONObject resultObject = (JSONObject) ((JSONArray) jsonObject.get("results")).get(0);    
+			
+			JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
+			JSONObject locationObject = (JSONObject) geometryObject.get("location");
+			
+			gpsLoc[0] = Double.parseDouble((String) locationObject.get("lat").toString());	// gpsY
+			gpsLoc[1] = Double.parseDouble((String) locationObject.get("lng").toString());	// gpsX
+		}
 		
 		return gpsLoc;
 	}
