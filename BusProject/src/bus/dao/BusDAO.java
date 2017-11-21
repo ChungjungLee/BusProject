@@ -117,6 +117,35 @@ public class BusDAO {
 		return result;
 	}
 	
+	
+	/**
+	 * 버스 ID에 해당하는 버스 객체를 가져온다.
+	 * @param 찾고자 하는 버스 ID
+	 * @return 버스 객체
+	 */
+	public Bus selectBus(int busId) {
+		SqlSession session = null;
+		Bus result = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			result = mapper.selectBus(busId);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
+	
+	
 	/**
 	 * 특정 번호를 포함하는 모든 버스를 가져온다.
 	 * @param busNum 검색하려는 번호
@@ -144,6 +173,7 @@ public class BusDAO {
 		return busList;
 	}
 	
+	
 	/**
 	 * 저장할 정류장 목록을 넘겨 받아 데이터베이스에 저장한다.
 	 * @param stationsList 저장할 정류장 리스트
@@ -161,9 +191,38 @@ public class BusDAO {
 				if(mapper.insertStation(station) == 0) {
 					result = false;
 				}
+				System.out.println(station.getStnName() + "역 입력 완료");
 			}
 			
 			session.commit();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * 정류장 ID에 해당하는 정류장 객체를 가져온다.
+	 * @param 찾고자 하는 정류장 ID
+	 * @return 정류장 객체
+	 */
+	public Station selectStation(int stnId) {
+		SqlSession session = null;
+		Station result = null;
+		
+		try {
+			session = factory.openSession();
+			BusMapper mapper = session.getMapper(BusMapper.class);
+			
+			result = mapper.selectStation(stnId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

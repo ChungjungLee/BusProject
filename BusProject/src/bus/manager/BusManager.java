@@ -389,11 +389,21 @@ public class BusManager {
 		
 		if (favObj.getClass() == Bus.class) {
 			Bus bus = (Bus) favObj;
+			if (busDao.selectBus(bus.getRoutId()) == null) {
+				// 데이터베이스에 없는 버스를 즐겨찾기 하려는 상황
+				return false;
+			}
+			
 			favorite.setBusOrStnId(bus.getRoutId());
 			favorite.setTypeBus();
 			
 		} else if (favObj.getClass() == Station.class) {
 			Station station = (Station) favObj;
+			if (busDao.selectStation(station.getStnId()) == null) {
+				// 데이터베이스에 없는 버스를 즐겨찾기 하려는 상황
+				return false;
+			}
+			
 			favorite.setBusOrStnId(station.getStnId());
 			favorite.setTypeStation();
 			
@@ -534,13 +544,24 @@ public class BusManager {
 		
 		History history = new History(userId);
 		
+		// hisObj가 데이터베이스에 저장되어 있지 않은 경우는 dao.insertHistory()를 부르지 않고 return false;
 		if (hisObj.getClass() == Bus.class) {
 			Bus bus = (Bus) hisObj;
+			if (busDao.selectBus(bus.getRoutId()) == null) {
+				// 데이터베이스에 없는 버스를 즐겨찾기 하려는 상황
+				return false;
+			}
+			
 			history.setBusOrStnId(bus.getRoutId());
 			history.setTypeBus();
 			
 		} else if (hisObj.getClass() == Station.class) {
 			Station station = (Station) hisObj;
+			if (busDao.selectStation(station.getStnId()) == null) {
+				// 데이터베이스에 없는 버스를 즐겨찾기 하려는 상황
+				return false;
+			}
+			
 			history.setBusOrStnId(station.getStnId());
 			history.setTypeStation();
 			
