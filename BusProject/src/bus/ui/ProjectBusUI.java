@@ -202,7 +202,7 @@ public class ProjectBusUI {
 				
 				option = getIntFromUser();		// 유저로부터 메뉴 선택받음
 				
-				if (option == 1 || option == 2 || option == 9) {
+				if (option == 1 || option == 2 || option == 3 || option == 9) {
 					break;
 				}
 				
@@ -257,6 +257,9 @@ public class ProjectBusUI {
 				case 3:		// 주소로 주변 정류장 검색
 					
 					System.out.println("- 정류장을 찾고싶은 주소를 입력해주세요. -");
+					
+					List<Station> stnList = busManager.searchNearStations( , );
+					
 					break;
 					
 				case 9:		// 메소드 종료

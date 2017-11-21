@@ -236,7 +236,7 @@ public class BusManager {
 	 */
 	public List<Station> searchNearStations(String keyword, int radius) {
 		
-		int[] gpsLoc = getGpsLocation(keyword);
+		double[] gpsLoc = getGpsLocation(keyword);
 		
 		if (gpsLoc[0] == 0 && gpsLoc[0] == 0) {
 			return null;
@@ -262,11 +262,11 @@ public class BusManager {
 			Station station = new Station();
 			for (Node node = itemList.item(i).getFirstChild(); node != null; node = node.getNextSibling()) {
 				
-				if (node.getNodeName().equals("stNm")) {
+				if (node.getNodeName().equals("stationNm")) {
 					station.setStnName(node.getTextContent());
 				} else if (node.getNodeName().equals("arsId")) {
 					station.setArsId(node.getTextContent());
-				} else if (node.getNodeName().equals("stId")) {
+				} else if (node.getNodeName().equals("stationId")) {
 					station.setStnId(Integer.parseInt(node.getTextContent()));
 				}
 			}
@@ -609,7 +609,7 @@ public class BusManager {
 	 * @param address 변환할 주소 문자열
 	 * @return 정수형 배열; [0]에는 gpsY, [1]에는 gpsX 값이 들어가 있다.
 	 */
-	private int[] getGpsLocation(String address) {
+	private double[] getGpsLocation(String address) {
 		
 		String encodedAddress = null;
 		try {
@@ -618,8 +618,8 @@ public class BusManager {
 			e.printStackTrace();
 		}
 		
-		String urlString = "https://maps.googleapis.com/maps/api/geocode/json?"
-							+ "address=" + encodedAddress
+		String urlString = "https://maps.googleapis.com/maps/api/geocode/json?region=kr"
+							+ "&address=" + encodedAddress
 							+ "&key=" + geocodeKey;
 		
 		URL url = null;
@@ -664,10 +664,10 @@ public class BusManager {
 		JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
 		JSONObject locationObject = (JSONObject) geometryObject.get("location");
 		
-		int[] gpsLoc = {0, 0};
+		double[] gpsLoc = {0.0, 0.0};
 		
-		gpsLoc[0] = Integer.parseInt((String) locationObject.get("lat"));	// gpsY
-		gpsLoc[1] = Integer.parseInt((String) locationObject.get("lng"));	// gpsX
+		gpsLoc[0] = Double.parseDouble((String) locationObject.get("lat").toString());	// gpsY
+		gpsLoc[1] = Double.parseDouble((String) locationObject.get("lng").toString());	// gpsX
 		
 		return gpsLoc;
 	}
@@ -795,6 +795,7 @@ public class BusManager {
 	}
 	
 }
+
 
 
 
