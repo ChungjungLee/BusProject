@@ -25,58 +25,38 @@ public class ProjectBusUI {
 	
 	public ProjectBusUI() {
 	
-		
 		logIn();	// 유저로부터 사용자 정보를 입력받아 로그인 시킨다. 로그인 완료시 다음 메소드로 넘어간다.
+			
+		if (databaseUpdate() == false) {	// DB 업데이트. 업데이트 실패 -> 프로그램 종료
+			return;
+		}
 		
-		boolean canUpdate = false;		// 업데이트가 되어있지 않다면 실행할 수 없도록 만들어둔 장치
-		
-		boolean loop = true;			// while 반복문용
+		boolean loop = true;				// while 반복문용
 		
 		while(loop){
 			
 			int option = 0;
 			
-			printMainMenu();			// Main 호출
-			option = getIntFromUser();	// 유저로부터 메뉴 선택받기
+			printMainMenu();				// Main 호출
+			option = getIntFromUser();		// 유저로부터 메뉴 선택받기
 			
 			switch (option) {
 			
 				case 1:			// 검색
 					
-					if (canUpdate == true) {
-						search();
-					} else {
-						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
-					}
-					
+					search();
 					break;
 	
 				case 2:			// 즐겨찾기
 					
-					if (canUpdate == true) {
-						favorite();
-					} else {
-						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
-					}
-					
+					favorite();
 					break;
 					
 				case 3:			// 최근검색
 					
-					if (canUpdate == true) {
-						recentSearch();
-					} else {
-						System.out.println("[Error] DB 업데이트가 필요합니다.\n");
-					}
-					
+					recentSearch();
 					break;
-					
-				case 4:			// database update
-					
-					databaseUpdate();
-					canUpdate = true;	// DB 업데이트 완료
-					break;
-					
+								
 				case 9:			// 프로그램 종료
 					
 					System.out.println("[System] 프로그램을 종료합니다.");
@@ -173,7 +153,6 @@ public class ProjectBusUI {
 		System.out.println("1. 검색");
 		System.out.println("2. 즐겨찾기");
 		System.out.println("3. 최근 검색");
-		System.out.println("4. 데이터베이스 업데이트");
 		System.out.println("9. 프로그램 종료\n");
 		System.out.println("실행하실 메뉴를 선택하세요.");
 		
@@ -707,16 +686,18 @@ public class ProjectBusUI {
 	 * 		Database를 Update하게 해 주는 메소드
 	 * 
 	 */
-	private void databaseUpdate() {
+	private boolean databaseUpdate() {
 		
 		boolean canUpdate = busManager.databaseUpdate();
 		
 		if (canUpdate) {
 			System.out.println("[System] 정상적으로 업데이트 되었습니다.\n");
+			return true;
 		} else {
 			System.out.println("[Error] 업데이트에 실패하였습니다.\n");
+			return false;
 		}
-		
+				
 	} // databaseUpdate(); method end
 	
 	
