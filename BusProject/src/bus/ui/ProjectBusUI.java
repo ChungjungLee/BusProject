@@ -148,7 +148,6 @@ public class ProjectBusUI {
 	private void printMainMenu() {
 		
 		System.out.println("=== [ Main Menu ] ===");
-		System.out.println("* 첫 실행시 DB 업데이트 이후 사용하세요. *\n");
 		System.out.println("1. 검색");
 		System.out.println("2. 즐겨찾기");
 		System.out.println("3. 최근 검색");
@@ -870,11 +869,11 @@ public class ProjectBusUI {
 			
 			for (RealTimeStation route : busRoute) {		// 출력
 				System.out.println();
-				System.out.print(String.format("%-55s", "| " + (x++) + " | " + route.getStnName() + 
-						"    ( 정류장 ID : " + route.getArsId() + " )"));
+				System.out.print(String.format("| %2d | %-21s      ( 정류장 ID : %s )", x++, route.getStnName(), 
+						route.getArsId()));
 				
 				if (route.getPlainNo() != null) {
-					System.out.print("|  ★  출 발 ★    | " + route.getPlainNo());
+					System.out.print("      |  ★  출 발 ★    | " + route.getPlainNo());
 				}
 			}
 			
