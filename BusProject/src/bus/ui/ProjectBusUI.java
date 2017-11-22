@@ -90,7 +90,7 @@ public class ProjectBusUI {
 			System.out.println("- Log-in & Sign-in -");
 			
 			System.out.print("ID를 입력해주세요.\n");
-			userId = getTextFromUser(2);
+			userId = getTextFromUser(4);
 			
 			System.out.print("비밀번호를 입력해주세요.\n");
 			String userPw = getTextFromUser(4);
@@ -134,7 +134,6 @@ public class ProjectBusUI {
 					}
 					
 					break;
-				
 			}
 			
 		}
@@ -263,6 +262,7 @@ public class ProjectBusUI {
 					
 					System.out.println();
 					
+					// manager에 주소와 검색반경을 보내, 해당 반경 내 정류장 목록을 받아온다.
 					List<Station> gpsStnList = busManager.searchNearStations(inputAddr, inputRange);
 					
 					if (gpsStnList == null || gpsStnList.isEmpty()) {
@@ -311,6 +311,7 @@ public class ProjectBusUI {
 
 			System.out.println("\n--- < 즐  겨  찾  기  목  록 > ---\n");
 			
+			// 전체 즐겨찾기 목록을 불러온다.
 			Map<String, Object> favList = busManager.getFavoriteAll(userId);
 			
 			if (favList == null) {
@@ -318,6 +319,7 @@ public class ProjectBusUI {
 				return;
 			}
 			
+			// 버스일 경우 버스번호와 버스타입을 출력한다.
 			List<Bus> busFavList = (List<Bus>) favList.get("Bus");
 			
 			int i = 0;
@@ -329,7 +331,8 @@ public class ProjectBusUI {
 				System.out.print(" 버스 번호 : " + busFavList.get(i).getRoutName() + "  ( " 
 											+ busFavList.get(i).getRoutType() + " )\n");
 			}
-								
+			
+			// 정류장일 경우 정류장 이름과 정류장 ID를 출력한다.
 			List<Station> stnFavList = (List<Station>) favList.get("Station");
 			
 			for (int j = 0; j < stnFavList.size(); j++) {
@@ -365,23 +368,23 @@ public class ProjectBusUI {
 			
 			switch (selectMenuFromFav) {
 			
-				case 1:		// 목록 검색
+				case 1:		// 즐겨찾기 검색
 					
 					// 유저로부터 검색하고 싶은 숫자 입력받기
 					System.out.println("\n- 즐겨찾기 목록에서 검색을 원하시는 번호를 선택해주세요.");
 					
 					int selectFavList = selectNum(favList.size() + 1);
 					
-					if (selectFavList < busFavList.size() + 1) {
+					if (selectFavList < busFavList.size() + 1) {		// 버스의 목록 불러오기 
 						Bus getBus = busFavList.get(selectFavList - 1);
 						printBusOrStnList(getBus);
 						
-					} else if (selectFavList > busFavList.size()){
+					} else if (selectFavList > busFavList.size()){		// 정류장의 목록 불러오기
 						Station getStn = stnFavList.get((selectFavList - 1) - busFavList.size());
 						printBusOrStnList(getStn);
 					}
 											
-					boolean out = loopFavMenu();
+					boolean out = loopFavMenu();	// 메인메뉴 또는 즐겨찾기 메뉴로 돌아가기
 					
 					if (out) { 
 						loop = false; 
@@ -522,14 +525,15 @@ public class ProjectBusUI {
 		
 		while(true) {
 			
-			String inputText = getTextFromUser(1);
+			String inputText = getTextFromUser(1);	// 텍스트 형태로 입력받는다.
 			
+			// 입력받은 문자열이 숫자로만 이루어져 있는지 판별한다.
 			if (!isNumeric(inputText)) {
 				System.out.println("[Error] 숫자를 입력해 주십시오.\n");
 				continue;
 			}
 			
-			inputInt = Integer.parseInt(inputText);
+			inputInt = Integer.parseInt(inputText);	// int로 변환
 			
 			if (inputInt < 0) {
 				System.out.println("[Error] 음수는 입력하실 수 없습니다.\n");
@@ -559,6 +563,7 @@ public class ProjectBusUI {
 			
 			try {
 				inputText = sc.nextLine();
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				continue;
@@ -637,6 +642,7 @@ public class ProjectBusUI {
 		int input = 0;
 		
 		while(true) {
+			
 			input = getIntFromUser();
 			
 			if (0 < input && input <= size) {
@@ -658,6 +664,7 @@ public class ProjectBusUI {
      * 		@return 숫자인  문자로만  되어있으면  true, 아니면  false
      */
 	private boolean isNumeric(String checkStr) {
+		
 		if (checkStr == null || checkStr.trim().length() == 0) {
 			return false;
 		}
@@ -665,6 +672,7 @@ public class ProjectBusUI {
 		String trimmedStr = checkStr.trim();
 		
 		char leadChar = trimmedStr.charAt(0);
+		
 		if (!Character.isDigit(leadChar) && leadChar != '-' && leadChar != '+') {
 			// +, - 기호가 아닌 다른 기호가 첫 글자라면 false
 			return false;
@@ -693,6 +701,7 @@ public class ProjectBusUI {
 		if (canUpdate) {
 			System.out.println("[System] 정상적으로 업데이트 되었습니다.\n");
 			return true;
+			
 		} else {
 			System.out.println("[Error] 업데이트에 실패하였습니다.\n");
 			return false;
