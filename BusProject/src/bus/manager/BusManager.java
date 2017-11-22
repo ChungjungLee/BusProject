@@ -102,6 +102,17 @@ public class BusManager {
 	public List<Bus> searchBuses(String busNum) {
 		// DB에서 받아올 것
 		List<Bus> busList = busDao.srchBusContainsNum(busNum);
+		// 경기도에서 운영하는 버스들
+		List<Bus> gyeonggiBusList = new ArrayList<>();
+		
+		for (Bus bus : busList) {
+			// 경기도에서 운영하는 버스는 제외하고 보낸다.
+			if (bus.getRoutType().equals("경기")) {
+				gyeonggiBusList.add(bus);
+			}
+		}
+		
+		busList.removeAll(gyeonggiBusList);
 		
 		return busList;
 	}
@@ -218,7 +229,10 @@ public class BusManager {
 				}
 			}
 			
-			srchStnList.add(station);
+			// 정류소 번호가 0인 곳이 존재한다면 그것은 데이터베이스에 저장하지 않는다.
+			if (!station.getArsId().equals("0")) {
+				srchStnList.add(station);
+			}
 		}
 		
 		// DB에 저장
@@ -271,7 +285,10 @@ public class BusManager {
 				}
 			}
 			
-			nearStnList.add(station);
+			// 정류소 번호가 0인 곳이 존재한다면 그것은 데이터베이스에 저장하지 않는다.
+			if (!station.getArsId().equals("0")) {
+				nearStnList.add(station);
+			}
 		}
 		
 		// DB에 저장

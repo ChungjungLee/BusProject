@@ -765,8 +765,7 @@ public class ProjectBusUI {
 			
 			System.out.println();
 			System.out.println("| " + (i + 1) + " | " 
-					+ list.getRoutName() + " ( " + list.getRoutType() + " )"
-					+ list.getRoutId());
+					+ list.getRoutName() + " ( " + list.getRoutType() + " )");
 		}
 		
 		System.out.println("\n확인하고 싶은 버스를 선택해주세요.");

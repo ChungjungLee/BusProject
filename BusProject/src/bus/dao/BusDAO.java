@@ -191,7 +191,6 @@ public class BusDAO {
 				if(mapper.insertStation(station) == 0) {
 					result = false;
 				}
-				System.out.println(station.getStnName() + "역 입력 완료");
 			}
 			
 			session.commit();
