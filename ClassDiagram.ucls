@@ -3,7 +3,7 @@
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="bus.vo.Account" project="BusProject" 
     file="/BusProject/BusProject/src/bus/vo/Account.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="368" y="841"/>    
+    <position height="-1" width="-1" x="85" y="653"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="bus.ui.ProjectBusMain" project="BusProject" 
     file="/BusProject/BusProject/src/bus/ui/ProjectBusMain.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="89" y="292"/>    
+    <position height="-1" width="-1" x="125" y="67"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="bus.vo.Station" project="BusProject" 
     file="/BusProject/BusProject/src/bus/vo/Station.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="870" y="861"/>    
+    <position height="-1" width="-1" x="1059" y="718"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,7 +30,7 @@
   </class>  
   <interface id="4" language="java" name="bus.dao.BusMapper" project="BusProject" 
     file="/BusProject/BusProject/src/bus/dao/BusMapper.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1357" y="352"/>    
+    <position height="-1" width="-1" x="1271" y="183"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -39,7 +39,7 @@
   </interface>  
   <class id="5" language="java" name="bus.manager.BusManager" project="BusProject" 
     file="/BusProject/BusProject/src/bus/manager/BusManager.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="692" y="197"/>    
+    <position height="-1" width="-1" x="642" y="276"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -48,7 +48,7 @@
   </class>  
   <class id="6" language="java" name="bus.dao.MybatisConfig" project="BusProject" 
     file="/BusProject/BusProject/src/bus/dao/MybatisConfig.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1351" y="52"/>    
+    <position height="-1" width="-1" x="1279" y="509"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -57,7 +57,7 @@
   </class>  
   <class id="7" language="java" name="bus.vo.RealTimeStation" project="BusProject" 
     file="/BusProject/BusProject/src/bus/vo/RealTimeStation.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="594" y="904"/>    
+    <position height="-1" width="-1" x="1057" y="1036"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -66,7 +66,7 @@
   </class>  
   <class id="8" language="java" name="bus.vo.Favorite" project="BusProject" 
     file="/BusProject/BusProject/src/bus/vo/Favorite.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="130" y="796"/>    
+    <position height="-1" width="-1" x="811" y="938"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -75,7 +75,7 @@
   </class>  
   <class id="9" language="java" name="bus.vo.Bus" project="BusProject" file="/BusProject/BusProject/src/bus/vo/Bus.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1068" y="816"/>    
+    <position height="-1" width="-1" x="268" y="874"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -84,7 +84,7 @@
   </class>  
   <class id="10" language="java" name="bus.vo.History" project="BusProject" 
     file="/BusProject/BusProject/src/bus/vo/History.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1291" y="735"/>    
+    <position height="-1" width="-1" x="535" y="960"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -93,7 +93,7 @@
   </class>  
   <class id="11" language="java" name="bus.dao.BusDAO" project="BusProject" 
     file="/BusProject/BusProject/src/bus/dao/BusDAO.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="1033" y="181"/>    
+    <position height="-1" width="-1" x="969" y="221"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -102,132 +102,124 @@
   </class>  
   <class id="12" language="java" name="bus.ui.ProjectBusUI" project="BusProject" 
     file="/BusProject/BusProject/src/bus/ui/ProjectBusUI.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="299" y="303"/>    
+    <position height="-1" width="-1" x="334" y="241"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <dependency id="13">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="6"/>  
-  </dependency>  
-  <dependency id="14">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <dependency id="15">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <association id="16">    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="17" name="busDao">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="18" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <dependency id="19">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <dependency id="20">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="8"/>  
-  </dependency>  
-  <dependency id="21">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <association id="22">    
+  <association id="13">    
     <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="23" name="busManager">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="24" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
+      <attribute id="14" name="busManager"/>      
+      <multiplicity id="15" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="25">    
+  <dependency id="16">    
     <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="26">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="9"/>  
-  </dependency>  
-  <dependency id="27">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <dependency id="28">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="12"/>  
-  </dependency>  
-  <generalization id="29">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="3"/>  
-  </generalization>  
-  <dependency id="30">    
-    <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="10"/>  
   </dependency>  
-  <dependency id="31">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="3"/>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="1"/>  
   </dependency>  
-  <dependency id="32">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="33">    
+  <dependency id="18">    
     <end type="SOURCE" refId="11"/>    
     <end type="TARGET" refId="4"/>  
   </dependency>  
-  <dependency id="34">    
-    <end type="SOURCE" refId="4"/>    
+  <dependency id="19">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="11"/>    
     <end type="TARGET" refId="3"/>  
   </dependency>  
-  <dependency id="35">    
+  <generalization id="21">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="3"/>  
+  </generalization>  
+  <dependency id="22">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="23">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="8"/>  
   </dependency>  
-  <dependency id="36">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="10"/>  
+  <association id="24">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="25" name="busDao"/>      
+      <multiplicity id="26" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="9"/>  
   </dependency>  
-  <dependency id="37">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="1"/>  
+  <dependency id="28">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="6"/>  
   </dependency>  
-  <dependency id="38">    
+  <dependency id="29">    
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="8"/>  
   </dependency>  
-  <dependency id="39">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="10"/>  
+  <dependency id="30">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="7"/>  
   </dependency>  
-  <dependency id="40">    
+  <dependency id="31">    
     <end type="SOURCE" refId="12"/>    
     <end type="TARGET" refId="9"/>  
   </dependency>  
-  <dependency id="41">    
+  <dependency id="32">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="33">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </dependency>  
+  <dependency id="34">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="35">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <dependency id="36">    
     <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="37">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="10"/>  
+  </dependency>  
+  <dependency id="38">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="39">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="40">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="41">    
+    <end type="SOURCE" refId="11"/>    
     <end type="TARGET" refId="10"/>  
   </dependency>  
   <dependency id="42">    
-    <end type="SOURCE" refId="11"/>    
-    <end type="TARGET" refId="1"/>  
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="10"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

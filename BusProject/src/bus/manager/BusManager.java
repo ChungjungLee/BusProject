@@ -248,22 +248,17 @@ public class BusManager {
 	 * @param radius 검색할 반경 범위(m)
 	 * @return 정류장의 목록 
 	 */
-	public List<Station> searchNearStations(String keyword, int radius) {
-		
-		double[] gpsLoc = getGpsLocation(keyword);
-		
-		if (gpsLoc[0] == 0 && gpsLoc[0] == 0) {
-			return null;
-		}
+	public List<Station> searchNearStations(String gpsX, String gpsY, int radius) {
 		
 		String urlString = "http://ws.bus.go.kr/api/rest/stationinfo/getStationByPos?serviceKey=" + serviceKey +
-				"&tmX=" + gpsLoc[1] +
-				"&tmY=" + gpsLoc[0] +
+				"&tmX=" + gpsX +
+				"&tmY=" + gpsY +
 				"&radius=" + radius;
 		
 		Document doc = getDocumentByUrl(urlString);
 		
 		if (doc == null) {
+			System.out.println("url로부터 받아온 정보 없음");
 			return null;
 		}
 		
@@ -289,6 +284,7 @@ public class BusManager {
 			if (!station.getArsId().equals("0")) {
 				nearStnList.add(station);
 			}
+			
 		}
 		
 		// DB에 저장
@@ -647,7 +643,7 @@ public class BusManager {
 	 * @param address 변환할 주소 문자열
 	 * @return 정수형 배열; [0]에는 gpsY, [1]에는 gpsX 값이 들어가 있다.
 	 */
-	private double[] getGpsLocation(String address) {
+	public List<Map<String, Object>> getGpsLocation(String address) {
 		
 		String encodedAddress = null;
 		try {
@@ -658,8 +654,9 @@ public class BusManager {
 		
 		String urlString = "https://maps.googleapis.com/maps/api/geocode/json?region=kr"
 							+ "&address=" + encodedAddress
+							+ "&bounds=" + "37.4,126.8|37.7,127.2"
 							+ "&key=" + geocodeKey;
-		
+							
 		URL url = null;
 		try {
 			url = new URL(urlString);
@@ -669,20 +666,20 @@ public class BusManager {
 		}
 		
 		// read from the URL
-	    Scanner scan = null;
+		Scanner scan = null;
 		try {
-			scan = new Scanner(url.openStream());
+			scan = new Scanner(new InputStreamReader(url.openStream()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-	    String str = new String();
-	    
-	    while (scan.hasNext()) {
-	        str += scan.nextLine();
-	    }
-	    scan.close();
-	 
+		String str = new String();
+		
+		while (scan.hasNext()) {
+			str += scan.nextLine();
+		}
+		scan.close();
+		
 	    // build a JSON object
 	    JSONParser jsonParser = new JSONParser();
 	    
@@ -693,22 +690,34 @@ public class BusManager {
 			e.printStackTrace();
 		}
 	    
-		double[] gpsLoc = {0.0, 0.0};
+		List<Map<String, Object>> gpsAddList = new ArrayList<>();
+		Map<String, Object> gpsAddress = new HashMap<>();
 		
 		if (! jsonObject.get("status").equals("OK")) {
 			System.out.println("google geocode api response error");
 			
 		} else {
-			JSONObject resultObject = (JSONObject) ((JSONArray) jsonObject.get("results")).get(0);    
+			JSONArray resultList = (JSONArray) jsonObject.get("results");
 			
-			JSONObject geometryObject = (JSONObject) resultObject.get("geometry");
-			JSONObject locationObject = (JSONObject) geometryObject.get("location");
+			for (int i = 0; i < resultList.size(); i++) {
+				JSONObject addCompObj = (JSONObject) resultList.get(i);
+				JSONObject geoObj = (JSONObject) addCompObj.get("geometry");
+				JSONObject locationObject = (JSONObject) geoObj.get("location");
+				
+				String formatAddress = (String) addCompObj.get("formatted_address");
+				String lat = (String) locationObject.get("lat").toString();
+				String lng = (String) locationObject.get("lng").toString();
+				
+				gpsAddress.put("formatted_address", formatAddress);
+				gpsAddress.put("gpsX", lng);	// gpsX
+				gpsAddress.put("gpsY", lat);	// gpsY
+				
+			}
 			
-			gpsLoc[0] = Double.parseDouble((String) locationObject.get("lat").toString());	// gpsY
-			gpsLoc[1] = Double.parseDouble((String) locationObject.get("lng").toString());	// gpsX
+			gpsAddList.add(gpsAddress);
 		}
 		
-		return gpsLoc;
+		return gpsAddList;
 	}
 	
 	

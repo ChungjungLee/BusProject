@@ -262,10 +262,29 @@ public class ProjectBusUI {
 					System.out.println();
 					
 					// manager에 주소와 검색반경을 보내, 해당 반경 내 정류장 목록을 받아온다.
-					List<Station> gpsStnList = busManager.searchNearStations(inputAddr, inputRange);
+					List<Map<String, Object>> addrList = busManager.getGpsLocation(inputAddr);
+					
+					if (addrList == null || addrList.isEmpty()) {
+						System.out.println("\n[Error] 해당 주소를 찾지 못하였습니다.\n");
+						break;
+					}
+					
+					int numbering = 1;
+					System.out.println("\n--- < 검색된 주소 목록 > ---\n");
+					for (Map<String, Object> addr : addrList) {
+						System.out.println("[" + numbering + "] " + addr.get("formatted_address"));
+					}
+					
+					System.out.println("- 확인할 번호를 입력해주세요. -");
+					int inputToSrch = selectNum(addrList.size());
+					
+					String gpsX = addrList.get(inputToSrch - 1).get("gpsX").toString();
+					String gpsY = addrList.get(inputToSrch - 1).get("gpsY").toString();
+					
+					List<Station> gpsStnList = busManager.searchNearStations(gpsX, gpsY, inputRange);
 					
 					if (gpsStnList == null || gpsStnList.isEmpty()) {
-						System.out.println("\n[Error] 검색 결과가 없습니다.\n");
+						System.out.println("\n[Error] 해당 반경 내 정류장 검색 결과가 없습니다.\n");
 						break; // 검색 결과가 없으면 검색 메뉴로 다시 돌아간다.
 					}
 					
